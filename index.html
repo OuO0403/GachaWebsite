@@ -3,40 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小學伴抽卡機</title>
+    <title>小學伴CPBL抽卡機</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="gacha-container">
-        <h1>小學伴抽卡機</h1>
+    <div class="main-container">
         
-        <div class="token-info">
-            你現在有 <span id="token-display">...</span> 枚代幣
-        </div>
+        <header class="main-header">
+            <h1>小學伴CPBL抽卡機</h1>
+            <nav class="view-switcher">
+                <button id="show-gacha-btn" class="active">前往抽卡</button>
+                <button id="show-collection-btn">我的卡冊</button>
+            </nav>
+        </header>
 
-        <button id="draw-button">抽卡一次 (消耗 10 枚)</button>
-
-        <div id="animation-wrapper">
-            點擊按鈕開始抽卡！
-        </div>
-
-        <div id="collection-wrapper">
-            <h2>我的收藏</h2>
-            <div id="card-collection" class="card-collection-grid">
+        <div id="gacha-view" class="view-panel">
+            <div class="gacha-container">
+                <div class="token-info">
+                    你現在有 <span id="token-display">...</span> 枚代幣
                 </div>
+                <button id="draw-button">抽卡一次 (消耗 10 枚)</button>
+                <div id="animation-wrapper">
+                    點擊按鈕開始抽卡！
+                </div>
+            </div>
+            <div class="admin-panel">
+                <h3>老師專用控制台</h3>
+                <input type="text" id="admin-code" placeholder="輸入代幣密碼">
+                <button id="admin-submit">兌換</button>
+                <p id="admin-message"></p>
+            </div>
         </div>
 
-        <hr>
+        <div id="collection-view" class="view-panel" style="display: none;">
+            
+            <div class="collection-stats">
+                總收藏進度： <span id="collection-progress">0 / 96</span>
+            </div>
 
-        <div class="admin-panel">
-            <h3>老師專用控制台</h3>
-            <input type="text" id="admin-code" placeholder="輸入代幣密碼">
-            <button id="admin-submit">兌換</button>
-            <p id="admin-message"></p>
-        </div>
-    </div>
+            <div class="team-section" id="team-brothers">
+                <h2><img src="https://cdnjs.cloudflare.com/ajax/libs/tw-flags/0.2.0/cpbl-brothers.svg" class="team-logo"> 中信兄弟</h2>
+                <div class="card-collection-grid" id="collection-brothers">
+                    </div>
+            </div>
 
-    <script src="script.js"></script>
+            <div class="team-section" id="team-lions">
+                <h2><img src="https://cdnjs.cloudflare.com/ajax/libs/tw-flags/0.2.0/cpbl-unilions.svg" class="team-logo"> 統一7-ELEVEn獅</h2>
+                <div class="card-collection-grid" id="collection-lions">
+                    </div>
+            </div>
+            
+            <div class="team-section" id="team-monkeys">
+                <h2><img src="https://cdnjs.cloudflare.com/ajax/libs/tw-flags/0.2.0/cpbl-monkeys.svg" class="team-logo"> 樂天桃猿</h2>
+                <div class="card-collection-grid" id="collection-monkeys">
+                    </div>
+            </div>
+
+            <div class="team-section" id="team-guardians">
+                <h2><img src="https://cdnjs.cloudflare.com/ajax/libs/tw-flags/0.2.0/cpbl-fubon.svg" class="team-logo"> 富邦悍將</h2>
+                <div class="card-collection-grid" id="collection-guardians">
+                    </div>
+            </div>
+
+            <div class="team-section" id="team-dragons">
+                <h2><img src="https://cdnjs.cloudflare.com/ajax/libs/tw-flags/0.2.0/cpbl-dragons.svg" class="team-logo"> 味全龍</h2>
+                <div class="card-collection-grid" id="collection-dragons">
+                    </div>
+            </div>
+
+            <div class="team-section" id="team-hawks">
+                <h2><img src="https://cdnjs.cloudflare.com/ajax/libs/tw-flags/0.2.0/cpbl-tsg.svg" class="team-logo"> 台鋼雄鷹</h2>
+                <div class="card-collection-grid" id="collection-hawks">
+                    </div>
+            </div>
+
+        </div> </div> <script src="script.js"></script>
 </body>
 </html>
