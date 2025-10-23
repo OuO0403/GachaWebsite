@@ -11,8 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
         Dragons: '味全龍',
         Hawks: '台鋼雄鷹'
     };
-    
-    // (teamElementIds 已不再需要，我們將動態產生 ID)
 
     const cardMasterList = [];
     let cardIdCounter = 1;
@@ -58,65 +56,48 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTokens(savedTokens ? parseInt(savedTokens) : 100); 
 
 
-    // --- D. 【大改版】初始化卡片收藏庫 ---
+    // --- D. 初始化卡片收藏庫 ---
+    // (這部分不變)
     const COLLECTION_STORAGE_KEY = 'myStudentCollection_CPBL'; 
     let cardCollection = {}; 
 
-    // 【全新】函式：顯示卡冊 (核心)
     function displayCollection() {
         let totalOwnedTypes = 0; 
-        const rarities = ['SSR', 'SR', 'R', 'N']; // 定義排列順序
+        const rarities = ['SSR', 'SR', 'R', 'N']; 
 
-        // 1. 遍歷 6 支球隊
         for (const teamKey in teams) {
-            // 從「卡片資料庫」中篩選出該隊的所有卡片
             const teamCards = cardMasterList.filter(card => card.team === teamKey);
             
-            // 2. 遍歷 4 個稀有度
             rarities.forEach(rarity => {
-                // 3. 找到對應的 HTML 容器 (例如: collection-brothers-SSR)
                 const teamRarityDiv = document.getElementById(`collection-${teamKey.toLowerCase()}-${rarity}`);
-                if (!teamRarityDiv) return; // 安全檢查
-                
-                teamRarityDiv.innerHTML = ""; // 清空該行
+                if (!teamRarityDiv) return; 
+                teamRarityDiv.innerHTML = ""; 
 
-                // 4. 篩選出該隊 & 該稀有度的所有卡片
                 const rarityCards = teamCards.filter(card => card.rarity === rarity);
                 
-                // 5. 遍歷並顯示卡片
                 rarityCards.forEach(masterCard => {
                     const quantity = cardCollection[masterCard.id] || 0;
-
-                    // 6. 【修正錯誤】建立卡片「外框」
                     const cardWrapper = document.createElement('div');
                     
                     if (quantity > 0) {
-                        // 【已抽到】
                         totalOwnedTypes++;
-                        // 【修正錯誤】把發光 class 加到外框上
                         cardWrapper.className = `card-small-wrapper reveal-${masterCard.rarity}`;
-                        
                         cardWrapper.innerHTML = `
-                            <div class="card-small-inner" style="background-image: url('${masterCard.image}');">
-                                </div>
+                            <div class="card-small-inner" style="background-image: url('${masterCard.image}');"></div>
                             <div class="card-quantity">x${quantity}</div>
                         `;
                     } else {
-                        // 【未抽到】
-                        // 【修正錯誤】把黑影 class 加到外框上
                         cardWrapper.className = `card-small-wrapper card-silhouette`;
-                        
                         cardWrapper.innerHTML = `
                             <div class="card-small-inner">
-                                <span>?</span> </div>
+                                <span>?</span>
+                            </div>
                         `;
                     }
                     teamRarityDiv.appendChild(cardWrapper);
                 });
             });
         }
-        
-        // 7. 更新總收藏進度
         collectionProgress.innerText = `${totalOwnedTypes} / ${cardMasterList.length}`;
     }
 
@@ -143,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- F. 抽卡按鈕事件 ---
+    // (這部分不變)
     drawButton.addEventListener('click', () => {
         if (currentTokens < DRAW_COST) {
             alert("代幣不足！快去跟老師領取！");
@@ -154,8 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             const drawnCard = performDraw(); 
-
-            // 揭曉動畫 (套用發光 class)
             animationWrapper.innerHTML = `
                 <div class="card reveal-${drawnCard.rarity}" style="background-image: url('${drawnCard.image}');">
                     <span class="card-name">${drawnCard.name}</span>
@@ -163,47 +143,109 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             
-            // (以下儲存邏輯不變)
             const currentQuantity = cardCollection[drawnCard.id] || 0;
             cardCollection[drawnCard.id] = currentQuantity + 1;
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
-            
-            // 【重要】即使卡冊頁面沒開，也要在背景更新它
             displayCollection();
-
             drawButton.disabled = false;
         }, 2000); 
     });
 
 
-    // --- G. 老師控制台（密技）的邏輯 ---
-    // (這部分不變)
+    // --- G. 【大改版】老師控制台（密技）的邏輯 (使用「密碼資料庫」) ---
+
+    // ------------------------------------------------------------------
+    // 【重要】老師，你可以在這裡輕鬆更改「獎勵密碼」和「代幣數量」
+    // 密碼會自動轉換為全大寫，所以不用管大小寫
+    // ------------------------------------------------------------------
+    const rewardCodeDatabase = {
+        "1028DSAPDCIN": 50,
+        "M1104ITXYKCT": 50,
+        "CQ1111CVWO": 50,   // (我幫你移除了有問題的 '\]' 符號)
+        "ONL1118DJCEN": 50,
+        "LSNL1125YCRW": 50,
+        "NWIGC1202BUI": 50,
+        "JRHJJK1209BW": 50,
+        "JEYCHHO1216T": 50,
+        "666666661223": 100, // (這組看起來很特別，我先設 100)
+        
+        // 你未來可以自由新增
+        // "WEEK15CODE": 75,
+        // "BIRTHDAYGIFT": 200
+    };
+    // ------------------------------------------------------------------
+
+
+    // 1. 讀取已兌換的「獎勵」密碼 (邏輯不變)
+    const REDEEMED_CODES_KEY = 'redeemedRewardCodes_CPBL'; 
+    let redeemedCodes = []; 
+    const savedRedeemedCodes = localStorage.getItem(REDEEMED_CODES_KEY);
+    if (savedRedeemedCodes) {
+        redeemedCodes = JSON.parse(savedRedeemedCodes); 
+    }
+
+    // 2. 儲存已兌換的密碼 (邏輯不變)
+    function saveRedeemedCodes() {
+        localStorage.setItem(REDEEMED_CODES_KEY, JSON.stringify(redeemedCodes));
+    }
+
+    // 3. 【大改版】按鈕點擊事件 (邏輯簡化)
     adminSubmitButton.addEventListener('click', () => {
-        const code = adminCodeInput.value.trim().toUpperCase(); 
+        const code = adminCodeInput.value.trim().toUpperCase(); // 取得密碼，並轉成全大寫
         adminMessage.style.color = "red"; 
-        if (code === "ADD_TOKEN_50") {
-            updateTokens(currentTokens + 50);
-            adminMessage.innerText = "成功兌換 50 枚代幣！";
-            adminMessage.style.color = "green";
-        } else if (code === "ADD_TOKEN_500") { 
-            updateTokens(currentTokens + 500);
-            adminMessage.innerText = "成功兌換 500 枚代幣！";
-            adminMessage.style.color = "green";
-        } else if (code === "RESET_MY_TOKENS") { 
+
+        if (code === "") { // 判斷是否為空
+            adminMessage.innerText = "請輸入密碼！";
+            return;
+        }
+
+        // --- 1. 處理可重複使用的「管理員」密碼 ---
+        // (這部分不變)
+        if (code === "RESET_MY_TOKENS") { 
              updateTokens(0);
              adminMessage.innerText = "代幣已重置。";
-        } else if (code === "CLEAR_MY_COLLECTION") { 
+             adminMessage.style.color = "green";
+             adminCodeInput.value = ""; 
+             return; 
+        } 
+        
+        if (code === "CLEAR_MY_COLLECTION") { 
             cardCollection = {}; 
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
             displayCollection(); 
             adminMessage.innerText = "卡片收藏已清空！";
             adminMessage.style.color = "green"; 
+            adminCodeInput.value = ""; 
+            return; 
+        }
+
+        // --- 2. 處理只能用一次的「獎勵」密碼 (使用新資料庫) ---
+
+        // 檢查 `rewardCodeDatabase` 是否有這個密碼
+        if (rewardCodeDatabase.hasOwnProperty(code)) {
+            
+            // 檢查是否已使用過
+            if (redeemedCodes.includes(code)) {
+                adminMessage.innerText = "此獎勵密碼已經使用過了喔！";
+            } else {
+                // 兌換成功！
+                const amount = rewardCodeDatabase[code]; // 從資料庫獲取獎勵數量
+                updateTokens(currentTokens + amount);
+                
+                adminMessage.innerText = `成功兌換 ${amount} 枚代幣！`;
+                adminMessage.style.color = "green";
+                
+                // 記錄下來
+                redeemedCodes.push(code); 
+                saveRedeemedCodes(); 
+            }
         } else {
+            // 如果不是管理密碼，也不是獎勵密碼
             adminMessage.innerText = "密碼錯誤！";
         }
+
         adminCodeInput.value = ""; 
     });
-
     
     // --- H. 介面切換邏輯 ---
     // (這部分不變)
