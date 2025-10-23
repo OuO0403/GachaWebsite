@@ -2,11 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- A. 卡片資料庫 (Master List) ---
-    // 【修改】每張卡片都新增了 'image' 屬性
-    // -------------------------------------------------------------------
-    // 未來你只需要修改 'name' 和 'image' 裡面的字串即可
-    // -------------------------------------------------------------------
-
+    // (這部分不變)
     const teams = {
         Brothers: '中信兄弟',
         Lions: '統一7-ELEVEn獅',
@@ -15,58 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
         Dragons: '味全龍',
         Hawks: '台鋼雄鷹'
     };
-
-    const teamElementIds = {
-        Brothers: 'collection-brothers',
-        Lions: 'collection-lions',
-        Monkeys: 'collection-monkeys',
-        Guardians: 'collection-guardians',
-        Dragons: 'collection-dragons',
-        Hawks: 'collection-hawks'
-    };
+    
+    // (teamElementIds 已不再需要，我們將動態產生 ID)
 
     const cardMasterList = [];
     let cardIdCounter = 1;
-
     for (const teamKey in teams) {
-        // 7 張 N 卡
         for (let i = 1; i <= 7; i++) {
-            cardMasterList.push({ 
-                id: `${teamKey.charAt(0)}${cardIdCounter++}`, 
-                name: `${teams[teamKey]} N卡 ${i}`, 
-                team: teamKey, 
-                rarity: 'N',
-                image: 'bookshelf_bg.jpg' // <-- 在這裡修改圖片
-            });
+            cardMasterList.push({ id: `${teamKey.charAt(0)}${cardIdCounter++}`, name: `${teams[teamKey]} N卡 ${i}`, team: teamKey, rarity: 'N', image: 'bookshelf_bg.jpg' });
         }
-        // 5 張 R 卡
         for (let i = 1; i <= 5; i++) {
-            cardMasterList.push({ 
-                id: `${teamKey.charAt(0)}${cardIdCounter++}`, 
-                name: `${teams[teamKey]} R卡 ${i}`, 
-                team: teamKey, 
-                rarity: 'R',
-                image: 'bookshelf_bg.jpg' // <-- 在這裡修改圖片
-            });
+            cardMasterList.push({ id: `${teamKey.charAt(0)}${cardIdCounter++}`, name: `${teams[teamKey]} R卡 ${i}`, team: teamKey, rarity: 'R', image: 'bookshelf_bg.jpg' });
         }
-        // 3 張 SR 卡
         for (let i = 1; i <= 3; i++) {
-            cardMasterList.push({ 
-                id: `${teamKey.charAt(0)}${cardIdCounter++}`, 
-                name: `${teams[teamKey]} SR卡 ${i}`, 
-                team: teamKey, 
-                rarity: 'SR',
-                image: 'bookshelf_bg.jpg' // <-- 在這裡修改圖片
-            });
+            cardMasterList.push({ id: `${teamKey.charAt(0)}${cardIdCounter++}`, name: `${teams[teamKey]} SR卡 ${i}`, team: teamKey, rarity: 'SR', image: 'bookshelf_bg.jpg' });
         }
-        // 1 張 SSR 卡
-        cardMasterList.push({ 
-            id: `${teamKey.charAt(0)}${cardIdCounter++}`, 
-            name: `${teams[teamKey]} SSR卡`, 
-            team: teamKey, 
-            rarity: 'SSR',
-            image: 'bookshelf_bg.jpg' // <-- 在這裡修改圖片
-        });
+        cardMasterList.push({ id: `${teamKey.charAt(0)}${cardIdCounter++}`, name: `${teams[teamKey]} SSR卡`, team: teamKey, rarity: 'SSR', image: 'bookshelf_bg.jpg' });
     }
 
     
@@ -98,52 +58,65 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTokens(savedTokens ? parseInt(savedTokens) : 100); 
 
 
-    // --- D. 初始化卡片收藏庫 ---
-    // (這部分不變)
+    // --- D. 【大改版】初始化卡片收藏庫 ---
     const COLLECTION_STORAGE_KEY = 'myStudentCollection_CPBL'; 
     let cardCollection = {}; 
 
     // 【全新】函式：顯示卡冊 (核心)
     function displayCollection() {
         let totalOwnedTypes = 0; 
+        const rarities = ['SSR', 'SR', 'R', 'N']; // 定義排列順序
 
+        // 1. 遍歷 6 支球隊
         for (const teamKey in teams) {
-            const teamElementId = teamElementIds[teamKey];
-            const teamDiv = document.getElementById(teamElementId);
-            teamDiv.innerHTML = ""; 
-
+            // 從「卡片資料庫」中篩選出該隊的所有卡片
             const teamCards = cardMasterList.filter(card => card.team === teamKey);
             
-            teamCards.forEach(masterCard => {
-                const quantity = cardCollection[masterCard.id] || 0;
-                const cardWrapper = document.createElement('div');
-                cardWrapper.className = 'card-small-wrapper';
+            // 2. 遍歷 4 個稀有度
+            rarities.forEach(rarity => {
+                // 3. 找到對應的 HTML 容器 (例如: collection-brothers-SSR)
+                const teamRarityDiv = document.getElementById(`collection-${teamKey.toLowerCase()}-${rarity}`);
+                if (!teamRarityDiv) return; // 安全檢查
                 
-                if (quantity > 0) {
-                    totalOwnedTypes++;
+                teamRarityDiv.innerHTML = ""; // 清空該行
+
+                // 4. 篩選出該隊 & 該稀有度的所有卡片
+                const rarityCards = teamCards.filter(card => card.rarity === rarity);
+                
+                // 5. 遍歷並顯示卡片
+                rarityCards.forEach(masterCard => {
+                    const quantity = cardCollection[masterCard.id] || 0;
+
+                    // 6. 【修正錯誤】建立卡片「外框」
+                    const cardWrapper = document.createElement('div');
                     
-                    // --- 【修改】 ---
-                    // 已抽到的卡片：顯示卡片圖片 (style="...")，並疊上文字
-                    cardWrapper.innerHTML = `
-                        <div class="card-small-inner reveal-${masterCard.rarity}" style="background-image: url('${masterCard.image}');">
-                            <span class="card-small-name">${masterCard.name.split(' ')[1]}</span>
-                            <span class="card-small-rarity">(${masterCard.rarity})</span>
-                        </div>
-                        <div class="card-quantity">x${quantity}</div>
-                    `;
-                } else {
-                    // --- (不變) ---
-                    // 未抽到的卡片：顯示黑影
-                    cardWrapper.innerHTML = `
-                        <div class="card-small-inner card-silhouette">
-                            ?
-                        </div>
-                    `;
-                }
-                teamDiv.appendChild(cardWrapper);
+                    if (quantity > 0) {
+                        // 【已抽到】
+                        totalOwnedTypes++;
+                        // 【修正錯誤】把發光 class 加到外框上
+                        cardWrapper.className = `card-small-wrapper reveal-${masterCard.rarity}`;
+                        
+                        cardWrapper.innerHTML = `
+                            <div class="card-small-inner" style="background-image: url('${masterCard.image}');">
+                                </div>
+                            <div class="card-quantity">x${quantity}</div>
+                        `;
+                    } else {
+                        // 【未抽到】
+                        // 【修正錯誤】把黑影 class 加到外框上
+                        cardWrapper.className = `card-small-wrapper card-silhouette`;
+                        
+                        cardWrapper.innerHTML = `
+                            <div class="card-small-inner">
+                                <span>?</span> </div>
+                        `;
+                    }
+                    teamRarityDiv.appendChild(cardWrapper);
+                });
             });
         }
         
+        // 7. 更新總收藏進度
         collectionProgress.innerText = `${totalOwnedTypes} / ${cardMasterList.length}`;
     }
 
@@ -182,8 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const drawnCard = performDraw(); 
 
-            // --- 【修改】 ---
-            // 揭曉動畫：顯示卡片圖片 (style="...")，並疊上文字
+            // 揭曉動畫 (套用發光 class)
             animationWrapper.innerHTML = `
                 <div class="card reveal-${drawnCard.rarity}" style="background-image: url('${drawnCard.image}');">
                     <span class="card-name">${drawnCard.name}</span>
@@ -191,11 +163,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             
-            // --- (以下不變) ---
+            // (以下儲存邏輯不變)
             const currentQuantity = cardCollection[drawnCard.id] || 0;
             cardCollection[drawnCard.id] = currentQuantity + 1;
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
+            
+            // 【重要】即使卡冊頁面沒開，也要在背景更新它
             displayCollection();
+
             drawButton.disabled = false;
         }, 2000); 
     });
