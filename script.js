@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tokenDisplay = document.getElementById('token-display');
     const drawButton = document.getElementById('draw-button');
     const animationWrapper = document.getElementById('animation-wrapper');
-    const collectionDiv = document.getElementById('card-collection'); // 【新增】收藏區的 Div
+    const collectionDiv = document.getElementById('card-collection');
     
     // 老師控制台的元素
     const adminCodeInput = document.getElementById('admin-code');
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminMessage = document.getElementById('admin-message');
 
     // --- 3. 初始化代幣 ---
-    const TOKEN_STORAGE_KEY = 'myStudentTokens'; // 代幣儲存鑰匙
+    const TOKEN_STORAGE_KEY = 'myStudentTokens'; 
     let currentTokens = 0;
 
     function updateTokens(amount) {
@@ -29,64 +29,66 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTokens(20); 
     }
 
-    // --- 4. 【升級】初始化卡片收藏庫 ---
-    const COLLECTION_STORAGE_KEY = 'myStudentCardCollection'; // 卡片儲存鑰匙
-    let cardCollection = []; // 用一個陣列 (Array) 來裝所有卡片
+    // --- 4. 初始化卡片收藏庫 ---
+    const COLLECTION_STORAGE_KEY = 'myStudentCardCollection'; 
+    let cardCollection = []; 
 
-    // 【新增】函式：將收藏庫陣列(cardCollection) 顯示到畫面上
     function displayCollection() {
-        collectionDiv.innerHTML = ""; // 先清空收藏區
+        collectionDiv.innerHTML = ""; 
 
         if (cardCollection.length === 0) {
-            collectionDiv.innerHTML = "<p style='color: #777; text-align: center;'>這裡還沒有卡片喔！</p>";
+            collectionDiv.innerHTML = "<p style='color: #eee; text-align: center; font-style: italic;'>這裡還沒有卡片喔！快來抽卡！</p>";
             return;
         }
 
-        // 遍歷 (forEach) 收藏庫中的每一張卡
         cardCollection.forEach(card => {
             const cardElement = document.createElement('div');
-            // 【注意】使用新的 CSS class 'card-small' 來顯示小卡片
             cardElement.className = `card-small reveal-${card.rarity}`;
             cardElement.innerText = card.name;
-            collectionDiv.appendChild(cardElement); // 加入到收藏區
+            // 【新增】為每張小卡片設定一個隨機的旋轉角度 (-5度 到 5度)
+            const randomRotate = (Math.random() * 10) - 5; // 產生 -5 到 +5 之間的數字
+            cardElement.style.setProperty('--random-rotate', `${randomRotate}deg`); // 設定 CSS 變數
+            collectionDiv.appendChild(cardElement); 
         });
     }
 
-    // 【新增】頁面載入時，嘗試從瀏覽器讀取「已儲存的卡片」
     const savedCollection = localStorage.getItem(COLLECTION_STORAGE_KEY);
     if (savedCollection) {
-        cardCollection = JSON.parse(savedCollection); // JSON.parse 用來把「字串」還原成「陣列」
+        cardCollection = JSON.parse(savedCollection); 
     }
     
-    // 馬上把讀取到的卡片顯示出來
     displayCollection();
 
 
-    // --- 5. 抽卡邏輯 (這部分不變) ---
+    // --- 5. 抽卡邏輯 ---
     const DRAW_COST = 10; 
 
+    // 卡池定義 (你可以在這裡修改或新增卡片)
     const cardPool = [
         { name: "普通獎勵 (N)", rarity: "N" },
         { name: "下次多玩1分鐘 (N)", rarity: "N" },
         { name: "稀有獎勵 (R)", rarity: "R" },
         { name: "指定下次封面 (R)", rarity: "R" },
-        { name: "終極大獎 (SSR)", rarity: "SSR" }
+        { name: "SSR 大獎！", rarity: "SSR" } // SSR 換個名稱
     ];
 
     function performDraw() {
         const roll = Math.random(); 
 
         if (roll < 0.05) { // 5% SSR
-            // 【修改】直接回傳一個新的物件，避免修改到 cardPool
             return { ...cardPool.find(card => card.rarity === "SSR") };
         } else if (roll < 0.30) { // 25% R
-            return { ...cardPool.find(card => card.rarity === "R") };
+            // 從 R 稀有度的卡片中隨機選一張
+            const rCards = cardPool.filter(card => card.rarity === "R");
+            return { ...rCards[Math.floor(Math.random() * rCards.length)] };
         } else { // 70% N
-            return { ...cardPool.find(card => card.rarity === "N") };
+            // 從 N 稀有度的卡片中隨機選一張
+            const nCards = cardPool.filter(card => card.rarity === "N");
+            return { ...nCards[Math.floor(Math.random() * nCards.length)] };
         }
     }
 
-    // --- 6. 抽卡按鈕事件 (有修改) ---
+    // --- 6. 抽卡按鈕事件 ---
     drawButton.addEventListener('click', () => {
         if (currentTokens < DRAW_COST) {
             alert("代幣不足！快去跟老師領取！");
@@ -98,9 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         animationWrapper.style.border = "2px dashed #ddd";
 
         setTimeout(() => {
-            const drawnCard = performDraw(); // 抽卡！
+            const drawnCard = performDraw(); 
 
-            // 顯示「揭曉動畫」(大卡片)
             animationWrapper.innerHTML = `
                 <div class="card reveal-${drawnCard.rarity}">
                     ${drawnCard.name}
@@ -108,23 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             animationWrapper.style.border = "none"; 
             
-            // --- 【升級】儲存卡片 ---
-            // 1. 將抽到的卡片(drawnCard) 加入到收藏陣列(cardCollection)
             cardCollection.push(drawnCard);
-            
-            // 2. 將「整個陣列」轉成「字串」(JSON.stringify) 並存入 localStorage
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
             
-            // 3. 立刻更新畫面上的「收藏庫」
             displayCollection();
-            // --- 升級完畢 ---
 
             drawButton.disabled = false;
         }, 2000); 
     });
 
 
-    // --- 7. 老師控制台（密技）的邏輯 (這部分不變) ---
+    // --- 7. 老師控制台（密技）的邏輯 ---
     adminSubmitButton.addEventListener('click', () => {
         const code = adminCodeInput.value.trim(); 
         adminMessage.style.color = "red"; 
@@ -140,11 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (code === "RESET_MY_TOKENS") { 
              updateTokens(0);
              adminMessage.innerText = "代幣已重置。";
-        } else if (code === "CLEAR_MY_COLLECTION") { // 【新增密技】清除收藏 (方便你測試)
-            cardCollection = []; // 清空陣列
-            localStorage.removeItem(COLLECTION_STORAGE_KEY); // 移除儲存
-            displayCollection(); // 更新畫面
+        } else if (code === "CLEAR_MY_COLLECTION") { 
+            cardCollection = []; 
+            localStorage.removeItem(COLLECTION_STORAGE_KEY); 
+            displayCollection(); 
             adminMessage.innerText = "卡片收藏已清空！";
+            adminMessage.style.color = "green"; // 清空成功也顯示綠色
         } else {
             adminMessage.innerText = "密碼錯誤！";
         }
