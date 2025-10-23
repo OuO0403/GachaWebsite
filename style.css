@@ -146,4 +146,191 @@ body {
     font-size: 1.5em;
     color: #333;
     border-bottom: 3px solid; 
-    padding-
+    padding-bottom: 10px;
+}
+.team-logo { width: 32px; height: 32px; margin-right: 10px; }
+
+/* 球隊主題色 */
+#team-brothers h2 { border-color: #FFD700; }
+#team-lions h2 { border-color: #FF6600; }
+#team-monkeys h2 { border-color: #DC143C; }
+#team-guardians h2 { border-color: #005A9C; }
+#team-dragons h2 { border-color: #E60012; }
+#team-hawks h2 { border-color: #008080; }
+
+/* 卡冊網格 (書櫃背景) */
+.card-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    gap: 15px;
+    background-image: url('bookshelf_bg.jpg'); 
+    background-size: cover;
+    background-position: center;
+    height: 280px; 
+    overflow-y: auto;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+}
+
+/* 收藏庫中的「小卡片」 (共用樣式) */
+.card-small-wrapper {
+    position: relative; 
+    aspect-ratio: 2 / 3; 
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    transition: all 0.2s ease-out;
+    border: 2px solid #555; /* 預設邊框，會被稀有度顏色覆蓋 */
+    overflow: hidden; /* 確保圖片不超出圓角 */
+}
+.card-small-wrapper:hover { transform: scale(1.05); z-index: 10; }
+
+/* 【重要修改】小卡片內部樣式 - 移除文字顯示 */
+.card-small-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    padding: 0; /* 移除 padding */
+    font-weight: bold;
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 置中 */
+    align-items: center;
+    text-align: center;
+    color: white; 
+
+    background-size: cover; 
+    background-position: center; 
+    position: relative; 
+    background-color: #333; 
+    overflow: hidden; /* 確保內容不會超出圓角邊框 */
+}
+/* 【修改】小卡片遮罩 - 不顯示 */
+.card-small-inner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.0); /* 預設透明 */
+    border-radius: 6px; 
+    pointer-events: none;
+}
+/* 【修改】讓文字浮在遮罩上 - 隱藏 */
+.card-small-inner span {
+    display: none; /* 直接隱藏文字 */
+}
+
+
+/* 未抽到卡片 (黑影) */
+.card-silhouette {
+    background: linear-gradient(135deg, #4c4c4c, #2c2c2c);
+    color: #aaa;
+    border: 2px dashed #777;
+    font-size: 1.5em;
+    display: flex; /* 讓 '?' 置中 */
+    justify-content: center;
+    align-items: center;
+}
+/* 黑影文字不需要遮罩和陰影，但要顯示問號 */
+.card-silhouette::before { 
+    content: '?'; /* 顯示問號 */
+    position: relative; /* 讓問號在卡片中間 */
+    z-index: 2;
+    background-color: transparent; /* 移除遮罩 */
+    font-size: 2em; /* 放大問號 */
+}
+.card-silhouette span { display: none; } /* 確保隱藏其他文字 */
+
+
+/* 卡片數量角標 */
+.card-quantity {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background-color: #d9534f; 
+    color: white;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    z-index: 5; 
+}
+
+
+/* --- 【重要修改】卡片稀有度顏色 (邊框發光效果) --- */
+
+/* N卡 - 藍色光 */
+.reveal-N {
+    box-shadow: 0 0 0px 0px rgba(0, 123, 255, 0.0), /* 內陰影 */
+                0 0 10px 3px rgba(0, 123, 255, 0.7); /* 外發光 */
+    border-color: #007bff; /* 邊框本體顏色 */
+    transition: box-shadow 0.5s ease-out;
+}
+
+/* R卡 - 紫色光 */
+.reveal-R {
+    box-shadow: 0 0 0px 0px rgba(153, 51, 204, 0.0),
+                0 0 12px 4px rgba(153, 51, 204, 0.8);
+    border-color: #9933cc;
+    transition: box-shadow 0.5s ease-out;
+}
+
+/* SR卡 - 金色光 */
+.reveal-SR {
+    box-shadow: 0 0 0px 0px rgba(255, 215, 0, 0.0),
+                0 0 15px 5px rgba(255, 215, 0, 0.9);
+    border-color: #ffd700;
+    transition: box-shadow 0.5s ease-out;
+}
+
+/* SSR卡 - 彩虹光 (漸變動畫) */
+.reveal-SSR {
+    border-color: #ff00ff; /* 基礎顏色 */
+    animation: rainbowBorder 2s infinite linear; /* 動畫 */
+}
+
+/* 【新增】彩虹邊框動畫 */
+@keyframes rainbowBorder {
+    0%   { box-shadow: 0 0 0px 0px rgba(255,0,0,0), 0 0 18px 6px rgba(255,0,0,0.8); border-color: #ff0000; } /* 紅 */
+    16%  { box-shadow: 0 0 0px 0px rgba(255,165,0,0), 0 0 18px 6px rgba(255,165,0,0.8); border-color: #ffa500; } /* 橙 */
+    33%  { box-shadow: 0 0 0px 0px rgba(255,255,0,0), 0 0 18px 6px rgba(255,255,0,0.8); border-color: #ffff00; } /* 黃 */
+    50%  { box-shadow: 0 0 0px 0px rgba(0,128,0,0), 0 0 18px 6px rgba(0,128,0,0.8); border-color: #008000; } /* 綠 */
+    66%  { box-shadow: 0 0 0px 0px rgba(0,0,255,0), 0 0 18px 6px rgba(0,0,255,0.8); border-color: #0000ff; } /* 藍 */
+    83%  { box-shadow: 0 0 0px 0px rgba(75,0,130,0), 0 0 18px 6px rgba(75,0,130,0.8); border-color: #4b0082; } /* 靛 */
+    100% { box-shadow: 0 0 0px 0px rgba(128,0,128,0), 0 0 18px 6px rgba(128,0,128,0.8); border-color: #800080; } /* 紫 */
+}
+
+
+/* --- 抽卡動畫 (沿用) --- */
+.draw-pending {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* 揭曉動畫的 box-shadow 會被稀有度定義覆蓋，但動畫本身還會跑 */
+.card.reveal-N { animation: fadeIn 0.5s ease-out; }
+.card.reveal-R { animation: zoomIn 0.7s ease-out; }
+.card.reveal-SR { animation: rainbowFlash 1s ease-out; } /* 移除 shake，因為 SSR 有了 */
+.card.reveal-SSR { animation: rainbowFlash 1.5s ease-out, shake 0.8s linear 3; } /* SSR 保留震動 */
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes rainbowFlash {
+    0% { box-shadow: 0 0 20px 10px #fff; }
+    50% { box-shadow: 0 0 30px 20px #ffec80; }
+    100% { box-shadow: 0 0 20px 10px #fff; }
+}
+@keyframes shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(5px, 0px) rotate(2deg); }
+    50% { transform: translate(0, 0) rotate(0deg); }
+    75% { transform: translate(-5px, 0px) rotate(-2deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
