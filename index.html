@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小學伴抽卡機</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="gacha-container">
+        <h1>小學伴抽卡機</h1>
+        
+        <div class="token-info">
+            你現在有 <span id="token-display">...</span> 枚代幣
+        </div>
+
+        <button id="draw-button">抽卡一次 (消耗 10 枚)</button>
+
+        <div id="animation-wrapper">
+            點擊按鈕開始抽卡！
+        </div>
+
+        <div id="collection-wrapper">
+            <h2>我的收藏</h2>
+            <div id="card-collection" class="card-collection-grid">
+                </div>
+        </div>
+
+        <hr>
+
+        <div class="admin-panel">
+            <h3>老師專用控制台</h3>
+            <input type="text" id="admin-code" placeholder="輸入代幣密碼">
+            <button id="admin-submit">兌換</button>
+            <p id="admin-message"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

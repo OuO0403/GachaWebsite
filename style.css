@@ -1,0 +1,185 @@
+// --- 1. 等待 HTML 內容都載入完成 ---
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 2. 獲取所有需要的 HTML 元素 ---
+    const tokenDisplay = document.getElementById('token-display');
+    const drawButton = document.getElementById('draw-button');
+    const animationWrapper = document.getElementById('animation-wrapper');
+    
+    // 老師控制台的元素
+    const adminCodeInput = document.getElementById('admin-code');
+    const adminSubmitButton = document.getElementById('admin-submit');
+    const adminMessage = document.getElementById('admin-message');
+
+    // --- 3. 初始化代幣 ---
+    const STORAGE_KEY = 'myStudentTokens'; // 用來儲存的鑰匙
+    let currentTokens = 0;
+
+    // 更新畫面上顯示的代幣數量，並存入瀏覽器
+    function updateTokens(amount) {
+        currentTokens = amount;
+        tokenDisplay.innerText = currentTokens;
+        localStorage.setItem(STORAGE_KEY, currentTokens); // 存入瀏覽器
+    }
+
+    // 頁面載入時，嘗試從瀏覽器讀取代幣
+    const savedTokens = localStorage.getItem(STORAGE_KEY);
+    if (savedTokens) {
+        updateTokens(parseInt(savedTokens));
+    } else {
+        updateTokens(20); // 如果是第一次玩，預設給 20 個代幣
+    }
+
+    // --- 4. 抽卡邏輯 ---
+    const DRAW_COST = 10; // 抽卡成本
+
+    // 卡池定義
+    const cardPool = [
+        { name: "普通獎勵 (N)", rarity: "N" },
+        { name: "下次多玩1分鐘 (N)", rarity: "N" },
+        { name: "稀有獎勵 (R)", rarity: "R" },
+        { name: "指定下次封面 (R)", rarity: "R" },
+        { name: "終極大獎 (SSR)", rarity: "SSR" }
+    ];
+
+    // 抽卡機率演算法
+    function performDraw() {
+        const roll = Math.random(); // 產生 0.0 ~ 1.0 的隨機數
+
+        if (roll < 0.05) { // 5% 機率抽中 SSR
+            return cardPool.find(card => card.rarity === "SSR");
+        } else if (roll < 0.30) { // 25% 機率抽中 R (0.30 - 0.05 = 0.25)
+            return cardPool.find(card => card.rarity === "R");
+        } else { // 剩下 70% 機率抽中 N
+            return cardPool.find(card => card.rarity === "N");
+        }
+    }
+
+    // --- 5. 抽卡按鈕事件 ---
+    drawButton.addEventListener('click', () => {
+        // 檢查代幣
+        if (currentTokens < DRAW_COST) {
+            alert("代幣不足！快去跟老師領取！");
+            return;
+        }
+
+        // 1. 扣除代幣
+        updateTokens(currentTokens - DRAW_COST);
+
+        // 2. 禁用按鈕，防止連點
+        drawButton.disabled = true;
+
+        // 3. 顯示「抽卡中」的基礎動畫
+        animationWrapper.innerHTML = '<div class="draw-pending"></div>';
+        animationWrapper.style.border = "2px dashed #ddd"; // 恢復邊框
+
+        // 4. 模擬抽卡動畫 (等待 2 秒)
+        setTimeout(() => {
+            // 5. 執行抽卡
+            const drawnCard = performDraw();
+
+            // 6. 顯示結果卡片和對應的「揭曉動畫」
+            // (CSS 會根據 .reveal-N, .reveal-R, .reveal-SSR 播放不同動畫)
+            animationWrapper.innerHTML = `
+                <div class="card reveal-${drawnCard.rarity}">
+                    ${drawnCard.name}
+                </div>
+            `;
+            
+            // 讓卡片的邊框顏色也跟著稀有度走
+            const cardElement = animationWrapper.querySelector('.card');
+            animationWrapper.style.border = "none"; // 隱藏外框
+
+            // 7. 恢復按鈕
+            drawButton.disabled = false;
+
+        }, 2000); // 2000 毫秒 = 2 秒
+    });
+
+
+    // --- 6. 老師控制台（密技）的邏輯 ---
+    adminSubmitButton.addEventListener('click', () => {
+        const code = adminCodeInput.value.trim(); // 獲取輸入的密碼
+        adminMessage.style.color = "red"; // 預設訊息為紅色
+
+        if (code === "ADD_TOKEN_20") {
+            updateTokens(currentTokens + 20);
+            adminMessage.innerText = "成功兌換 20 枚代幣！";
+            adminMessage.style.color = "green";
+        } else if (code === "ADD_TOKEN_50") {
+            updateTokens(currentTokens + 50);
+            adminMessage.innerText = "成功兌換 50 枚代幣！";
+            adminMessage.style.color = "green";
+        } else if (code === "RESET_MY_TOKENS") { // 重置密碼 (以防萬一)
+             updateTokens(0);
+             adminMessage.innerText = "代幣已重置。";
+        } else {
+            adminMessage.innerText = "密碼錯誤！";
+        }
+
+        adminCodeInput.value = ""; // 清空輸入框
+    });
+});
+
+/* --- 【新增】卡片收藏區的樣式 --- */
+
+#collection-wrapper {
+    margin-top: 2em;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 1em;
+    border-radius: 8px;
+    text-align: left; /* 讓 "我的收藏" 標題靠左 */
+}
+
+#collection-wrapper h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+/* 用 Grid 排版，讓卡片自動換行 */
+.card-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* 自動填滿，每張卡最小 80px */
+    gap: 10px; /* 卡片間距 */
+    max-height: 300px; /* 設定一個最大高度，超過會捲動 */
+    overflow-y: auto; /* 內容太多時，顯示垂直捲軸 */
+    padding: 5px;
+    border: 1px solid #ddd;
+    background: #fff;
+    min-height: 50px;
+}
+
+/* 收藏庫中的「小卡片」樣式 */
+.card-small {
+    width: 100%; /* 寬度自動填滿 grid 格子 */
+    aspect-ratio: 2 / 3; /* 固定高寬比 2:3 */
+    border: 2px solid;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    word-wrap: break-word; /* 文字自動換行 */
+    box-sizing: border-box; /* 確保 padding 不會撐爆寬度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* 沿用 N/R/SSR 的顏色 */
+.card-small.reveal-N {
+    background-color: #aaa;
+    border-color: #777;
+    color: #333;
+}
+.card-small.reveal-R {
+    background-color: #007bff;
+    border-color: #0056b3;
+}
+.card-small.reveal-SSR {
+    background: linear-gradient(45deg, #ffd700, #ffec80);
+    border-color: #ffc107;
+    color: #a0522d;
+}
