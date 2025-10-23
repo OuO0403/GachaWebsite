@@ -25,7 +25,6 @@ body {
     border-bottom: 4px solid #FFD700;
 }
 .main-header h1 { margin: 0 0 15px 0; font-size: 1.8em; }
-
 .view-switcher button {
     background: rgba(255, 255, 255, 0.2);
     color: white;
@@ -78,41 +77,27 @@ body {
     overflow: hidden;
 }
 
-/* 【重要修改】大卡片樣式 - 移除文字顯示 */
+/* 揭曉時的大卡片樣式 */
 .card {
     width: 150px; 
     height: 210px; 
-    border: 4px solid #333; /* 預設邊框 */
+    border: 4px solid #333;
     border-radius: 10px;
     display: flex;
-    flex-direction: column; 
     justify-content: center;
     align-items: center;
     color: white;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    padding: 0; /* 移除 padding */
+    padding: 0; 
     box-sizing: border-box;
-    text-align: center;
-    
     background-size: cover; 
     background-position: center; 
     position: relative; 
     background-color: #333; 
-    overflow: hidden; /* 確保內容不會超出圓角邊框 */
+    overflow: hidden; 
 }
-/* 【修改】大卡片遮罩 - 只有未抽到的黑影才顯示問號 */
-.card::before {
-    content: ''; /* 預設內容為空 */
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.0); /* 預設透明遮罩 */
-    border-radius: 6px; 
-    pointer-events: none; /* 讓點擊穿透遮罩 */
-    transition: background-color 0.3s ease; /* 漸變效果 */
-}
-/* 【修改】讓文字浮在遮罩上 - 隱藏 */
 .card .card-name, .card .card-rarity {
-    display: none; /* 直接隱藏文字 */
+    display: none; /* 隱藏文字 */
 }
 
 /* 老師控制台 */
@@ -150,7 +135,7 @@ body {
 }
 .team-logo { width: 32px; height: 32px; margin-right: 10px; }
 
-/* 球隊主題色 */
+/* 球隊主題色 (不變) */
 #team-brothers h2 { border-color: #FFD700; }
 #team-lions h2 { border-color: #FF6600; }
 #team-monkeys h2 { border-color: #DC143C; }
@@ -158,95 +143,78 @@ body {
 #team-dragons h2 { border-color: #E60012; }
 #team-hawks h2 { border-color: #008080; }
 
-/* 卡冊網格 (書櫃背景) */
+/* 【新增】稀有度標題 */
+.rarity-header {
+    font-size: 1.2em;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    margin: 15px 0 10px 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+.rarity-N { background-color: #007bff; } /* 藍 */
+.rarity-R { background-color: #9933cc; } /* 紫 */
+.rarity-SR { background-color: #e6a800; } /* 金 */
+.rarity-SSR { background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff); } /* 彩 */
+
+
+/* 【修改】卡冊網格 (書櫃背景) */
 .card-collection-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
-    gap: 15px;
+    gap: 20px; /* 增加卡片間距，讓發光更明顯 */
     background-image: url('bookshelf_bg.jpg'); 
     background-size: cover;
     background-position: center;
-    height: 280px; 
-    overflow-y: auto;
+    min-height: 150px; /* 至少要有一張卡片的高度 */
+    /* 移除固定 height 和 overflow-y */
     padding: 15px;
     border-radius: 8px;
     box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
 }
 
-/* 收藏庫中的「小卡片」 (共用樣式) */
+/* 【修改】卡片外框 - 移除 overflow: hidden */
 .card-small-wrapper {
     position: relative; 
     aspect-ratio: 2 / 3; 
     border-radius: 8px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2); /* 預設小陰影 */
     transition: all 0.2s ease-out;
-    border: 2px solid #555; /* 預設邊框，會被稀有度顏色覆蓋 */
-    overflow: hidden; /* 確保圖片不超出圓角 */
+    border: 3px solid #333; /* 預設邊框 */
+    /* 移除 overflow: hidden; 才能看到發光! */
 }
-.card-small-wrapper:hover { transform: scale(1.05); z-index: 10; }
+.card-small-wrapper:hover { 
+    transform: scale(1.08); 
+    z-index: 10;
+}
 
-/* 【重要修改】小卡片內部樣式 - 移除文字顯示 */
+/* 小卡片內部 (圖片) */
 .card-small-inner {
     width: 100%;
     height: 100%;
-    border-radius: 8px;
-    padding: 0; /* 移除 padding */
-    font-weight: bold;
+    border-radius: 5px; /* 配合外框 */
     box-sizing: border-box; 
     display: flex;
-    flex-direction: column;
-    justify-content: center; /* 置中 */
+    justify-content: center;
     align-items: center;
     text-align: center;
-    color: white; 
-
     background-size: cover; 
     background-position: center; 
     position: relative; 
     background-color: #333; 
-    overflow: hidden; /* 確保內容不會超出圓角邊框 */
+    overflow: hidden; /* 內部圖片還是要裁切 */
 }
-/* 【修改】小卡片遮罩 - 不顯示 */
-.card-small-inner::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.0); /* 預設透明 */
-    border-radius: 6px; 
-    pointer-events: none;
-}
-/* 【修改】讓文字浮在遮罩上 - 隱藏 */
+/* 小卡片內部文字 (隱藏) */
 .card-small-inner span {
-    display: none; /* 直接隱藏文字 */
+    display: none; 
 }
 
 
-/* 未抽到卡片 (黑影) */
-.card-silhouette {
-    background: linear-gradient(135deg, #4c4c4c, #2c2c2c);
-    color: #aaa;
-    border: 2px dashed #777;
-    font-size: 1.5em;
-    display: flex; /* 讓 '?' 置中 */
-    justify-content: center;
-    align-items: center;
-}
-/* 黑影文字不需要遮罩和陰影，但要顯示問號 */
-.card-silhouette::before { 
-    content: '?'; /* 顯示問號 */
-    position: relative; /* 讓問號在卡片中間 */
-    z-index: 2;
-    background-color: transparent; /* 移除遮罩 */
-    font-size: 2em; /* 放大問號 */
-}
-.card-silhouette span { display: none; } /* 確保隱藏其他文字 */
-
-
-/* 卡片數量角標 */
+/* 卡片數量角標 (不變) */
 .card-quantity {
     position: absolute;
-    bottom: -5px;
-    right: -5px;
+    bottom: -8px;
+    right: -8px;
     background-color: #d9534f; 
     color: white;
     font-size: 0.9em;
@@ -259,47 +227,67 @@ body {
 }
 
 
-/* --- 【重要修改】卡片稀有度顏色 (邊框發光效果) --- */
+/* --- 【重要修改】發光邊框 & 黑影 --- */
 
-/* N卡 - 藍色光 */
-.reveal-N {
-    box-shadow: 0 0 0px 0px rgba(0, 123, 255, 0.0), /* 內陰影 */
-                0 0 10px 3px rgba(0, 123, 255, 0.7); /* 外發光 */
-    border-color: #007bff; /* 邊框本體顏色 */
-    transition: box-shadow 0.5s ease-out;
+/* 1. 黑影卡片 (最高優先) */
+.card-small-wrapper.card-silhouette {
+    border: 3px dashed #777;
+    box-shadow: none; /* 黑影卡不發光 */
+}
+.card-small-wrapper.card-silhouette:hover {
+    transform: none; /* 黑影卡不放大 */
+}
+.card-small-wrapper.card-silhouette .card-small-inner {
+    background: linear-gradient(135deg, #4c4c4c, #2c2c2c);
+    color: #aaa;
+    font-size: 2em;
+}
+/* 讓黑影卡顯示問號 */
+.card-small-wrapper.card-silhouette .card-small-inner span {
+    display: block; /* 只有黑影卡顯示文字 (?) */
 }
 
-/* R卡 - 紫色光 */
-.reveal-R {
-    box-shadow: 0 0 0px 0px rgba(153, 51, 204, 0.0),
-                0 0 12px 4px rgba(153, 51, 204, 0.8);
+
+/* 2. N卡 - 藍色光 */
+.card-small-wrapper.reveal-N {
+    border-color: #007bff;
+    box-shadow: 0 0 10px 3px rgba(0, 123, 255, 0.7);
+}
+
+/* 3. R卡 - 紫色光 */
+.card-small-wrapper.reveal-R {
     border-color: #9933cc;
-    transition: box-shadow 0.5s ease-out;
+    box-shadow: 0 0 12px 4px rgba(153, 51, 204, 0.8);
 }
 
-/* SR卡 - 金色光 */
-.reveal-SR {
-    box-shadow: 0 0 0px 0px rgba(255, 215, 0, 0.0),
-                0 0 15px 5px rgba(255, 215, 0, 0.9);
+/* 4. SR卡 - 金色光 */
+.card-small-wrapper.reveal-SR {
     border-color: #ffd700;
-    transition: box-shadow 0.5s ease-out;
+    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.9);
 }
 
-/* SSR卡 - 彩虹光 (漸變動畫) */
-.reveal-SSR {
+/* 5. SSR卡 - 彩虹光 (漸變動畫) */
+.card-small-wrapper.reveal-SSR {
     border-color: #ff00ff; /* 基礎顏色 */
     animation: rainbowBorder 2s infinite linear; /* 動畫 */
 }
 
+/* 揭曉時的大卡片也套用一樣的規則 */
+.card.reveal-N { border-color: #007bff; box-shadow: 0 0 10px 3px rgba(0, 123, 255, 0.7); }
+.card.reveal-R { border-color: #9933cc; box-shadow: 0 0 12px 4px rgba(153, 51, 204, 0.8); }
+.card.reveal-SR { border-color: #ffd700; box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.9); }
+.card.reveal-SSR { border-color: #ff00ff; animation: rainbowBorder 2s infinite linear; }
+
+
 /* 【新增】彩虹邊框動畫 */
 @keyframes rainbowBorder {
-    0%   { box-shadow: 0 0 0px 0px rgba(255,0,0,0), 0 0 18px 6px rgba(255,0,0,0.8); border-color: #ff0000; } /* 紅 */
-    16%  { box-shadow: 0 0 0px 0px rgba(255,165,0,0), 0 0 18px 6px rgba(255,165,0,0.8); border-color: #ffa500; } /* 橙 */
-    33%  { box-shadow: 0 0 0px 0px rgba(255,255,0,0), 0 0 18px 6px rgba(255,255,0,0.8); border-color: #ffff00; } /* 黃 */
-    50%  { box-shadow: 0 0 0px 0px rgba(0,128,0,0), 0 0 18px 6px rgba(0,128,0,0.8); border-color: #008000; } /* 綠 */
-    66%  { box-shadow: 0 0 0px 0px rgba(0,0,255,0), 0 0 18px 6px rgba(0,0,255,0.8); border-color: #0000ff; } /* 藍 */
-    83%  { box-shadow: 0 0 0px 0px rgba(75,0,130,0), 0 0 18px 6px rgba(75,0,130,0.8); border-color: #4b0082; } /* 靛 */
-    100% { box-shadow: 0 0 0px 0px rgba(128,0,128,0), 0 0 18px 6px rgba(128,0,128,0.8); border-color: #800080; } /* 紫 */
+    0%   { box-shadow: 0 0 18px 6px rgba(255,0,0,0.8); border-color: #ff0000; }
+    16%  { box-shadow: 0 0 18px 6px rgba(255,165,0,0.8); border-color: #ffa500; }
+    33%  { box-shadow: 0 0 18px 6px rgba(255,255,0,0.8); border-color: #ffff00; }
+    50%  { box-shadow: 0 0 18px 6px rgba(0,128,0,0.8); border-color: #008000; }
+    66%  { box-shadow: 0 0 18px 6px rgba(0,0,255,0.8); border-color: #0000ff; }
+    83%  { box-shadow: 0 0 18px 6px rgba(75,0,130,0.8); border-color: #4b0082; }
+    100% { box-shadow: 0 0 18px 6px rgba(255,0,0,0.8); border-color: #ff0000; } /* 回到紅 */
 }
 
 
@@ -314,23 +302,17 @@ body {
 }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* 揭曉動畫的 box-shadow 會被稀有度定義覆蓋，但動畫本身還會跑 */
-.card.reveal-N { animation: fadeIn 0.5s ease-out; }
-.card.reveal-R { animation: zoomIn 0.7s ease-out; }
-.card.reveal-SR { animation: rainbowFlash 1s ease-out; } /* 移除 shake，因為 SSR 有了 */
-.card.reveal-SSR { animation: rainbowFlash 1.5s ease-out, shake 0.8s linear 3; } /* SSR 保留震動 */
+/* 揭曉動畫 (只保留淡入和縮放，發光效果由上面接管) */
+.card.reveal-N { animation-name: fadeIn, (rainbowBorder 0s); } /* HACK: 停止 SSR 動畫 */
+.card.reveal-R { animation-name: zoomIn, (rainbowBorder 0s); }
+.card.reveal-SR { animation-name: zoomIn, (rainbowBorder 0s); }
+.card.reveal-SSR { animation-name: zoomIn, rainbowBorder, shake; animation-duration: 0.7s, 2s, 0.8s; animation-iteration-count: 1, infinite, 3; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes rainbowFlash {
-    0% { box-shadow: 0 0 20px 10px #fff; }
-    50% { box-shadow: 0 0 30px 20px #ffec80; }
-    100% { box-shadow: 0 0 20px 10px #fff; }
-}
 @keyframes shake {
-    0% { transform: translate(0, 0) rotate(0deg); }
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
     25% { transform: translate(5px, 0px) rotate(2deg); }
     50% { transform: translate(0, 0) rotate(0deg); }
     75% { transform: translate(-5px, 0px) rotate(-2deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
 }
