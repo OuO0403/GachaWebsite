@@ -1,108 +1,280 @@
-/* 基本排版 */
+/* --- 基本設定 --- */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    text-align: center;
-    padding: 20px; /* 增加一點邊距 */
-    box-sizing: border-box; /* 確保 padding 不會撐爆 */
+    background-color: #e9eef2;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.gacha-container {
+.main-container {
+    max-width: 900px; /* 為了卡冊，需要更寬的介面 */
+    margin: 0 auto;
     background-color: white;
-    padding: 2em;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 380px; /* 稍微加寬以容納書櫃 */
-    max-width: 90vw; /* 防止在小螢幕上超出 */
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    overflow: hidden; /* 確保圓角效果 */
 }
 
-/* 代幣和按鈕 */
+/* --- 頂部標題和切換按鈕 --- */
+.main-header {
+    background: linear-gradient(135deg, #005A9C, #007bff); /* 漸層藍 */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid #FFD700;
+}
+.main-header h1 {
+    margin: 0 0 15px 0;
+    font-size: 1.8em;
+}
+
+.view-switcher button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: all 0.3s;
+}
+.view-switcher button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+.view-switcher button.active {
+    background: white;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* --- 介面面板 --- */
+.view-panel {
+    padding: 20px 30px;
+}
+
+/* --- 抽卡區 (Gacha View) --- */
+.gacha-container {
+    text-align: center;
+    padding: 20px;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
 .token-info {
-    font-size: 1.2em;
+    font-size: 1.3em;
     margin: 1em 0;
 }
-
 #token-display {
     font-weight: bold;
     color: #007bff;
+    font-size: 1.2em;
 }
-
-button {
-    background-color: #007bff;
+#draw-button {
+    background-color: #28a745; /* 綠色 */
     color: white;
     border: none;
-    padding: 12px 20px;
-    font-size: 1em;
-    border-radius: 5px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-weight: bold;
 }
-
-button:hover {
-    background-color: #0056b3;
+#draw-button:hover {
+    background-color: #218838;
 }
-
-button:disabled {
+#draw-button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
 }
 
-/* 動畫區 */
+/* 抽卡動畫區 (大卡片) */
 #animation-wrapper {
     margin-top: 1.5em;
-    min-height: 150px;
+    min-height: 210px; /* 放大 */
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px dashed #ddd;
-    border-radius: 5px;
-    padding: 1em;
     font-size: 1.1em;
-    overflow: hidden; 
+    overflow: hidden;
 }
-
-/* 卡片結果的樣式 (抽到時的大卡片) */
 .card {
-    width: 100px;
-    height: 140px;
-    border: 3px solid;
-    border-radius: 8px;
+    width: 150px; /* 放大 */
+    height: 210px; /* 放大 */
+    border: 4px solid;
+    border-radius: 10px;
     display: flex;
+    flex-direction: column; /* 讓文字可以上下排列 */
     justify-content: center;
     align-items: center;
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: bold;
     color: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* 增加陰影讓卡片更有立體感 */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.card .card-name {
+    font-size: 0.8em;
+}
+.card .card-rarity {
+    font-size: 1.2em;
+    margin-top: 10px;
+    border-top: 2px solid rgba(255,255,255,0.5);
+    padding-top: 10px;
 }
 
-/* 密技區 */
+/* 老師控制台 */
 .admin-panel {
     margin-top: 1.5em;
     background-color: #fafafa;
     border: 1px solid #eee;
     padding: 1em;
     border-radius: 5px;
+    text-align: center;
 }
-.admin-panel input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-right: 5px;
+.admin-panel input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-right: 5px; }
+.admin-panel button { padding: 8px 12px; font-size: 0.9em; }
+
+
+/* --- 卡冊區 (Collection View) --- */
+.collection-stats {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
 }
-.admin-panel button {
-    padding: 8px 12px;
+#collection-progress {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.team-section {
+    margin-bottom: 25px;
+}
+.team-section h2 {
+    display: flex; /* 讓 Logo 和文字並排 */
+    align-items: center;
+    font-size: 1.5em;
+    color: #333;
+    border-bottom: 3px solid; /* 球隊色 */
+    padding-bottom: 10px;
+}
+.team-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+}
+
+/* 球隊主題色 */
+#team-brothers h2 { border-color: #FFD700; }
+#team-lions h2 { border-color: #FF6600; }
+#team-monkeys h2 { border-color: #DC143C; }
+#team-guardians h2 { border-color: #005A9C; }
+#team-dragons h2 { border-color: #E60012; }
+#team-hawks h2 { border-color: #008080; }
+
+/* 卡冊網格 (套用書櫃背景) */
+.card-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* 每張卡最小 100px */
+    gap: 15px;
+    
+    /* 你的書櫃背景 */
+    background-image: url('bookshelf_bg.jpg'); /* 【重要！】請確保圖片檔名正確 */
+    background-size: cover;
+    background-position: center;
+    
+    height: 280px; /* 調整高度，像一層書櫃 */
+    overflow-y: auto;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+}
+
+/* 收藏庫中的「小卡片」 (共用樣式) */
+.card-small-wrapper {
+    position: relative; /* 為了數量角標定位 */
+    aspect-ratio: 2 / 3; /* 固定高寬比 */
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    transition: all 0.2s ease-out;
+    background-color: #fff; /* 預設底色 */
+}
+.card-small-wrapper:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+.card-small-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    padding: 5px;
     font-size: 0.9em;
+    font-weight: bold;
+    word-wrap: break-word; 
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+}
+
+/* 【新增】未抽到卡片 (黑影) */
+.card-silhouette {
+    background: linear-gradient(135deg, #4c4c4c, #2c2c2c);
+    color: #aaa;
+    border: 2px dashed #777;
+    font-size: 1.5em;
+}
+
+/* 【新增】卡片數量角標 */
+.card-quantity {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background-color: #d9534f; /* 紅色 */
+    color: white;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+/* 卡片稀有度顏色 (N, R, SR, SSR) */
+.reveal-N {
+    background-color: #b0c4de;
+    border: 2px solid #879ab1;
+    color: #333;
+}
+.reveal-R {
+    background-color: #6495ed;
+    border: 2px solid #4169e1;
+    color: white;
+}
+.reveal-SR {
+    background: linear-gradient(45deg, #9b59b6, #8e44ad); /* 紫色 */
+    border: 2px solid #8e44ad;
+    color: white;
+    box-shadow: 0 0 10px #9b59b6;
+}
+.reveal-SSR {
+    background: linear-gradient(45deg, #ffd700, #ffec80, #ffd700);
+    border: 2px solid #ffc107;
+    color: #a0522d;
+    box-shadow: 0 0 15px #ffd700;
 }
 
 
-/* --- 動畫定義 (Keyframes) --- */
-
-/* 1. 抽卡中... (旋轉) */
+/* --- 抽卡動畫 (沿用) --- */
 .draw-pending {
     width: 50px;
     height: 50px;
@@ -111,141 +283,27 @@ button:disabled {
     border-radius: 50%;
     animation: spin 1.5s linear infinite;
 }
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-/* 2. 揭曉動畫 (N 卡 - 灰光) */
-.card.reveal-N {
-    background-color: #aaa;
-    border-color: #777;
-    color: #333;
-    animation: fadeIn 0.5s ease-out;
-}
+.card.reveal-N { animation: fadeIn 0.5s ease-out; }
+.card.reveal-R { animation: zoomIn 0.7s ease-out; }
+.card.reveal-SR { animation: rainbowFlash 1s ease-out, shake 0.5s linear; }
+.card.reveal-SSR { animation: rainbowFlash 1.5s ease-out, shake 0.8s linear 3; }
 
-/* 3. R 卡 - 藍光 */
-.card.reveal-R {
-    background-color: #007bff;
-    border-color: #0056b3;
-    animation: zoomIn 0.7s ease-out;
-}
-
-/* 4. SSR 卡 - 金光 + 震動 */
-.card.reveal-SSR {
-    background: linear-gradient(45deg, #ffd700, #ffec80, #ffd700);
-    border-color: #ffc107;
-    color: #a0522d;
-    animation: rainbowFlash 1s ease-out, shake 0.5s linear;
-}
-
-/* 動畫效果的定義 */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes zoomIn {
-    from { transform: scale(0.5); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes rainbowFlash {
     0% { box-shadow: 0 0 20px 10px #fff; }
     50% { box-shadow: 0 0 30px 20px #ffec80; }
     100% { box-shadow: 0 0 20px 10px #fff; }
 }
-
 @keyframes shake {
     0% { transform: translate(0, 0) rotate(0deg); }
     25% { transform: translate(5px, 0px) rotate(2deg); }
     50% { transform: translate(0, 0) rotate(0deg); }
     75% { transform: translate(-5px, 0px) rotate(-2deg); }
     100% { transform: translate(0, 0) rotate(0deg); }
-}
-
-
-/* --- 【修改與新增】卡片收藏區的樣式 --- */
-
-#collection-wrapper {
-    margin-top: 2em;
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
-    padding: 1em;
-    border-radius: 8px;
-    text-align: left;
-}
-
-#collection-wrapper h2 {
-    margin-top: 0;
-    text-align: center;
-    color: #333;
-    margin-bottom: 1em;
-}
-
-/* 書櫃背景的 Div */
-#card-collection {
-    /* 引用你的書櫃背景圖片，確保圖片檔名和路徑正確 */
-    background-image: url('bookshelf_bg.jpg'); /* <-- 【重要！】這裡改成你的圖片檔名 */
-    background-size: cover; /* 讓圖片覆蓋整個區域 */
-    background-position: center; /* 圖片置中 */
-    background-repeat: no-repeat; /* 不重複 */
-    
-    height: 300px; /* 給書櫃一個固定的高度 */
-    border-radius: 8px;
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.3); /* 內陰影讓書櫃更有深度 */
-    padding: 15px; /* 書櫃內邊距 */
-
-    display: grid;
-    /* 調整 grid 讓卡片看起來像放在書櫃的格子上 */
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
-    gap: 15px; /* 增加卡片間距 */
-    align-content: start; /* 卡片從頂部開始排 */
-    
-    overflow-y: auto; /* 內容太多時，顯示垂直捲軸 */
-    padding-bottom: 20px; /* 底部多一點空間 */
-}
-
-/* 收藏庫中的「小卡片」樣式 */
-.card-small {
-    width: 100%; 
-    aspect-ratio: 2 / 3; 
-    border: 2px solid;
-    border-radius: 5px;
-    padding: 5px;
-    font-size: 0.8em;
-    font-weight: bold;
-    color: white;
-    word-wrap: break-word; 
-    box-sizing: border-box; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* 讓卡片有立體感 */
-    transform: rotate(var(--random-rotate, 0deg)); /* 預留隨機旋轉的變數 */
-    transition: transform 0.2s ease-out; /* 增加滑鼠懸停效果 */
-}
-/* 卡片懸停效果 */
-.card-small:hover {
-    transform: scale(1.05) rotate(var(--random-rotate, 0deg));
-    box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-}
-
-
-/* 沿用 N/R/SSR 的顏色 */
-.card-small.reveal-N {
-    background-color: #b0c4de; /* 淺藍灰 */
-    border-color: #879ab1;
-    color: #333;
-}
-.card-small.reveal-R {
-    background-color: #6495ed; /* 康乃馨藍 */
-    border-color: #4169e1;
-}
-.card-small.reveal-SSR {
-    background: linear-gradient(45deg, #ffd700, #ffec80, #ffd700);
-    border-color: #ffc107;
-    color: #a0522d;
 }
