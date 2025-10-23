@@ -173,6 +173,14 @@ body {
     box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
 }
 
+/* 【新增】專門給 N 卡的 Grid 排版 */
+.card-grid-n {
+    /* 強制設定 7 個欄位，讓 7 張卡片剛好塞滿一行 */
+    grid-template-columns: repeat(7, 1fr); 
+    /* 縮小卡片間距，避免一行塞不下 */
+    gap: 10px;
+}
+
 /* 【修改】卡片外框 - 移除 overflow: hidden */
 .card-small-wrapper {
     position: relative; 
@@ -316,3 +324,4 @@ body {
     50% { transform: translate(0, 0) rotate(0deg); }
     75% { transform: translate(-5px, 0px) rotate(-2deg); }
 }
+
