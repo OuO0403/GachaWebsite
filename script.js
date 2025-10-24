@@ -1,10 +1,14 @@
 // --- 1. 等待 HTML 內容都載入完成 ---
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- A. 卡片資料庫 (Master List) ---
-    // (這 96 張卡片的列表... 不變)
+    // --- A. 【最終版】卡片資料庫 (Master List) ---
+    // 乾淨版，只包含 ID, 名稱, 隊伍, 稀有度, 圖片
+    // ------------------------------------------------------------------
+
     const teams = { Brothers: '中信兄弟', Lions: '統一7-ELEVEn獅', Monkeys: '樂天桃猿', Guardians: '富邦悍將', Dragons: '味全龍', Hawks: '台鋼雄鷹' };
+
     const cardMasterList = [
+        // --- 中信兄弟 (16) ---
         { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'B02', name: '江坤宇', team: 'Brothers', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'B03', name: '陳子豪', team: 'Brothers', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -21,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'B14', name: '吳俊偉', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'B15', name: '猛登', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'B16', name: '艾士特', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+
+        // --- 統一 7-ELEVEn 獅 (16) ---
         { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'L02', name: '蘇智傑', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'L03', name: '林安可', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -37,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'L14', name: '林岱安', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'L15', name: '施冠宇', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'L16', name: '裴瑞茲', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        
+        // --- 樂天桃猿 (16) ---
         { id: 'M01', name: '林立', team: 'Monkeys', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M03', name: '朱育賢', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -53,6 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'M14', name: '曾仁和', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'M15', name: '霸威斯', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'M16', name: '魔神樂', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+
+        // --- 富邦悍將 (16) ---
         { id: 'G01', name: '范國宸', team: 'Guardians', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'G02', name: '李宗賢', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G03', name: '申皓瑋', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -69,6 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'G14', name: '江少慶', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'G15', name: '富藍戈', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'G16', name: '布藍登', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+
+        // --- 味全龍 (16) ---
         { id: 'D01', name: '劉基鴻', team: 'Dragons', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'D02', name: '吉力吉撈．鞏冠', team: 'Dragons', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'D03', name: '郭天信', team: 'Dragons', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -76,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'D05', name: '李凱威', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'D06', name: '王維中', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'D07', name: '鋼龍', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
-        { id: 'D08', name: '拿莫．伊漾', team: 'Dragons', rarity: 'R', image: 'booksFhelf_bg.jpg' },
+        { id: 'D08', name: '拿莫．伊漾', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'D09', name: '郭嚴文', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'D10', name: '張政禹', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'D11', name: '蔣少宏', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
@@ -85,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'D14', name: '陳冠偉', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'D15', name: '王躍霖', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'D16', name: '伍鐸', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+
+        // --- 台鋼雄鷹 (16) ---
         { id: 'H01', name: '王柏融', team: 'Hawks', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'H02', name: '曾子祐', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'H03', name: '王溢正', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -102,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'H15', name: '陳宇宏', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' },
         { id: 'H16', name: '雷公', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' }
     ];
+
     
     // --- B. 獲取所有需要的 HTML 元素 ---
     // (這部分不變)
@@ -131,7 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTokens(savedTokens ? parseInt(savedTokens) : 100); 
 
 
-    // --- D. 【修改】初始化卡片收藏庫 ---
+    // --- D. 初始化卡片收藏庫 ---
+    // (這部分不變)
     const COLLECTION_STORAGE_KEY = 'myStudentCollection_CPBL'; 
     let cardCollection = {}; 
 
@@ -156,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (quantity > 0) {
                         totalOwnedTypes++;
                         cardWrapper.className = `card-small-wrapper reveal-${masterCard.rarity}`;
-                        // 【修改】這裡改用 <img> 標籤
                         cardWrapper.innerHTML = `
                             <div class="card-small-inner" title="${masterCard.name}">
                                 <img src="${masterCard.image}" alt="${masterCard.name}">
@@ -165,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         `;
                     } else {
                         cardWrapper.className = `card-small-wrapper card-silhouette`;
-                        // 【不變】黑影卡還是用 span
                         cardWrapper.innerHTML = `
                             <div class="card-small-inner">
                                 <span>?</span>
@@ -201,7 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return { ...drawnCard }; 
     }
 
-    // --- F. 【修改】抽卡按鈕事件 ---
+    // --- F. 抽卡按鈕事件 ---
+    // (這部分不變)
     drawButton.addEventListener('click', () => {
         if (currentTokens < DRAW_COST) {
             alert("代幣不足！快去跟老師領取！");
@@ -213,15 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             const drawnCard = performDraw(); 
-
-            // 【修改】這裡也改用 <img> 標籤
             animationWrapper.innerHTML = `
                 <div class="card reveal-${drawnCard.rarity}">
                     <img src="${drawnCard.image}" alt="${drawnCard.name}">
                 </div>
             `;
             
-            // (以下儲存邏輯不變)
             const currentQuantity = cardCollection[drawnCard.id] || 0;
             cardCollection[drawnCard.id] = currentQuantity + 1;
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
