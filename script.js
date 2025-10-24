@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'B16', name: '艾士特', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
 
         // --- 統一 7-ELEVEn 獅 (16) ---
-        { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
+        { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: '王威晨.png' },
         { id: 'L02', name: '蘇智傑', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'L03', name: '林安可', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'L04', name: '古林睿煬', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -317,3 +317,4 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
