@@ -1,12 +1,9 @@
 // --- 1. 等待 HTML 內容都載入完成 ---
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- A. 【最終版】卡片資料庫 (Master List) ---
-    // 乾淨版，只包含 ID, 名稱, 隊伍, 稀有度, 圖片
-    // ------------------------------------------------------------------
-
+    // --- A. 卡片資料庫 (Master List) ---
+    // (這 96 張卡片的列表... 不變)
     const teams = { Brothers: '中信兄弟', Lions: '統一7-ELEVEn獅', Monkeys: '樂天桃猿', Guardians: '富邦悍將', Dragons: '味全龍', Hawks: '台鋼雄鷹' };
-
     const cardMasterList = [
         // --- 中信兄弟 (16) ---
         { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
@@ -27,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'B16', name: '艾士特', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
 
         // --- 統一 7-ELEVEn 獅 (16) ---
-        { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: 'test.jpg' },
+        { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'L02', name: '蘇智傑', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'L03', name: '林安可', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'L04', name: '古林睿煬', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -243,8 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- G. 老師控制台（密技）的邏輯 ---
-    // (這部分不變)
+    // --- G. 【修改】老師控制台（密技）的邏輯 ---
+
+    // (你的「只能用一次」的密碼資料庫)
     const rewardCodeDatabase = {
         "1028DSAPDCIN": 50,
         "M1104ITXYKCT": 50,
@@ -256,6 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
         "JEYCHHO1216T": 50,
         "666666661223": 100,
     };
+
+    // (讀取/儲存「已用過」密碼的邏輯)
     const REDEEMED_CODES_KEY = 'redeemedRewardCodes_CPBL'; 
     let redeemedCodes = []; 
     const savedRedeemedCodes = localStorage.getItem(REDEEMED_CODES_KEY);
@@ -265,10 +265,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveRedeemedCodes() {
         localStorage.setItem(REDEEMED_CODES_KEY, JSON.stringify(redeemedCodes));
     }
+
+    // (按鈕點擊事件)
     adminSubmitButton.addEventListener('click', () => {
         const code = adminCodeInput.value.trim().toUpperCase(); 
         adminMessage.style.color = "red"; 
+
         if (code === "") { adminMessage.innerText = "請輸入密碼！"; return; }
+
+        // --- 1. 處理可重複使用的「管理員」密碼 ---
         if (code === "RESET_MY_TOKENS") { 
              updateTokens(0);
              adminMessage.innerText = "代幣已重置。";
@@ -276,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
              adminCodeInput.value = ""; 
              return; 
         } 
+        
         if (code === "CLEAR_MY_COLLECTION") { 
             cardCollection = {}; 
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
@@ -285,6 +291,19 @@ document.addEventListener('DOMContentLoaded', () => {
             adminCodeInput.value = ""; 
             return; 
         }
+        
+        // --- 【我幫你新增的密技在這裡】 ---
+        if (code === "TEACHER_ADD_100") {
+             updateTokens(currentTokens + 100);
+             adminMessage.innerText = "成功補充 100 枚代幣！(可重複)";
+             adminMessage.style.color = "green";
+             adminCodeInput.value = ""; 
+             return; // 完成，結束
+        }
+        // --- 新增結束 ---
+
+
+        // --- 2. 處理只能用一次的「獎勵」密碼 ---
         if (rewardCodeDatabase.hasOwnProperty(code)) {
             if (redeemedCodes.includes(code)) {
                 adminMessage.innerText = "此獎勵密碼已經使用過了喔！";
@@ -297,8 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveRedeemedCodes(); 
             }
         } else {
+            // 如果不是管理密碼，也不是獎勵密碼
             adminMessage.innerText = "密碼錯誤！";
         }
+
         adminCodeInput.value = ""; 
     });
     
@@ -317,6 +338,3 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
-
-
-
