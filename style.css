@@ -387,19 +387,32 @@ body {
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.08);
 }
 
-/* 十連抽結果的小卡片樣式 (沿用卡冊的小卡樣式，但移除外框的發光) */
+/* 十連抽結果的小卡片樣式 (SSR 會發光) */
 #animation-wrapper .card-small-wrapper {
     width: 100px; /* 十連抽結果寬度 */
     height: 150px; /* 十連抽結果高度 */
-    border: 3px solid #AAA; /* 預設邊框 */
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    animation: none; /* 移除SSR彩虹動畫 */
+    /* 移除預設 border 和 box-shadow，讓稀有度樣式接管 */
+    /* 移除 animation: none; */
 }
-/* 覆蓋掉原本的發光邊框，只用簡單顏色區分 */
-#animation-wrapper .card-small-wrapper.reveal-N { border-color: #007bff; } /* 藍 */
-#animation-wrapper .card-small-wrapper.reveal-R { border-color: #993cc; } /* 紫 */
-#animation-wrapper .card-small-wrapper.reveal-SR { border-color: #DAA520; } /* 金 */
-#animation-wrapper .card-small-wrapper.reveal-SSR { border-color: #E74C3C; } /* SSR用紅色表示特別 */
+/* N, R, SR 使用簡單邊框 */
+#animation-wrapper .card-small-wrapper.reveal-N {
+    border: 3px solid #007bff; /* 藍 */
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    animation: none; /* N卡不需要動畫 */
+}
+#animation-wrapper .card-small-wrapper.reveal-R {
+    border: 3px solid #9933cc; /* 紫 */
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    animation: none; /* R卡不需要動畫 */
+}
+#animation-wrapper .card-small-wrapper.reveal-SR {
+    border: 3px solid #DAA520; /* 金 */
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    animation: none; /* SR卡不需要動畫 */
+}
+/* SSR 卡則【不】在這裡定義樣式，讓它自動繼承全局的 .reveal-SSR 彩虹動畫！ */
+
+/* ... (底下還有 img 和 .card-quantity 的樣式，它們不需要修改) ... */
 
 #animation-wrapper .card-small-inner img {
     width: 100%;
@@ -410,3 +423,4 @@ body {
 #animation-wrapper .card-quantity {
     display: none;
 }
+
