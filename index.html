@@ -18,15 +18,19 @@
             </nav>
         </header>
 
-        <div id="gacha-view" class="view-panel">
+<div id="gacha-view" class="view-panel">
             <div class="gacha-container">
                 <div class="token-info">
                     你現在有 <span id="token-display">...</span> 枚代幣
                 </div>
-                <button id="draw-button">抽卡一次 (消耗 10 枚)</button>
+                <div class="draw-buttons">
+                    <button id="draw-button">抽卡一次 (消耗 10 枚)</button>
+                    <button id="draw-10x-button">十連抽 (消耗 100 枚)</button>
+                </div>
                 <div id="animation-wrapper">
                     點擊按鈕開始抽卡！
                 </div>
+            </div>
             </div>
             <div class="admin-panel">
                 <h3>老師專用控制台</h3>
@@ -117,4 +121,5 @@
         </div> </div> <script src="script.js"></script>
 </body>
 </html>
+
 
