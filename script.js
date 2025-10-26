@@ -306,14 +306,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- G. 老師控制台（密技）的邏輯 ---
     // (這部分不變)
     const rewardCodeDatabase = {
-        "1028DSAPDCIN": 50,
-        "M1104ITXYKCT": 50,
-        "CQ1111CVWO": 50,
-        "ONL1118DJCEN": 50,
-        "LSNL1125YCRW": 50,
-        "NWIGC1202BUI": 50,
-        "JRHJJK1209BW": 50,
-        "JEYCHHO1216T": 50,
+        "1028DSAPDCIN": 64,
+        "M1104ITXYKCT": 69,
+        "CQ1111CVWO": 55,
+        "ONL1118DJCEN": 54,
+        "LSNL1125YCRW": 60,
+        "NWIGC1202BUI": 70,
+        "JRHJJK1209BW": 65,
+        "JEYCHHO1216T": 63,
         "666666661223": 100,
     };
     const REDEEMED_CODES_KEY = 'redeemedRewardCodes_CPBL'; 
@@ -383,3 +383,4 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
