@@ -2,9 +2,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- A. 卡片資料庫 (Master List) ---
-    // (這 96 張卡片的列表... 不變)
     const teams = { Brothers: '中信兄弟', Lions: '統一7-ELEVEn獅', Monkeys: '樂天桃猿', Guardians: '富邦悍將', Dragons: '味全龍', Hawks: '台鋼雄鷹' };
-    const cardMasterList = [ /* ... 你完整的 96 張卡片資料 ... */
+    const cardMasterList = [
         // --- 中信兄弟 (16) ---
         { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'B02', name: '江坤宇', team: 'Brothers', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -122,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const showCollectionBtn = document.getElementById('show-collection-btn');
     const tokenDisplay = document.getElementById('token-display');
     const drawButton = document.getElementById('draw-button');
-    const draw10xButton = document.getElementById('draw-10x-button'); // 【新增】抓取十連抽按鈕
+    const draw10xButton = document.getElementById('draw-10x-button');
     const animationWrapper = document.getElementById('animation-wrapper');
     const collectionProgress = document.getElementById('collection-progress');
     const adminCodeInput = document.getElementById('admin-code');
@@ -200,10 +199,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function performDraw() {
         const roll = Math.random(); 
         let chosenRarity;
-        if (roll < 0.0625) { chosenRarity = 'SSR'; }
-        else if (roll < 0.25) { chosenRarity = 'SR'; }
-        else if (roll < 0.5625) { chosenRarity = 'R'; }
-        else { chosenRarity = 'N'; }
+        // 增加 SSR 機率，讓抽卡更有趣一點
+        if (roll < 0.1) { chosenRarity = 'SSR'; } // 10% SSR (原本 6.25%)
+        else if (roll < 0.35) { chosenRarity = 'SR'; } // 25% SR (原本 18.75%)
+        else if (roll < 0.65) { chosenRarity = 'R'; } // 30% R (原本 31.25%)
+        else { chosenRarity = 'N'; } // 35% N (原本 43.75%)
+
         const possibleCards = cardMasterList.filter(card => card.rarity === chosenRarity);
         const drawnCard = possibleCards[Math.floor(Math.random() * possibleCards.length)];
         return { ...drawnCard }; 
@@ -225,8 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         updateTokens(currentTokens - DRAW_COST);
         setButtonsDisabled(true); // 禁用兩個按鈕
-        animationWrapper.innerHTML = '<div class="draw-pending"></div>';
 
+        // 顯示卡片背面動畫
+        animationWrapper.innerHTML = '<div class="card-back">卡片背面</div>';
+
+        // 在卡片背面動畫結束後，顯示抽卡結果
         setTimeout(() => {
             const drawnCard = performDraw(); 
             // 顯示單張大卡片結果
@@ -243,10 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
             displayCollection(); // 更新卡冊顯示
             
             setButtonsDisabled(false); // 恢復按鈕
-        }, 1500); // 單抽動畫縮短一點
+        }, 2200); // 這裡的時間要比 CSS 動畫時間 (1.5s) 長，讓動畫播完
     });
 
-    // 【新增】十連抽按鈕
+    // 十連抽按鈕
     draw10xButton.addEventListener('click', () => {
         const TEN_DRAW_COST = DRAW_COST * 10;
         if (currentTokens < TEN_DRAW_COST) {
@@ -255,9 +259,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         updateTokens(currentTokens - TEN_DRAW_COST);
         setButtonsDisabled(true); // 禁用兩個按鈕
-        animationWrapper.innerHTML = '<div class="draw-pending"></div>'; // 顯示轉圈
 
-        // 模擬抽卡過程
+        // 顯示多張卡片背面動畫 (簡化為一個動畫)
+        animationWrapper.innerHTML = '<div class="card-back" style="animation-duration: 2s;">連抽中...</div>';
+
+
+        // 在卡片背面動畫結束後，顯示十連抽結果
         setTimeout(() => {
             let drawResults = []; // 儲存十連抽結果
             // 執行十次抽卡
@@ -276,22 +283,23 @@ document.addEventListener('DOMContentLoaded', () => {
             // 清空動畫區，準備顯示結果
             animationWrapper.innerHTML = ""; 
             
-            // 將十張卡片結果顯示出來
-            drawResults.forEach(card => {
+            // 將十張卡片結果顯示出來，並讓它們依序出現
+            drawResults.forEach((card, index) => {
                 const cardWrapper = document.createElement('div');
-                // 使用卡冊的小卡樣式，但移除數量角標
                 cardWrapper.className = `card-small-wrapper reveal-${card.rarity}`; 
                 cardWrapper.innerHTML = `
                     <div class="card-small-inner" title="${card.name}">
                         <img src="${card.image}" alt="${card.name}">
                     </div>
                 `;
+                // 為每個卡片設定不同的延遲，實現依序顯示
+                cardWrapper.style.animationDelay = `${(index * 0.1) + 0.5}s`; // 每隔0.1秒出現一張
                 animationWrapper.appendChild(cardWrapper);
             });
             
             displayCollection(); // 更新卡冊顯示
             setButtonsDisabled(false); // 恢復按鈕
-        }, 2500); // 十連抽動畫時間長一點
+        }, 3000); // 這裡的時間要比 CSS 動畫時間長，確保動畫播完
     });
 
 
@@ -362,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // --- H. 介面切換邏輯 ---
-    // (這部分不變)
     showGachaBtn.addEventListener('click', () => {
         gachaView.style.display = 'block';
         collectionView.style.display = 'none';
@@ -376,4 +383,3 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
-
