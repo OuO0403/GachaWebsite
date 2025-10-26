@@ -2,8 +2,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- A. 卡片資料庫 (Master List) ---
-    // (這 96 張卡片的列表... 不變)
     const teams = { Brothers: '中信兄弟', Lions: '統一7-ELEVEn獅', Monkeys: '樂天桃猿', Guardians: '富邦悍將', Dragons: '味全龍', Hawks: '台鋼雄鷹' };
+
     const cardMasterList = [
         // --- 中信兄弟 (16) ---
         { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- 樂天桃猿 (16) ---
         { id: 'M01', name: '林立', team: 'Monkeys', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
-        { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id:A: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M03', name: '朱育賢', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M04', name: '陳晨威', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M05', name: '林泓育', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -61,11 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- 富邦悍將 (16) ---
         { id: 'G01', name: '范國宸', team: 'Guardians', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
-        { id: 'G02', name: '李宗賢', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        // --- 【修改】戴培峰和李宗賢的稀有度對調 ---
+        { id: 'G02', name: '李宗賢', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' }, // <-- 降為 R
         { id: 'G03', name: '申皓瑋', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G04', name: '曾峻岳', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G05', name: '王正棠', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
-        { id: 'G06', name: '戴培峰', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'G06', name: '戴培峰', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' }, // <-- 升為 SR！
+        // --- 修改完畢 ---
         { id: 'G07', name: '高國麟', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'G08', name: '陳仕朋', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'G09', name: '羅戈', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -99,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'H01', name: '王柏融', team: 'Hawks', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'H02', name: '曾子祐', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'H03', name: '王溢正', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
-        { id: 'H04', name: '笠原祥太郎', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'H04', name: '笠原祥太郎', team: 'Hawks', rarity: 'SR', image: 'booksFhelf_bg.jpg' },
         { id: 'H05', name: '葉保弟', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'H06', name: '杜家明', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'H07', name: '魔鷹', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -240,9 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- G. 【修改】老師控制台（密技）的邏輯 ---
-
-    // (你的「只能用一次」的密碼資料庫)
+    // --- G. 老師控制台（密技）的邏輯 ---
+    // (這部分不變，TEACHER_ADD_100 也還在)
     const rewardCodeDatabase = {
         "1028DSAPDCIN": 50,
         "M1104ITXYKCT": 50,
@@ -254,8 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         "JEYCHHO1216T": 50,
         "666666661223": 100,
     };
-
-    // (讀取/儲存「已用過」密碼的邏輯)
     const REDEEMED_CODES_KEY = 'redeemedRewardCodes_CPBL'; 
     let redeemedCodes = []; 
     const savedRedeemedCodes = localStorage.getItem(REDEEMED_CODES_KEY);
@@ -265,15 +264,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveRedeemedCodes() {
         localStorage.setItem(REDEEMED_CODES_KEY, JSON.stringify(redeemedCodes));
     }
-
-    // (按鈕點擊事件)
     adminSubmitButton.addEventListener('click', () => {
         const code = adminCodeInput.value.trim().toUpperCase(); 
         adminMessage.style.color = "red"; 
-
         if (code === "") { adminMessage.innerText = "請輸入密碼！"; return; }
-
-        // --- 1. 處理可重複使用的「管理員」密碼 ---
         if (code === "RESET_MY_TOKENS") { 
              updateTokens(0);
              adminMessage.innerText = "代幣已重置。";
@@ -281,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
              adminCodeInput.value = ""; 
              return; 
         } 
-        
         if (code === "CLEAR_MY_COLLECTION") { 
             cardCollection = {}; 
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
@@ -289,21 +282,15 @@ document.addEventListener('DOMContentLoaded', () => {
             adminMessage.innerText = "卡片收藏已清空！";
             adminMessage.style.color = "green"; 
             adminCodeInput.value = ""; 
-            return; 
+             return; 
         }
-        
-        // --- 【我幫你新增的密技在這裡】 ---
         if (code === "TEACHER_ADD_100") {
              updateTokens(currentTokens + 100);
              adminMessage.innerText = "成功補充 100 枚代幣！(可重複)";
              adminMessage.style.color = "green";
              adminCodeInput.value = ""; 
-             return; // 完成，結束
+             return; 
         }
-        // --- 新增結束 ---
-
-
-        // --- 2. 處理只能用一次的「獎勵」密碼 ---
         if (rewardCodeDatabase.hasOwnProperty(code)) {
             if (redeemedCodes.includes(code)) {
                 adminMessage.innerText = "此獎勵密碼已經使用過了喔！";
@@ -316,10 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveRedeemedCodes(); 
             }
         } else {
-            // 如果不是管理密碼，也不是獎勵密碼
             adminMessage.innerText = "密碼錯誤！";
         }
-
         adminCodeInput.value = ""; 
     });
     
