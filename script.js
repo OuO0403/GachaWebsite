@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- 樂天桃猿 (16) ---
         { id: 'M01', name: '林立', team: 'Monkeys', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
-        { id:A: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M03', name: '朱育賢', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M04', name: '陳晨威', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M05', name: '林泓育', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -323,3 +323,4 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
