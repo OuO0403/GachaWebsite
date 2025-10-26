@@ -1,34 +1,34 @@
 /* --- 基本設定 --- */
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #FFEEEE 0%, #FFDDDD 100%);
+    background: linear-gradient(135deg, #FFEEEE 0%, #FFDDDD 100%); /* 紅色系背景 */
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
 }
 
 .main-container {
-    max-width: 900px; 
+    max-width: 900px;
     margin: 0 auto;
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 /* --- 頂部標題和切換按鈕 --- */
 .main-header {
-    background: linear-gradient(135deg, #E74C3C, #C0392B); 
+    background: linear-gradient(135deg, #E74C3C, #C0392B); /* 紅色漸層 */
     color: white;
     padding: 20px;
     text-align: center;
-    border-bottom: 4px solid #FADBD8;
+    border-bottom: 4px solid #FADBD8; /* 淡紅色底線 */
 }
 .main-header h1 { margin: 0 0 15px 0; font-size: 1.8em; }
 .view-switcher button {
-    background-color: #E74C3C;
+    background-color: #E74C3C; /* 紅色 */
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: none; /* 移除邊框 */
     padding: 10px 20px;
     font-size: 1em;
     border-radius: 20px;
@@ -36,8 +36,8 @@ body {
     margin: 0 5px;
     transition: all 0.3s;
 }
-.view-switcher button:hover { background-color: #C0392B; }
-.view-switcher button.active { background-color: #C0392B; color: white; font-weight: bold; }
+.view-switcher button:hover { background-color: #C0392B; } /* 深紅色 */
+.view-switcher button.active { background-color: #C0392B; color: white; } /* 深紅色底，白色字 */
 
 /* --- 介面面板 --- */
 .view-panel { padding: 20px 30px; }
@@ -50,37 +50,90 @@ body {
     border-radius: 8px;
     margin-bottom: 20px;
 }
-.token-info { font-size: 1.3em; margin: 1em 0; }
-#token-display { font-weight: bold; color: #E74C3C; font-size: 1.2em; }
-#draw-button {
-    background-color: #E74C3C; 
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: bold;
+.token-info {
+    font-size: 1.3em;
+    margin: 1em 0;
+    color: #C0392B; /* 深紅色 */
 }
-#draw-button:hover { background-color: #C0392B; }
-#draw-button:disabled { background-color: #cccccc; cursor: not-allowed; }
+#token-display {
+    font-weight: bold;
+    color: #E74C3C; /* 紅色 */
+    font-size: 1.2em;
+}
 
-/* 抽卡動畫區 (大卡片) */
-#animation-wrapper {
-    margin-top: 1.5em;
-    min-height: 210px;
+/* 按鈕容器 */
+.draw-buttons {
     display: flex;
     justify-content: center;
-    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+/* 單抽按鈕 */
+#draw-button {
+    background-color: #E74C3C; /* 紅色 */
+    color: white;
+    border: none;
+    padding: 12px 25px;
     font-size: 1.1em;
-    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    font-weight: bold;
+    margin-bottom: 0;
+}
+#draw-button:hover:not(:disabled) {
+    background-color: #C0392B; /* 深紅色 */
+}
+#draw-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* 十連抽按鈕 */
+#draw-10x-button {
+    background-color: #DAA520; /* 金色 */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    font-weight: bold;
+}
+#draw-10x-button:hover:not(:disabled) {
+    background-color: #B8860B; /* 深金色 */
+    transform: translateY(-3px);
+}
+#draw-10x-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+/* 動畫/結果區 */
+#animation-wrapper {
+    min-height: 350px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.08);
 }
 
 /* 揭曉時的大卡片樣式 */
 .card {
-    width: 150px; 
-    height: 210px; 
+    width: 150px;
+    height: 210px;
     border: 4px solid #333;
     border-radius: 10px;
     display: flex;
@@ -88,19 +141,19 @@ body {
     align-items: center;
     color: white;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    padding: 0; 
+    padding: 0;
     box-sizing: border-box;
-    background-size: cover; 
-    background-position: center; 
-    position: relative; 
-    background-color: #333; 
-    overflow: hidden; 
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-color: #333;
+    overflow: hidden;
 }
 .card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 6px; 
+    border-radius: 6px;
 }
 
 /* 老師控制台 */
@@ -113,21 +166,20 @@ body {
     text-align: center;
 }
 .admin-panel input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-right: 5px; }
-.admin-panel button { 
-    padding: 8px 12px; 
-    font-size: 0.9em; 
-    background-color: #E74C3C; /* 把按鈕背景變成紅色 */
-    color: white;               /* 讓文字變成白色 */
-    border: none;               /* 移除預設邊框 */
-    border-radius: 4px;         /* 加一點圓角 */
-    cursor: pointer;            /* 滑鼠移過去變手指 */
-    transition: background-color 0.3s ease; /* 變色動畫 */
+.admin-panel button {
+    padding: 8px 12px;
+    font-size: 0.9em;
+    background-color: #E74C3C; /* 紅色背景 */
+    color: white;            /* 白色文字 */
+    border: none;            /* 移除預設邊框 */
+    border-radius: 5px;      /* 加上圓角 */
+    cursor: pointer;         /* 滑鼠移過去變手指 */
+    transition: background-color 0.3s ease; /* 平滑的顏色過渡效果 */
+}
+.admin-panel button:hover {
+    background-color: #C0392B; /* 深紅色 */
 }
 
-/* 這一段是新增的，意思是當滑鼠移到按鈕上時，會變成深紅色 */
-.admin-panel button:hover {
-    background-color: #C0392B;
-}
 
 /* --- 卡冊區 (Collection View) --- */
 .collection-stats {
@@ -138,26 +190,21 @@ body {
     background-color: #f9f9f9;
     border-radius: 8px;
 }
-#collection-progress { font-weight: bold; color: #007bff; }
+#collection-progress { font-weight: bold; color: #E74C3C; } /* 紅色 */
 
 .team-section { margin-bottom: 25px; }
 .team-section h2 {
-    display: flex; 
+    display: flex;
     align-items: center;
     font-size: 1.5em;
-    color: #C0392B;
-    border-bottom: 3px solid; 
+    color: #C0392B; /* 深紅色 */
+    border-bottom: 3px solid #E74C3C; /* 紅色底線 */
     padding-bottom: 10px;
 }
 .team-logo { width: 32px; height: 32px; margin-right: 10px; }
 
-/* 球隊主題色 (不變) */
-#team-brothers h2 { border-color: #FFD700; }
-#team-lions h2 { border-color: #FF6600; }
-#team-monkeys h2 { border-color: #DC143C; }
-#team-guardians h2 { border-color: #005A9C; }
-#team-dragons h2 { border-color: #E60012; }
-#team-hawks h2 { border-color: #008080; }
+/* 球隊主題色 (保留) - 如果上面 h2 改成統一紅色底線，這裡可以註解掉或刪除 */
+/* #team-brothers h2 { border-color: #FFD700; } ... etc */
 
 /* 稀有度標題 */
 .rarity-header {
@@ -177,29 +224,32 @@ body {
 /* 卡冊網格 (書櫃背景) */
 .card-collection-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
-    gap: 20px; /* 增加卡片間距，讓發光更明顯 */
-    background-image: url('bookshelf_bg.jpg'); 
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 20px;
+    background-image: url('bookshelf_bg.jpg'); /* 保留書櫃背景 */
     background-size: cover;
     background-position: center;
-    min-height: 150px; 
+    min-height: 150px;
     padding: 15px;
     border-radius: 8px;
     box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
 }
 
+/* N 卡的 Grid 排版 - 已移除特殊設定，所有卡片大小一致 */
+
+
 /* 卡片外框 */
 .card-small-wrapper {
-    position: relative; 
-    aspect-ratio: 2 / 3; 
+    position: relative;
+    aspect-ratio: 2 / 3;
     border-radius: 8px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2); 
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     transition: all 0.2s ease-out;
-    border: 3px solid #333; 
-    /* 這裡沒有 overflow: hidden，所以發光會顯示 */
+    border: 3px solid #333;
+    /* 沒有 overflow: hidden */
 }
-.card-small-wrapper:hover { 
-    transform: scale(1.08); 
+.card-small-wrapper:hover {
+    transform: scale(1.08);
     z-index: 10;
 }
 
@@ -207,23 +257,23 @@ body {
 .card-small-inner {
     width: 100%;
     height: 100%;
-    border-radius: 5px; 
-    box-sizing: border-box; 
+    border-radius: 5px;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-size: cover; 
-    background-position: center; 
-    position: relative; 
-    background-color: #333; 
-    overflow: hidden; /* 內部圖片還是要裁切 */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-color: #333;
+    overflow: hidden; /* 內部圖片裁切 */
 }
 .card-small-inner img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 5px; 
+    border-radius: 5px;
 }
 
 /* 卡片數量角標 (不變) */
@@ -231,7 +281,7 @@ body {
     position: absolute;
     bottom: -8px;
     right: -8px;
-    background-color: #d9534f; 
+    background-color: #d9534f;
     color: white;
     font-size: 0.9em;
     font-weight: bold;
@@ -239,16 +289,16 @@ body {
     border-radius: 10px;
     border: 2px solid white;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
-    z-index: 5; 
+    z-index: 5;
 }
 
 
-/* --- 【重要】發光邊框 & 黑影 --- */
+/* --- 發光邊框 & 黑影 --- */
 
 /* 1. 黑影卡片 */
 .card-small-wrapper.card-silhouette {
     border: 3px dashed #777;
-    box-shadow: none; 
+    box-shadow: none;
 }
 .card-small-wrapper.card-silhouette:hover { transform: none; }
 .card-small-wrapper.card-silhouette .card-small-inner {
@@ -257,7 +307,7 @@ body {
     font-size: 2em;
 }
 .card-small-wrapper.card-silhouette .card-small-inner span {
-    display: block; 
+    display: block;
 }
 
 
@@ -285,7 +335,7 @@ body {
     animation: rainbowBorder 2s infinite linear; /* 動畫 */
 }
 
-/* 【重要】彩虹邊框動畫 (這就是紅色版缺少的！) */
+/* 彩虹邊框動畫 */
 @keyframes rainbowBorder {
     0%   { box-shadow: 0 0 18px 6px rgba(255,0,0,0.8); border-color: #ff0000; }
     16%  { box-shadow: 0 0 18px 6px rgba(255,165,0,0.8); border-color: #ffa500; }
@@ -293,56 +343,52 @@ body {
     50%  { box-shadow: 0 0 18px 6px rgba(0,128,0,0.8); border-color: #008000; }
     66%  { box-shadow: 0 0 18px 6px rgba(0,0,255,0.8); border-color: #0000ff; }
     83%  { box-shadow: 0 0 18px 6px rgba(75,0,130,0.8); border-color: #4b0082; }
-    100% { box-shadow: 0 0 18px 6px rgba(255,0,0,0.8); border-color: #ff0000; } 
+    100% { box-shadow: 0 0 18px 6px rgba(255,0,0,0.8); border-color: #ff0000; }
 }
 
 
-/* --- 【新增】抽卡過場動畫：卡片翻轉漸現 --- */
+/* --- 抽卡過場動畫：卡片翻轉漸現 --- */
 
-/* 抽卡時顯示的卡片背面 */
+/* 卡片背面 */
 .card-back {
     width: 150px;
     height: 210px;
     border: 4px solid #555;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    background: linear-gradient(135deg, #4a4a4a, #2a2a2a); /* 深灰色漸層 */
+    background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.5em;
     color: #eee;
     font-weight: bold;
-    perspective: 1000px; /* 3D 視角 */
-    animation: flipAndFadeOut 1.5s forwards; /* 先翻轉然後淡出 */
+    perspective: 1000px;
+    animation: flipAndFadeOut 1.5s forwards;
 }
 
-/* 翻轉動畫 */
 @keyframes flipAndFadeOut {
     0% { transform: rotateY(0deg); opacity: 1; }
-    50% { transform: rotateY(90deg); opacity: 0.8; } /* 翻轉到一半，略為透明 */
-    100% { transform: rotateY(180deg); opacity: 0; display: none; } /* 翻轉完成並隱藏 */
+    50% { transform: rotateY(90deg); opacity: 0.8; }
+    100% { transform: rotateY(180deg); opacity: 0; display: none; }
 }
 
 /* 顯示抽到卡片時的漸現動畫 */
 .card.reveal-N,
 .card.reveal-R,
 .card.reveal-SR,
-.card.reveal-SSR {
-    animation-name: fadeInScale; /* 所有稀有度都用這個漸現縮放 */
+.card.reveal-SSR { /* 包含 SSR */
+    animation-name: fadeInScale;
     animation-duration: 0.8s;
-    animation-fill-mode: forwards; /* 保持最後一幀狀態 */
-    animation-delay: 1.5s; /* 等待卡片背面動畫結束後再開始 */
-    opacity: 0; /* 初始隱藏 */
+    animation-fill-mode: forwards;
+    animation-delay: 1.5s;
+    opacity: 0;
 }
 
 /* 十連抽的卡片顯示動畫 */
 #animation-wrapper .card-small-wrapper {
-    /* 這裡原本是十連抽的卡片尺寸和樣式 */
-    /* 為每個小卡片添加一個簡單的漸現動畫 */
     animation: fadeInScale 0.5s ease forwards;
     opacity: 0;
-    /* 動態設定 animation-delay，讓它們依序出現 */
 }
 
 /* 漸現並縮放動畫 */
@@ -351,125 +397,48 @@ body {
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* SSR 卡片還是保持彩虹動畫和抖動 */
+/* 【重要修正】確保 SSR 的動畫組合正確 */
 .card.reveal-SSR {
-    animation-name: fadeInScale, rainbowBorder, shake; /* 組合多個動畫 */
+    /* 組合漸現、彩虹和抖動 */
+    animation-name: fadeInScale, rainbowBorder, shake;
     animation-duration: 0.8s, 2s, 0.8s;
-    animation-delay: 1.5s, 1.5s, 1.5s; /* 同步延遲 */
+    animation-delay: 1.5s, 1.5s, 2.3s; /* 抖動稍微延遲 */
     animation-fill-mode: forwards, forwards, forwards;
     animation-iteration-count: 1, infinite, 3;
+    opacity: 0; /* 初始隱藏 */
+}
+/* 【重要修正】十連抽結果中的 SSR 卡片，也要播放彩虹動畫 */
+#animation-wrapper .card-small-wrapper.reveal-SSR {
+    /* 繼承全局的 SSR 發光動畫 */
+    animation-name: fadeInScale, rainbowBorder; /* 漸現 + 彩虹 */
+    animation-duration: 0.5s, 2s; /* 自己的漸現時間 + 全局彩虹時間 */
+    /* animation-delay 會由 script.js 設定 */
+    animation-iteration-count: 1, infinite;
+    opacity: 0; /* 初始隱藏 */
+}
+/* 【重要修正】十連抽結果中的 N, R 卡片不播放動畫 */
+#animation-wrapper .card-small-wrapper.reveal-N,
+#animation-wrapper .card-small-wrapper.reveal-R {
+    animation-name: fadeInScale; /* 只有漸現 */
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+    /* animation-delay 會由 script.js 設定 */
+    opacity: 0;
+}
+/* 【重要修正】十連抽結果中的 SR 卡片播放漸現，但不播放動畫 */
+#animation-wrapper .card-small-wrapper.reveal-SR {
+    animation-name: fadeInScale; /* 只有漸現 */
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+     /* animation-delay 會由 script.js 設定 */
     opacity: 0;
 }
 
-.card.reveal-N { animation-name: fadeIn, (rainbowBorder 0s); } 
-.card.reveal-R { animation-name: zoomIn, (rainbowBorder 0s); }
-.card.reveal-SR { animation-name: zoomIn, (rainbowBorder 0s); }
-.card.reveal-SSR { animation-name: zoomIn, rainbowBorder, shake; animation-duration: 0.7s, 2s, 0.8s; animation-iteration-count: 1, infinite, 3; }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* 抖動動畫 */
 @keyframes shake {
     0%, 100% { transform: translate(0, 0) rotate(0deg); }
     25% { transform: translate(5px, 0px) rotate(2deg); }
     50% { transform: translate(0, 0) rotate(0deg); }
     75% { transform: translate(-5px, 0px) rotate(-2deg); }
 }
-
-/* --- 【新增/修改】抽卡按鈕 和 十連抽 --- */
-
-/* 按鈕容器，讓兩個按鈕並排 */
-.draw-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px; /* 按鈕間距 */
-    margin-bottom: 30px; /* 和結果區的間距 */
-}
-
-/* 調整單抽按鈕樣式 */
-#draw-button {
-    background-color: #E74C3C; /* 紅色 */
-    padding: 12px 25px; /* 稍微縮小一點 */
-    font-size: 1.1em;
-    margin-bottom: 0; /* 移除原本的底部間距 */
-}
-#draw-button:hover:not(:disabled) {
-    background-color: #C0392B;
-}
-
-/* 十連抽按鈕樣式 */
-#draw-10x-button {
-    background-color: #DAA520; /* 金色，表示更划算？ */
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1.1em;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    font-weight: bold;
-}
-#draw-10x-button:hover:not(:disabled) {
-    background-color: #B8860B; /* 深金色 */
-    transform: translateY(-3px);
-}
-#draw-10x-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-
-/* --- 【修改】動畫/結果區，讓它可以容納 10 張卡 --- */
-#animation-wrapper {
-    min-height: 350px; /* 增加最小高度 */
-    display: flex; /* 改回 flex 佈局 */
-    flex-wrap: wrap; /* 允許換行 */
-    justify-content: center;
-    align-items: center; /* 垂直居中對齊 */
-    gap: 15px; /* 卡片間距 */
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.08);
-}
-
-/* 十連抽結果的小卡片樣式 (SSR 會發光) */
-#animation-wrapper .card-small-wrapper {
-    width: 100px; /* 十連抽結果寬度 */
-    height: 150px; /* 十連抽結果高度 */
-    /* 移除預設 border 和 box-shadow，讓稀有度樣式接管 */
-    /* 移除 animation: none; */
-}
-/* N, R, SR 使用簡單邊框 */
-#animation-wrapper .card-small-wrapper.reveal-N {
-    border: 3px solid #007bff; /* 藍 */
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    animation: none; /* N卡不需要動畫 */
-}
-#animation-wrapper .card-small-wrapper.reveal-R {
-    border: 3px solid #9933cc; /* 紫 */
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    animation: none; /* R卡不需要動畫 */
-}
-#animation-wrapper .card-small-wrapper.reveal-SR {
-    border: 3px solid #DAA520; /* 金 */
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    animation: none; /* SR卡不需要動畫 */
-}
-/* SSR 卡則【不】在這裡定義樣式，讓它自動繼承全局的 .reveal-SSR 彩虹動畫！ */
-
-/* ... (底下還有 img 和 .card-quantity 的樣式，它們不需要修改) ... */
-
-#animation-wrapper .card-small-inner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-/* 十連抽結果不需要顯示數量 */
-#animation-wrapper .card-quantity {
-    display: none;
-}
-
-
-
