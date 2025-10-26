@@ -203,9 +203,6 @@ body {
 }
 .team-logo { width: 32px; height: 32px; margin-right: 10px; }
 
-/* 球隊主題色 (保留) - 如果上面 h2 改成統一紅色底線，這裡可以註解掉或刪除 */
-/* #team-brothers h2 { border-color: #FFD700; } ... etc */
-
 /* 稀有度標題 */
 .rarity-header {
     font-size: 1.2em;
@@ -235,25 +232,22 @@ body {
     box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
 }
 
-/* N 卡的 Grid 排版 - 已移除特殊設定，所有卡片大小一致 */
 
-
-/* 卡片外框 */
+/* 卡片外框 (卡冊 & 十連抽共用) */
 .card-small-wrapper {
     position: relative;
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 2 / 3; /* 高寬比 */
     border-radius: 8px;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     transition: all 0.2s ease-out;
-    border: 3px solid #333;
-    /* 沒有 overflow: hidden */
+    border: 3px solid #333; /* 預設邊框 */
 }
 .card-small-wrapper:hover {
     transform: scale(1.08);
     z-index: 10;
 }
 
-/* 小卡片內部 (圖片) */
+/* 小卡片內部 (圖片) (卡冊 & 十連抽共用) */
 .card-small-inner {
     width: 100%;
     height: 100%;
@@ -276,7 +270,7 @@ body {
     border-radius: 5px;
 }
 
-/* 卡片數量角標 (不變) */
+/* 卡片數量角標 (只在卡冊顯示) */
 .card-quantity {
     position: absolute;
     bottom: -8px;
@@ -293,7 +287,7 @@ body {
 }
 
 
-/* --- 發光邊框 & 黑影 --- */
+/* --- 發光邊框 & 黑影 (卡冊 & 十連抽共用) --- */
 
 /* 1. 黑影卡片 */
 .card-small-wrapper.card-silhouette {
@@ -385,10 +379,13 @@ body {
     opacity: 0;
 }
 
-/* 十連抽的卡片顯示動畫 */
+/* 【重要修正】十連抽結果的小卡片樣式 */
 #animation-wrapper .card-small-wrapper {
+    width: 100px; /* 【修正】明確指定十連抽結果的卡片寬度 */
+    height: 150px; /* 【修正】明確指定十連抽結果的卡片高度 */
     animation: fadeInScale 0.5s ease forwards;
     opacity: 0;
+    /* 這裡不再需要指定 border 或 box-shadow，讓全局的 reveal-X 樣式接管 */
 }
 
 /* 漸現並縮放動畫 */
@@ -397,41 +394,34 @@ body {
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* 【重要修正】確保 SSR 的動畫組合正確 */
+/* 確保 SSR 的動畫組合正確 (大卡片) */
 .card.reveal-SSR {
-    /* 組合漸現、彩虹和抖動 */
     animation-name: fadeInScale, rainbowBorder, shake;
     animation-duration: 0.8s, 2s, 0.8s;
-    animation-delay: 1.5s, 1.5s, 2.3s; /* 抖動稍微延遲 */
+    animation-delay: 1.5s, 1.5s, 2.3s;
     animation-fill-mode: forwards, forwards, forwards;
     animation-iteration-count: 1, infinite, 3;
-    opacity: 0; /* 初始隱藏 */
+    opacity: 0;
 }
-/* 【重要修正】十連抽結果中的 SSR 卡片，也要播放彩虹動畫 */
+/* 十連抽結果中的 SSR 卡片，播放彩虹動畫 */
 #animation-wrapper .card-small-wrapper.reveal-SSR {
-    /* 繼承全局的 SSR 發光動畫 */
-    animation-name: fadeInScale, rainbowBorder; /* 漸現 + 彩虹 */
-    animation-duration: 0.5s, 2s; /* 自己的漸現時間 + 全局彩虹時間 */
-    /* animation-delay 會由 script.js 設定 */
+    animation-name: fadeInScale, rainbowBorder;
+    animation-duration: 0.5s, 2s;
     animation-iteration-count: 1, infinite;
-    opacity: 0; /* 初始隱藏 */
+    opacity: 0; /* animation-delay 由 script.js 設定 */
 }
-/* 【重要修正】十連抽結果中的 N, R 卡片不播放動畫 */
+/* 十連抽結果中的 N, R, SR 卡片不播放彩虹/發光動畫，只漸現 */
 #animation-wrapper .card-small-wrapper.reveal-N,
-#animation-wrapper .card-small-wrapper.reveal-R {
-    animation-name: fadeInScale; /* 只有漸現 */
-    animation-duration: 0.5s;
-    animation-iteration-count: 1;
-    /* animation-delay 會由 script.js 設定 */
-    opacity: 0;
-}
-/* 【重要修正】十連抽結果中的 SR 卡片播放漸現，但不播放動畫 */
+#animation-wrapper .card-small-wrapper.reveal-R,
 #animation-wrapper .card-small-wrapper.reveal-SR {
-    animation-name: fadeInScale; /* 只有漸現 */
-    animation-duration: 0.5s;
-    animation-iteration-count: 1;
-     /* animation-delay 會由 script.js 設定 */
-    opacity: 0;
+     animation-name: fadeInScale;
+     animation-duration: 0.5s;
+     animation-iteration-count: 1;
+     opacity: 0; /* animation-delay 由 script.js 設定 */
+}
+/* 十連抽結果不需要顯示數量 */
+#animation-wrapper .card-quantity {
+    display: none;
 }
 
 
