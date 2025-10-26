@@ -1,7 +1,7 @@
 /* --- 基本設定 --- */
 body {
     font-family: Arial, sans-serif;
-    background-color: #e9eef2;
+    background: linear-gradient(135deg, #FFEEEE 0%, #FFDDDD 100%);
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
@@ -18,15 +18,15 @@ body {
 
 /* --- 頂部標題和切換按鈕 --- */
 .main-header {
-    background: linear-gradient(135deg, #005A9C, #007bff); 
+    background: linear-gradient(135deg, #E74C3C, #C0392B); 
     color: white;
     padding: 20px;
     text-align: center;
-    border-bottom: 4px solid #FFD700;
+    border-bottom: 4px solid #FADBD8;
 }
 .main-header h1 { margin: 0 0 15px 0; font-size: 1.8em; }
 .view-switcher button {
-    background: rgba(255, 255, 255, 0.2);
+    background-color: #E74C3C;
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.5);
     padding: 10px 20px;
@@ -36,8 +36,8 @@ body {
     margin: 0 5px;
     transition: all 0.3s;
 }
-.view-switcher button:hover { background: rgba(255, 255, 255, 0.4); }
-.view-switcher button.active { background: white; color: #007bff; font-weight: bold; }
+.view-switcher button:hover { background-color: #C0392B; }
+.view-switcher button.active { background-color: #C0392B; color: white; font-weight: bold; }
 
 /* --- 介面面板 --- */
 .view-panel { padding: 20px 30px; }
@@ -51,9 +51,9 @@ body {
     margin-bottom: 20px;
 }
 .token-info { font-size: 1.3em; margin: 1em 0; }
-#token-display { font-weight: bold; color: #007bff; font-size: 1.2em; }
+#token-display { font-weight: bold; color: #E74C3C; font-size: 1.2em; }
 #draw-button {
-    background-color: #28a745; 
+    background-color: #E74C3C; 
     color: white;
     border: none;
     padding: 15px 30px;
@@ -63,7 +63,7 @@ body {
     transition: background-color 0.3s;
     font-weight: bold;
 }
-#draw-button:hover { background-color: #218838; }
+#draw-button:hover { background-color: #C0392B; }
 #draw-button:disabled { background-color: #cccccc; cursor: not-allowed; }
 
 /* 抽卡動畫區 (大卡片) */
@@ -113,8 +113,21 @@ body {
     text-align: center;
 }
 .admin-panel input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-right: 5px; }
-.admin-panel button { padding: 8px 12px; font-size: 0.9em; }
+.admin-panel button { 
+    padding: 8px 12px; 
+    font-size: 0.9em; 
+    background-color: #E74C3C; /* 把按鈕背景變成紅色 */
+    color: white;               /* 讓文字變成白色 */
+    border: none;               /* 移除預設邊框 */
+    border-radius: 4px;         /* 加一點圓角 */
+    cursor: pointer;            /* 滑鼠移過去變手指 */
+    transition: background-color 0.3s ease; /* 變色動畫 */
+}
 
+/* 這一段是新增的，意思是當滑鼠移到按鈕上時，會變成深紅色 */
+.admin-panel button:hover {
+    background-color: #C0392B;
+}
 
 /* --- 卡冊區 (Collection View) --- */
 .collection-stats {
@@ -132,7 +145,7 @@ body {
     display: flex; 
     align-items: center;
     font-size: 1.5em;
-    color: #333;
+    color: #C0392B;
     border-bottom: 3px solid; 
     padding-bottom: 10px;
 }
@@ -295,7 +308,7 @@ body {
     width: 50px;
     height: 50px;
     border: 5px solid #f3f3f3;
-    border-top: 5px solid #007bff;
+    border-top: 5px solid #E74C3C;
     border-radius: 50%;
     animation: spin 1.5s linear infinite;
 }
@@ -314,3 +327,4 @@ body {
     50% { transform: translate(0, 0) rotate(0deg); }
     75% { transform: translate(-5px, 0px) rotate(-2deg); }
 }
+
