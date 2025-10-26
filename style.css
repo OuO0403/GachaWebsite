@@ -328,3 +328,85 @@ body {
     75% { transform: translate(-5px, 0px) rotate(-2deg); }
 }
 
+/* --- 【新增/修改】抽卡按鈕 和 十連抽 --- */
+
+/* 按鈕容器，讓兩個按鈕並排 */
+.draw-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* 按鈕間距 */
+    margin-bottom: 30px; /* 和結果區的間距 */
+}
+
+/* 調整單抽按鈕樣式 */
+#draw-button {
+    background-color: #E74C3C; /* 紅色 */
+    padding: 12px 25px; /* 稍微縮小一點 */
+    font-size: 1.1em;
+    margin-bottom: 0; /* 移除原本的底部間距 */
+}
+#draw-button:hover:not(:disabled) {
+    background-color: #C0392B;
+}
+
+/* 十連抽按鈕樣式 */
+#draw-10x-button {
+    background-color: #DAA520; /* 金色，表示更划算？ */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    font-weight: bold;
+}
+#draw-10x-button:hover:not(:disabled) {
+    background-color: #B8860B; /* 深金色 */
+    transform: translateY(-3px);
+}
+#draw-10x-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+/* --- 【修改】動畫/結果區，讓它可以容納 10 張卡 --- */
+#animation-wrapper {
+    min-height: 350px; /* 增加最小高度 */
+    display: flex; /* 改回 flex 佈局 */
+    flex-wrap: wrap; /* 允許換行 */
+    justify-content: center;
+    align-items: center; /* 垂直居中對齊 */
+    gap: 15px; /* 卡片間距 */
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.08);
+}
+
+/* 十連抽結果的小卡片樣式 (沿用卡冊的小卡樣式，但移除外框的發光) */
+#animation-wrapper .card-small-wrapper {
+    width: 100px; /* 十連抽結果寬度 */
+    height: 150px; /* 十連抽結果高度 */
+    border: 3px solid #AAA; /* 預設邊框 */
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    animation: none; /* 移除SSR彩虹動畫 */
+}
+/* 覆蓋掉原本的發光邊框，只用簡單顏色區分 */
+#animation-wrapper .card-small-wrapper.reveal-N { border-color: #007bff; } /* 藍 */
+#animation-wrapper .card-small-wrapper.reveal-R { border-color: #993cc; } /* 紫 */
+#animation-wrapper .card-small-wrapper.reveal-SR { border-color: #DAA520; } /* 金 */
+#animation-wrapper .card-small-wrapper.reveal-SSR { border-color: #E74C3C; } /* SSR用紅色表示特別 */
+
+#animation-wrapper .card-small-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* 十連抽結果不需要顯示數量 */
+#animation-wrapper .card-quantity {
+    display: none;
+}
