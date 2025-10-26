@@ -2,9 +2,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- A. 卡片資料庫 (Master List) ---
+    // (這 96 張卡片的列表... 不變)
     const teams = { Brothers: '中信兄弟', Lions: '統一7-ELEVEn獅', Monkeys: '樂天桃猿', Guardians: '富邦悍將', Dragons: '味全龍', Hawks: '台鋼雄鷹' };
-
-    const cardMasterList = [
+    const cardMasterList = [ /* ... 你完整的 96 張卡片資料 ... */
         // --- 中信兄弟 (16) ---
         { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'B02', name: '江坤宇', team: 'Brothers', rarity: 'SR', image: 'bookshelf_bg.jpg' },
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- 樂天桃猿 (16) ---
         { id: 'M01', name: '林立', team: 'Monkeys', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
-        { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' }, 
         { id: 'M03', name: '朱育賢', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M04', name: '陳晨威', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'M05', name: '林泓育', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -61,13 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- 富邦悍將 (16) ---
         { id: 'G01', name: '范國宸', team: 'Guardians', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
-        // --- 【修改】戴培峰和李宗賢的稀有度對調 ---
-        { id: 'G02', name: '李宗賢', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' }, // <-- 降為 R
+        { id: 'G02', name: '李宗賢', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' }, // R
         { id: 'G03', name: '申皓瑋', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G04', name: '曾峻岳', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G05', name: '王正棠', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
-        { id: 'G06', name: '戴培峰', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' }, // <-- 升為 SR！
-        // --- 修改完畢 ---
+        { id: 'G06', name: '戴培峰', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' }, // SR
         { id: 'G07', name: '高國麟', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'G08', name: '陳仕朋', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'G09', name: '羅戈', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -101,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'H01', name: '王柏融', team: 'Hawks', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
         { id: 'H02', name: '曾子祐', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'H03', name: '王溢正', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
-        { id: 'H04', name: '笠原祥太郎', team: 'Hawks', rarity: 'SR', image: 'booksFhelf_bg.jpg' },
+        { id: 'H04', name: '笠原祥太郎', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'H05', name: '葉保弟', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'H06', name: '杜家明', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'H07', name: '魔鷹', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -118,13 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     // --- B. 獲取所有需要的 HTML 元素 ---
-    // (這部分不變)
     const gachaView = document.getElementById('gacha-view');
     const collectionView = document.getElementById('collection-view');
     const showGachaBtn = document.getElementById('show-gacha-btn');
     const showCollectionBtn = document.getElementById('show-collection-btn');
     const tokenDisplay = document.getElementById('token-display');
     const drawButton = document.getElementById('draw-button');
+    const draw10xButton = document.getElementById('draw-10x-button'); // 【新增】抓取十連抽按鈕
     const animationWrapper = document.getElementById('animation-wrapper');
     const collectionProgress = document.getElementById('collection-progress');
     const adminCodeInput = document.getElementById('admin-code');
@@ -133,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- C. 初始化代幣 ---
-    // (這部分不變)
     const TOKEN_STORAGE_KEY = 'myStudentTokens_CPBL'; 
     let currentTokens = 0;
     function updateTokens(amount) {
@@ -146,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- D. 初始化卡片收藏庫 ---
-    // (這部分不變)
     const COLLECTION_STORAGE_KEY = 'myStudentCollection_CPBL'; 
     let cardCollection = {}; 
 
@@ -200,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- E. 抽卡邏輯 ---
-    // (這部分不變)
     const DRAW_COST = 10; 
     function performDraw() {
         const roll = Math.random(); 
@@ -215,35 +210,93 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- F. 抽卡按鈕事件 ---
-    // (這部分不變)
+    
+    // 啟用/禁用按鈕的輔助函式
+    function setButtonsDisabled(disabled) {
+        drawButton.disabled = disabled;
+        draw10xButton.disabled = disabled;
+    }
+
+    // 單抽按鈕
     drawButton.addEventListener('click', () => {
         if (currentTokens < DRAW_COST) {
             alert("代幣不足！快去跟老師領取！");
             return;
         }
         updateTokens(currentTokens - DRAW_COST);
-        drawButton.disabled = true;
+        setButtonsDisabled(true); // 禁用兩個按鈕
         animationWrapper.innerHTML = '<div class="draw-pending"></div>';
 
         setTimeout(() => {
             const drawnCard = performDraw(); 
+            // 顯示單張大卡片結果
             animationWrapper.innerHTML = `
                 <div class="card reveal-${drawnCard.rarity}">
                     <img src="${drawnCard.image}" alt="${drawnCard.name}">
                 </div>
             `;
             
+            // 更新收藏
             const currentQuantity = cardCollection[drawnCard.id] || 0;
             cardCollection[drawnCard.id] = currentQuantity + 1;
             localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
-            displayCollection();
-            drawButton.disabled = false;
-        }, 2000); 
+            displayCollection(); // 更新卡冊顯示
+            
+            setButtonsDisabled(false); // 恢復按鈕
+        }, 1500); // 單抽動畫縮短一點
+    });
+
+    // 【新增】十連抽按鈕
+    draw10xButton.addEventListener('click', () => {
+        const TEN_DRAW_COST = DRAW_COST * 10;
+        if (currentTokens < TEN_DRAW_COST) {
+            alert(`十連抽需要 ${TEN_DRAW_COST} 枚代幣，您的代幣不足！`);
+            return;
+        }
+        updateTokens(currentTokens - TEN_DRAW_COST);
+        setButtonsDisabled(true); // 禁用兩個按鈕
+        animationWrapper.innerHTML = '<div class="draw-pending"></div>'; // 顯示轉圈
+
+        // 模擬抽卡過程
+        setTimeout(() => {
+            let drawResults = []; // 儲存十連抽結果
+            // 執行十次抽卡
+            for (let i = 0; i < 10; i++) {
+                const drawnCard = performDraw();
+                drawResults.push(drawnCard); // 加入結果列表
+                
+                // 更新收藏庫 (立即更新)
+                const currentQuantity = cardCollection[drawnCard.id] || 0;
+                cardCollection[drawnCard.id] = currentQuantity + 1;
+            }
+            
+            // 儲存更新後的收藏庫到 localStorage
+            localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
+            
+            // 清空動畫區，準備顯示結果
+            animationWrapper.innerHTML = ""; 
+            
+            // 將十張卡片結果顯示出來
+            drawResults.forEach(card => {
+                const cardWrapper = document.createElement('div');
+                // 使用卡冊的小卡樣式，但移除數量角標
+                cardWrapper.className = `card-small-wrapper reveal-${card.rarity}`; 
+                cardWrapper.innerHTML = `
+                    <div class="card-small-inner" title="${card.name}">
+                        <img src="${card.image}" alt="${card.name}">
+                    </div>
+                `;
+                animationWrapper.appendChild(cardWrapper);
+            });
+            
+            displayCollection(); // 更新卡冊顯示
+            setButtonsDisabled(false); // 恢復按鈕
+        }, 2500); // 十連抽動畫時間長一點
     });
 
 
     // --- G. 老師控制台（密技）的邏輯 ---
-    // (這部分不變，TEACHER_ADD_100 也還在)
+    // (這部分不變)
     const rewardCodeDatabase = {
         "1028DSAPDCIN": 50,
         "M1104ITXYKCT": 50,
@@ -323,4 +376,3 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
-
