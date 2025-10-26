@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setButtonsDisabled(true); // 禁用兩個按鈕
 
         // 顯示卡片背面動畫
-        animationWrapper.innerHTML = '<div class="card-back">卡片背面</div>';
+        animationWrapper.innerHTML = '<div class="card-back">?</div>';
 
         // 在卡片背面動畫結束後，顯示抽卡結果
         setTimeout(() => {
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setButtonsDisabled(true); // 禁用兩個按鈕
 
         // 顯示多張卡片背面動畫 (簡化為一個動畫)
-        animationWrapper.innerHTML = '<div class="card-back" style="animation-duration: 2s;">連抽中...</div>';
+        animationWrapper.innerHTML = '<div class="card-back" style="animation-duration: 2s;">?×10</div>';
 
 
         // 在卡片背面動畫結束後，顯示十連抽結果
@@ -383,4 +383,5 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
 
