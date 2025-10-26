@@ -61,11 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- 富邦悍將 (16) ---
         { id: 'G01', name: '范國宸', team: 'Guardians', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
-        { id: 'G02', name: '李宗賢', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' }, // R
+        { id: 'G02', name: '戴培峰', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G03', name: '申皓瑋', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G04', name: '曾峻岳', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
         { id: 'G05', name: '王正棠', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
-        { id: 'G06', name: '戴培峰', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' }, // SR
+        { id: 'G06', name: '李宗賢', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'G07', name: '高國麟', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'G08', name: '陳仕朋', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
         { id: 'G09', name: '羅戈', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
@@ -376,3 +376,4 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
