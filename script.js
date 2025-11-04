@@ -307,8 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // (這部分不變)
     const rewardCodeDatabase = {
         "1028DSAPDCIN": 64,
-        "M1104ITXYKCT": 66,
-        "CQ1111CVWO": 58,
+        "M1104ITXYKCT": 69,
+        "CQ1111CVWO": 55,
         "ONL1118DJCEN": 54,
         "LSNL1125YCRW": 60,
         "NWIGC1202BUI": 70,
@@ -383,6 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
 
 
 
