@@ -315,6 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
         "JRHJJK1209BW": 65,
         "JEYCHHO1216T": 63,
         "666666661223": 100,
+        "KRMNKKCD1230": 200,
+        "GIFT89362963": 31,
+        "GIFT89704879": 24,
+        "GIFT89081469": 42,
+        "GIFT89209832": 19,
+        "GIFT89290422": 25,
+        "GIFT89904682": 34,
     };
     const REDEEMED_CODES_KEY = 'redeemedRewardCodes_CPBL'; 
     let redeemedCodes = []; 
@@ -383,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
 
 
 
