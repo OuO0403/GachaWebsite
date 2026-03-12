@@ -165,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loginMessage.innerText = "正在向 Google 試算表請求資料...";
 
         try {
-            // 發送請求到 Google Apps Script
             const response = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -180,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 登入成功，寫入資料
                 currentUser = username;
                 currentTokens = parseInt(result.tokens) || 0;
-                // 解析雲端傳回來的 JSON 字串，如果是空的就給預設值
                 cardCollection = JSON.parse(result.collection || "{}");
                 redeemedCodes = JSON.parse(result.redeemedCodes || "[]");
 
@@ -193,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginScreen.style.display = 'none';
                 mainApp.style.display = 'block';
             } else {
-                // 密碼錯誤
                 loginMessage.style.color = "red";
                 loginMessage.innerText = result.message || "登入失敗！";
             }
@@ -202,7 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
             loginMessage.innerText = "連線失敗，請檢查網路！";
             console.error(error);
         } finally {
-            // 恢復按鈕狀態
             btnLogin.disabled = false;
             btnLogin.innerText = "進入遊戲";
         }
@@ -212,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function saveDataToCloud() {
         if (!currentUser) return;
         
-        // 顯示「同步中」的提示
         currentUserDisplay.innerText = `玩家: ${currentUser} (☁️同步中...)`;
         
         try {
@@ -226,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     redeemedCodes: JSON.stringify(redeemedCodes)
                 })
             });
-            // 存檔成功，恢復正常名字
             currentUserDisplay.innerText = `玩家: ${currentUser}`;
         } catch (e) {
             console.error("雲端存檔失敗:", e);
@@ -234,6 +228,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- 【全新加入：發送抽卡紀錄到雲端】 ---
+    async function logGachaToCloud(drawType, cardsArray) {
+        if (!currentUser) return;
+        
+        // 將抽到的卡片陣列轉換成一行文字，方便試算表閱讀
+        // 例如："[SSR] 王威晨, [R] 詹子賢"
+        const cardNamesString = cardsArray.map(card => `[${card.rarity}] ${card.name}`).join(', ');
+
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'log_gacha',
+                    username: currentUser,
+                    drawType: drawType,          // 單抽 or 十連抽
+                    cards: cardNamesString,      // 抽到的內容
+                    tokensLeft: currentTokens    // 剩下的代幣
+                })
+            });
+            // 紀錄發送成功不影響畫面，所以默默完成就好
+        } catch (e) {
+            console.error("抽卡紀錄上傳失敗:", e);
+        }
+    }
 
     // 僅更新畫面數字，不負責存檔
     function updateTokensUI() {
@@ -312,10 +330,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // 扣代幣並更新畫面
         currentTokens -= DRAW_COST;
         updateTokensUI();
-        
         setButtonsDisabled(true); 
         animationWrapper.innerHTML = '<div class="card-back">抽卡中...</div>';
 
@@ -327,13 +343,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             
-            // 更新卡冊數量
             const currentQuantity = cardCollection[drawnCard.id] || 0;
             cardCollection[drawnCard.id] = currentQuantity + 1;
             displayCollection(); 
             
-            // 【重要】抽完卡後，觸發雲端存檔
+            // 存檔並上傳抽卡紀錄！
             saveDataToCloud();
+            logGachaToCloud("單抽", [drawnCard]); // 【新增】
             
             setButtonsDisabled(false); 
         }, 2200); 
@@ -346,11 +362,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // 扣代幣並更新畫面
         currentTokens -= TEN_DRAW_COST;
         updateTokensUI();
-        
         setButtonsDisabled(true); 
+
         animationWrapper.innerHTML = '<div class="card-back" style="animation-duration: 2s;">連抽中...</div>';
 
         setTimeout(() => {
@@ -359,7 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const drawnCard = performDraw();
                 drawResults.push(drawnCard); 
                 
-                // 更新卡冊數量
                 const currentQuantity = cardCollection[drawnCard.id] || 0;
                 cardCollection[drawnCard.id] = currentQuantity + 1;
             }
@@ -379,8 +393,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             displayCollection(); 
             
-            // 【重要】十連抽完畢後，觸發雲端存檔
+            // 存檔並上傳抽卡紀錄！
             saveDataToCloud();
+            logGachaToCloud("十連抽", drawResults); // 【新增】
             
             setButtonsDisabled(false); 
         }, 3000); 
@@ -405,11 +420,10 @@ document.addEventListener('DOMContentLoaded', () => {
         adminMessage.style.color = "red"; 
         if (code === "") { adminMessage.innerText = "請輸入密碼！"; return; }
         
-        // 特殊管理員指令
         if (code === "RESET_MY_TOKENS") { 
              currentTokens = 0;
              updateTokensUI();
-             saveDataToCloud(); // 觸發雲端存檔
+             saveDataToCloud(); 
              adminMessage.innerText = "代幣已重置。";
              adminMessage.style.color = "green";
              adminCodeInput.value = ""; 
@@ -418,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (code === "CLEAR_MY_COLLECTION") { 
             cardCollection = {}; 
             displayCollection(); 
-            saveDataToCloud(); // 觸發雲端存檔
+            saveDataToCloud(); 
             adminMessage.innerText = "卡片收藏已清空！";
             adminMessage.style.color = "green"; 
             adminCodeInput.value = ""; 
@@ -427,14 +441,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (code === "TEACHER_ADD_100") {
              currentTokens += 100;
              updateTokensUI();
-             saveDataToCloud(); // 觸發雲端存檔
+             saveDataToCloud(); 
              adminMessage.innerText = "成功補充 100 枚代幣！(可重複)";
              adminMessage.style.color = "green";
              adminCodeInput.value = ""; 
              return; 
         }
 
-        // 一般獎勵代碼檢查
         if (rewardCodeDatabase.hasOwnProperty(code)) {
             if (redeemedCodes.includes(code)) {
                 adminMessage.innerText = "此獎勵密碼已經使用過了喔！";
@@ -443,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentTokens += amount;
                 updateTokensUI();
                 redeemedCodes.push(code); 
-                saveDataToCloud(); // 觸發雲端存檔
+                saveDataToCloud(); 
                 
                 adminMessage.innerText = `成功兌換 ${amount} 枚代幣！`;
                 adminMessage.style.color = "green";
@@ -468,4 +481,3 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
-
