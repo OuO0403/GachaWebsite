@@ -160,9 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 鎖定按鈕，顯示連線中
         btnLogin.disabled = true;
-        btnLogin.innerText = "雲端連線中，請稍候...";
+        btnLogin.innerText = "🔍 正在翻找你的專屬卡冊...";
         loginMessage.style.color = "#333";
-        loginMessage.innerText = "正在向 Google 試算表請求資料...";
+        loginMessage.innerText = "🏟️ 正在為你打開球場大門...";
 
         try {
             const response = await fetch(API_URL, {
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             loginMessage.style.color = "red";
-            loginMessage.innerText = "連線失敗，請檢查網路！";
+            loginMessage.innerText = "🔌 找不到連線訊號，教練說請重新整理再試一次！";
             console.error(error);
         } finally {
             btnLogin.disabled = false;
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function saveDataToCloud() {
         if (!currentUser) return;
         
-        currentUserDisplay.innerText = `玩家: ${currentUser} (☁️同步中...)`;
+        currentUserDisplay.innerText = `玩家: ${currentUser} (⏳ 整理卡片中...)`;
         
         try {
             await fetch(API_URL, {
@@ -481,3 +481,4 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
+
