@@ -8,10 +8,24 @@
 </head>
 <body>
 
-    <div class="main-container">
+    <div id="login-screen" class="login-wrapper">
+        <div class="login-box">
+            <h1 style="color: #C0392B; margin-bottom: 20px;">小學伴抽卡機</h1>
+            <input type="text" id="login-username" placeholder="輸入你的名字 (新名字會自動註冊)">
+            <input type="password" id="login-password" placeholder="設定/輸入密碼">
+            <button id="btn-login">進入遊戲</button>
+            <p id="login-message" style="color: red; margin-top: 15px; font-weight: bold;"></p>
+            <p style="font-size: 0.85em; color: #666; margin-top: 20px; text-align: left;">
+                * 第一次輸入名字會自動註冊新帳號。<br>
+                * 請一定要記住自己的密碼喔！
+            </p>
+        </div>
+    </div>
+
+    <div id="main-app" class="main-container" style="display: none;">
         
         <header class="main-header">
-            <h1>小學伴CPBL抽卡機</h1>
+            <h1>小學伴CPBL抽卡機 <span id="current-user-display" style="font-size: 0.5em; color: #FFE; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 10px; vertical-align: middle; margin-left: 10px;"></span></h1>
             <nav class="view-switcher">
                 <button id="show-gacha-btn" class="active">前往抽卡</button>
                 <button id="show-collection-btn">我的卡冊</button>
@@ -38,8 +52,9 @@
                 <button id="admin-submit">兌換</button>
                 <p id="admin-message"></p>
             </div>
-            </div> <div id="collection-view" class="view-panel" style="display: none;">
-            
+        </div> 
+
+        <div id="collection-view" class="view-panel" style="display: none;">
             <div class="collection-stats">
                 總收藏進度： <span id="collection-progress">0 / 96</span>
             </div>
@@ -53,7 +68,7 @@
                 <h3 class="rarity-header rarity-R">R 卡</h3>
                 <div class="card-collection-grid" id="collection-brothers-R"></div>
                 <h3 class="rarity-header rarity-N">N 卡</h3>
-                <div class="card-collection-grid card-grid-n" id="collection-brothers-N"></div>
+                <div class="card-collection-grid" id="collection-brothers-N"></div>
             </div>
 
             <div class="team-section" id="team-lions">
@@ -65,7 +80,7 @@
                 <h3 class="rarity-header rarity-R">R 卡</h3>
                 <div class="card-collection-grid" id="collection-lions-R"></div>
                 <h3 class="rarity-header rarity-N">N 卡</h3>
-                <div class="card-collection-grid card-grid-n" id="collection-lions-N"></div>
+                <div class="card-collection-grid" id="collection-lions-N"></div>
             </div>
             
             <div class="team-section" id="team-monkeys">
@@ -77,7 +92,7 @@
                 <h3 class="rarity-header rarity-R">R 卡</h3>
                 <div class="card-collection-grid" id="collection-monkeys-R"></div>
                 <h3 class="rarity-header rarity-N">N 卡</h3>
-                <div class="card-collection-grid card-grid-n" id="collection-monkeys-N"></div>
+                <div class="card-collection-grid" id="collection-monkeys-N"></div>
             </div>
 
             <div class="team-section" id="team-guardians">
@@ -89,7 +104,7 @@
                 <h3 class="rarity-header rarity-R">R 卡</h3>
                 <div class="card-collection-grid" id="collection-guardians-R"></div>
                 <h3 class="rarity-header rarity-N">N 卡</h3>
-                <div class="card-collection-grid card-grid-n" id="collection-guardians-N"></div>
+                <div class="card-collection-grid" id="collection-guardians-N"></div>
             </div>
 
             <div class="team-section" id="team-dragons">
@@ -101,7 +116,7 @@
                 <h3 class="rarity-header rarity-R">R 卡</h3>
                 <div class="card-collection-grid" id="collection-dragons-R"></div>
                 <h3 class="rarity-header rarity-N">N 卡</h3>
-                <div class="card-collection-grid card-grid-n" id="collection-dragons-N"></div>
+                <div class="card-collection-grid" id="collection-dragons-N"></div>
             </div>
 
             <div class="team-section" id="team-hawks">
@@ -113,9 +128,12 @@
                 <h3 class="rarity-header rarity-R">R 卡</h3>
                 <div class="card-collection-grid" id="collection-hawks-R"></div>
                 <h3 class="rarity-header rarity-N">N 卡</h3>
-                <div class="card-collection-grid card-grid-n" id="collection-hawks-N"></div>
+                <div class="card-collection-grid" id="collection-hawks-N"></div>
             </div>
 
-        </div> </div> <script src="script.js"></script>
+        </div> 
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
