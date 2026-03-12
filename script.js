@@ -1,120 +1,112 @@
 // --- 1. 等待 HTML 內容都載入完成 ---
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- 【重要】你的 Google Apps Script 雲端資料庫網址 ---
+    const API_URL = "https://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exec";
+
     // --- A. 卡片資料庫 (Master List) ---
     const teams = { Brothers: '中信兄弟', Lions: '統一7-ELEVEn獅', Monkeys: '樂天桃猿', Guardians: '富邦悍將', Dragons: '味全龍', Hawks: '台鋼雄鷹' };
     const cardMasterList = [
-        // --- 中信兄弟 (16) ---
-        { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'images/CTBC_Brothers/1.jpg' },
-        { id: 'B02', name: '江坤宇', team: 'Brothers', rarity: 'SR', image: 'images/CTBC_Brothers/2.jpg' },
-        { id: 'B03', name: '陳子豪', team: 'Brothers', rarity: 'SR', image: 'images/CTBC_Brothers/3.jpg' },
-        { id: 'B04', name: '德保拉', team: 'Brothers', rarity: 'SR', image: 'images/CTBC_Brothers/4.jpg' },
-        { id: 'B05', name: '詹子賢', team: 'Brothers', rarity: 'R', image: 'images/CTBC_Brothers/5.jpg' },
-        { id: 'B06', name: '許基宏', team: 'Brothers', rarity: 'R', image: 'images/CTBC_Brothers/6.jpg' },
-        { id: 'B07', name: '岳東華', team: 'Brothers', rarity: 'R', image: 'images/CTBC_Brothers/7.jpg' },
-        { id: 'B08', name: '呂彥青', team: 'Brothers', rarity: 'R', image: 'images/CTBC_Brothers/8.jpg' },
-        { id: 'B09', name: '鄭浩均', team: 'Brothers', rarity: 'R', image: 'images/CTBC_Brothers/9.jpg' },
-        { id: 'B10', name: '岳政華', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/10.jpg' },
-        { id: 'B11', name: '曾頌恩', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/11.jpg' },
-        { id: 'B12', name: '高宇杰', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/12.jpg' },
-        { id: 'B13', name: '王凱程', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/13.jpg' },
-        { id: 'B14', name: '吳俊偉', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/14.jpg' },
-        { id: 'B15', name: '猛登', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/15.jpg' },
-        { id: 'B16', name: '艾士特', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/16.jpg' },
-
-        // --- 統一 7-ELEVEn 獅 (16) ---
-        { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: 'images/Uni-President_7-Eleven_Lions/1.jpg' },
-        { id: 'L02', name: '蘇智傑', team: 'Lions', rarity: 'SR', image: 'images/Uni-President_7-Eleven_Lions/2.jpg' },
-        { id: 'L03', name: '林安可', team: 'Lions', rarity: 'SR', image: 'images/Uni-President_7-Eleven_Lions/3.jpg' },
-        { id: 'L04', name: '古林睿煬', team: 'Lions', rarity: 'SR', image: 'images/Uni-President_7-Eleven_Lions/4.jpg' },
-        { id: 'L05', name: '陳鏞基', team: 'Lions', rarity: 'R', image: 'images/Uni-President_7-Eleven_Lions/5.jpg' },
-        { id: 'L06', name: '邱智呈', team: 'Lions', rarity: 'R', image: 'images/Uni-President_7-Eleven_Lions/6.jpg' },
-        { id: 'L07', name: '林靖凱', team: 'Lions', rarity: 'R', image: 'images/Uni-President_7-Eleven_Lions/7.jpg' },
-        { id: 'L08', name: '勝騎士', team: 'Lions', rarity: 'R', image: 'images/Uni-President_7-Eleven_Lions/8.jpg' },
-        { id: 'L09', name: '陳韻文', team: 'Lions', rarity: 'R', image: 'images/Uni-President_7-Eleven_Lions/9.jpg' },
-        { id: 'L10', name: '林益全', team: 'Lions', rarity: 'N', image: 'images/Uni-President_7-Eleven_Lions/10.jpg' },
-        { id: 'L11', name: '潘威倫', team: 'Lions', rarity: 'N', image: 'images/Uni-President_7-Eleven_Lions/11.jpg' },
-        { id: 'L12', name: '胡智爲', team: 'Lions', rarity: 'N', image: 'images/Uni-President_7-Eleven_Lions/12.jpg' },
-        { id: 'L13', name: '劉予承', team: 'Lions', rarity: 'N', image: 'images/Uni-President_7-Eleven_Lions/13.jpg' },
-        { id: 'L14', name: '林岱安', team: 'Lions', rarity: 'N', image: 'images/Uni-President_7-Eleven_Lions/14.jpg' },
-        { id: 'L15', name: '施冠宇', team: 'Lions', rarity: 'N', image: 'images/Uni-President_7-Eleven_Lions/15.jpg' },
-        { id: 'L16', name: '裴瑞茲', team: 'Lions', rarity: 'N', image: 'images/Uni-President_7-Eleven_Lions/16.jpg' },
-        
-        // --- 樂天桃猿 (16) ---
-        { id: 'M01', name: '林立', team: 'Monkeys', rarity: 'SSR', image: 'images/Rakuten_Monkeys/1.jpg' },
-        { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'images/Rakuten_Monkeys/2.jpg' }, 
-        { id: 'M03', name: '朱育賢', team: 'Monkeys', rarity: 'SR', image: 'images/Rakuten_Monkeys/3.jpg' },
-        { id: 'M04', name: '陳晨威', team: 'Monkeys', rarity: 'SR', image: 'images/Rakuten_Monkeys/4.jpg' },
-        { id: 'M05', name: '林泓育', team: 'Monkeys', rarity: 'R', image: 'images/Rakuten_Monkeys/5.jpg' },
-        { id: 'M06', name: '梁家榮', team: 'Monkeys', rarity: 'R', image: 'images/Rakuten_Monkeys/6.jpg' },
-        { id: 'M07', name: '黃子鵬', team: 'Monkeys', rarity: 'R', image: 'images/Rakuten_Monkeys/7.jpg' },
-        { id: 'M08', name: '陳冠宇', team: 'Monkeys', rarity: 'R', image: 'images/Rakuten_Monkeys/8.jpg' },
-        { id: 'M09', name: '威能帝', team: 'Monkeys', rarity: 'R', image: 'images/Rakuten_Monkeys/9.jpg' },
-        { id: 'M10', name: '林承飛', team: 'Monkeys', rarity: 'N', image: 'images/Rakuten_Monkeys/10.jpg' },
-        { id: 'M11', name: '嚴宏鈞', team: 'Monkeys', rarity: 'N', image: 'images/Rakuten_Monkeys/11.jpg' },
-        { id: 'M12', name: '成晉', team: 'Monkeys', rarity: 'N', image: 'images/Rakuten_Monkeys/12.jpg' },
-        { id: 'M13', name: '邱丹', team: 'Monkeys', rarity: 'N', image: 'images/Rakuten_Monkeys/13.jpg' },
-        { id: 'M14', name: '曾仁和', team: 'Monkeys', rarity: 'N', image: 'images/Rakuten_Monkeys/14.jpg' },
-        { id: 'M15', name: '霸威斯', team: 'Monkeys', rarity: 'N', image: 'images/Rakuten_Monkeys/15.jpg' },
-        { id: 'M16', name: '魔神樂', team: 'Monkeys', rarity: 'N', image: 'images/Rakuten_Monkeys/16.jpg' },
-
-        // --- 富邦悍將 (16) ---
-        { id: 'G01', name: '范國宸', team: 'Guardians', rarity: 'SSR', image: 'images/Fubon_Guardians/1.jpg' },
-        { id: 'G02', name: '戴培峰', team: 'Guardians', rarity: 'SR', image: 'images/Fubon_Guardians/2.jpg' },
-        { id: 'G03', name: '申皓瑋', team: 'Guardians', rarity: 'SR', image: 'images/Fubon_Guardians/3.jpg' },
-        { id: 'G04', name: '曾峻岳', team: 'Guardians', rarity: 'SR', image: 'images/Fubon_Guardians/4.jpg' },
-        { id: 'G05', name: '王正棠', team: 'Guardians', rarity: 'R', image: 'images/Fubon_Guardians/5.jpg' },
-        { id: 'G06', name: '李宗賢', team: 'Guardians', rarity: 'R', image: 'images/Fubon_Guardians/6.jpg' },
-        { id: 'G07', name: '高國麟', team: 'Guardians', rarity: 'R', image: 'images/Fubon_Guardians/7.jpg' },
-        { id: 'G08', name: '陳仕朋', team: 'Guardians', rarity: 'R', image: 'images/Fubon_Guardians/8.jpg' },
-        { id: 'G09', name: '羅戈', team: 'Guardians', rarity: 'R', image: 'images/Fubon_Guardians/9.jpg' },
-        { id: 'G10', name: '池恩齊', team: 'Guardians', rarity: 'N', image: 'images/Fubon_Guardians/10.jpg' },
-        { id: 'G11', name: '林哲瑄', team: 'Guardians', rarity: 'N', image: 'images/Fubon_Guardians/11.jpg' },
-        { id: 'G12', name: '王苡丞', team: 'Guardians', rarity: 'N', image: 'images/Fubon_Guardians/12.jpg' },
-        { id: 'G13', name: '姚冠瑋', team: 'Guardians', rarity: 'N', image: 'images/Fubon_Guardians/13.jpg' },
-        { id: 'G14', name: '江少慶', team: 'Guardians', rarity: 'N', image: 'images/Fubon_Guardians/14.jpg' },
-        { id: 'G15', name: '富藍戈', team: 'Guardians', rarity: 'N', image: 'images/Fubon_Guardians/15.jpg' },
-        { id: 'G16', name: '布藍登', team: 'Guardians', rarity: 'N', image: 'images/Fubon_Guardians/16.jpg' },
-
-        // --- 味全龍 (16) ---
-        { id: 'D01', name: '劉基鴻', team: 'Dragons', rarity: 'SSR', image: 'images/Wei_Chuan_Dragons/1.jpg' },
-        { id: 'D02', name: '吉力吉撈．鞏冠', team: 'Dragons', rarity: 'SR', image: 'images/Wei_Chuan_Dragons/2.jpg' },
-        { id: 'D03', name: '郭天信', team: 'Dragons', rarity: 'SR', image: 'images/Wei_Chuan_Dragons/3.jpg' },
-        { id: 'D04', name: '徐若熙', team: 'Dragons', rarity: 'SR', image: 'images/Wei_Chuan_Dragons/4.jpg' },
-        { id: 'D05', name: '李凱威', team: 'Dragons', rarity: 'R', image: 'images/Wei_Chuan_Dragons/5.jpg' },
-        { id: 'D06', name: '王維中', team: 'Dragons', rarity: 'R', image: 'images/Wei_Chuan_Dragons/6.jpg' },
-        { id: 'D07', name: '鋼龍', team: 'Dragons', rarity: 'R', image: 'images/Wei_Chuan_Dragons/7.jpg' },
-        { id: 'D08', name: '拿莫．伊漾', team: 'Dragons', rarity: 'R', image: 'images/Wei_Chuan_Dragons/8.jpg' },
-        { id: 'D09', name: '郭嚴文', team: 'Dragons', rarity: 'R', image: 'images/Wei_Chuan_Dragons/9.jpg' },
-        { id: 'D10', name: '張政禹', team: 'Dragons', rarity: 'N', image: 'images/Wei_Chuan_Dragons/10.jpg' },
-        { id: 'D11', name: '蔣少宏', team: 'Dragons', rarity: 'N', image: 'images/Wei_Chuan_Dragons/11.jpg' },
-        { id: 'D12', name: '高孝儀', team: 'Dragons', rarity: 'N', image: 'images/Wei_Chuan_Dragons/12.jpg' },
-        { id: 'D13', name: '林孝程', team: 'Dragons', rarity: 'N', image: 'images/Wei_Chuan_Dragons/13.jpg' },
-        { id: 'D14', name: '陳冠偉', team: 'Dragons', rarity: 'N', image: 'images/Wei_Chuan_Dragons/14.jpg' },
-        { id: 'D15', name: '王躍霖', team: 'Dragons', rarity: 'N', image: 'images/Wei_Chuan_Dragons/15.jpg' },
-        { id: 'D16', name: '伍鐸', team: 'Dragons', rarity: 'N', image: 'images/Wei_Chuan_Dragons/16.jpg' },
-
-        // --- 台鋼雄鷹 (16) ---
-        { id: 'H01', name: '王柏融', team: 'Hawks', rarity: 'SSR', image: 'images/TSG_Hawks/1.jpg' },
-        { id: 'H02', name: '曾子祐', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/2.jpg' },
-        { id: 'H03', name: '王溢正', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/3.jpg' },
-        { id: 'H04', name: '笠原祥太郎', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/4.jpg' },
-        { id: 'H05', name: '葉保弟', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/5.jpg' },
-        { id: 'H06', name: '杜家明', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/6.jpg' },
-        { id: 'H07', name: '魔鷹', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/7.jpg' },
-        { id: 'H08', name: '伍祐城', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/8.jpg' },
-        { id: 'H09', name: '施子謙', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/9.jpg' },
-        { id: 'H10', name: '郭永維', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/10.jpg' },
-        { id: 'H11', name: '張肇元', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/11.jpg' },
-        { id: 'H12', name: '紀慶然', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/12.jpg' },
-        { id: 'H13', name: '洪瑋漢', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/13.jpg' },
-        { id: 'H14', name: '顏清浤', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/14.jpg' },
-        { id: 'H15', name: '陳宇宏', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/15.jpg' },
-        { id: 'H16', name: '雷公', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/16.jpg' }
+        { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
+        { id: 'B02', name: '江坤宇', team: 'Brothers', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'B03', name: '陳子豪', team: 'Brothers', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'B04', name: '德保拉', team: 'Brothers', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'B05', name: '詹子賢', team: 'Brothers', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'B06', name: '許基宏', team: 'Brothers', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'B07', name: '岳東華', team: 'Brothers', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'B08', name: '呂彥青', team: 'Brothers', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'B09', name: '鄭浩均', team: 'Brothers', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'B10', name: '岳政華', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'B11', name: '曾頌恩', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'B12', name: '高宇杰', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'B13', name: '王凱程', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'B14', name: '吳俊偉', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'B15', name: '猛登', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'B16', name: '艾士特', team: 'Brothers', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
+        { id: 'L02', name: '蘇智傑', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'L03', name: '林安可', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'L04', name: '古林睿煬', team: 'Lions', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'L05', name: '陳鏞基', team: 'Lions', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'L06', name: '邱智呈', team: 'Lions', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'L07', name: '林靖凱', team: 'Lions', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'L08', name: '勝騎士', team: 'Lions', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'L09', name: '陳韻文', team: 'Lions', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'L10', name: '林益全', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'L11', name: '潘威倫', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'L12', name: '胡智爲', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'L13', name: '劉予承', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'L14', name: '林岱安', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'L15', name: '施冠宇', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'L16', name: '裴瑞茲', team: 'Lions', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'M01', name: '林立', team: 'Monkeys', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
+        { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' }, 
+        { id: 'M03', name: '朱育賢', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'M04', name: '陳晨威', team: 'Monkeys', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'M05', name: '林泓育', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'M06', name: '梁家榮', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'M07', name: '黃子鵬', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'M08', name: '陳冠宇', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'M09', name: '威能帝', team: 'Monkeys', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'M10', name: '林承飛', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'M11', name: '嚴宏鈞', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'M12', name: '成晉', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'M13', name: '邱丹', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'M14', name: '曾仁和', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'M15', name: '霸威斯', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'M16', name: '魔神樂', team: 'Monkeys', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'G01', name: '范國宸', team: 'Guardians', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
+        { id: 'G02', name: '李宗賢', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'G03', name: '申皓瑋', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'G04', name: '曾峻岳', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'G05', name: '王正棠', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'G06', name: '戴培峰', team: 'Guardians', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'G07', name: '高國麟', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'G08', name: '陳仕朋', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'G09', name: '羅戈', team: 'Guardians', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'G10', name: '池恩齊', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'G11', name: '林哲瑄', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'G12', name: '王苡丞', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'G13', name: '姚冠瑋', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'G14', name: '江少慶', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'G15', name: '富藍戈', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'G16', name: '布藍登', team: 'Guardians', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'D01', name: '劉基鴻', team: 'Dragons', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
+        { id: 'D02', name: '吉力吉撈．鞏冠', team: 'Dragons', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'D03', name: '郭天信', team: 'Dragons', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'D04', name: '徐若熙', team: 'Dragons', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'D05', name: '李凱威', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'D06', name: '王維中', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'D07', name: '鋼龍', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'D08', name: '拿莫．伊漾', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'D09', name: '郭嚴文', team: 'Dragons', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'D10', name: '張政禹', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'D11', name: '蔣少宏', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'D12', name: '高孝儀', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'D13', name: '林孝程', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'D14', name: '陳冠偉', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'D15', name: '王躍霖', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'D16', name: '伍鐸', team: 'Dragons', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'H01', name: '王柏融', team: 'Hawks', rarity: 'SSR', image: 'bookshelf_bg.jpg' },
+        { id: 'H02', name: '曾子祐', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'H03', name: '王溢正', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'H04', name: '笠原祥太郎', team: 'Hawks', rarity: 'SR', image: 'bookshelf_bg.jpg' },
+        { id: 'H05', name: '葉保弟', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'H06', name: '杜家明', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'H07', name: '魔鷹', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'H08', name: '伍祐城', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'H09', name: '施子謙', team: 'Hawks', rarity: 'R', image: 'bookshelf_bg.jpg' },
+        { id: 'H10', name: '郭永維', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'H11', name: '張肇元', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'H12', name: '紀慶然', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'H13', name: '洪瑋漢', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'H14', name: '顏清浤', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'H15', name: '陳宇宏', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' },
+        { id: 'H16', name: '雷公', team: 'Hawks', rarity: 'N', image: 'bookshelf_bg.jpg' }
     ];
 
     
-    // --- B. 獲取所有需要的 HTML 元素 ---
+    // --- B. 獲取 HTML 元素 ---
     const gachaView = document.getElementById('gacha-view');
     const collectionView = document.getElementById('collection-view');
     const showGachaBtn = document.getElementById('show-gacha-btn');
@@ -128,23 +120,117 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminSubmitButton = document.getElementById('admin-submit');
     const adminMessage = document.getElementById('admin-message');
 
+    // 登入相關元素
+    const loginScreen = document.getElementById('login-screen');
+    const mainApp = document.getElementById('main-app');
+    const loginUsernameInput = document.getElementById('login-username');
+    const loginPasswordInput = document.getElementById('login-password');
+    const btnLogin = document.getElementById('btn-login');
+    const loginMessage = document.getElementById('login-message');
+    const currentUserDisplay = document.getElementById('current-user-display');
 
-    // --- C. 初始化代幣 ---
-    const TOKEN_STORAGE_KEY = 'myStudentTokens_CPBL'; 
+
+    // --- C. 全域狀態變數 ---
+    let currentUser = null; 
     let currentTokens = 0;
-    function updateTokens(amount) {
-        currentTokens = amount;
-        tokenDisplay.innerText = currentTokens;
-        localStorage.setItem(TOKEN_STORAGE_KEY, currentTokens); 
-    }
-    const savedTokens = localStorage.getItem(TOKEN_STORAGE_KEY);
-    updateTokens(savedTokens ? parseInt(savedTokens) : 100); 
-
-
-    // --- D. 初始化卡片收藏庫 ---
-    const COLLECTION_STORAGE_KEY = 'myStudentCollection_CPBL'; 
     let cardCollection = {}; 
+    let redeemedCodes = []; 
 
+    
+    // --- 【雲端登入邏輯】 ---
+    btnLogin.addEventListener('click', async () => {
+        const username = loginUsernameInput.value.trim();
+        const password = loginPasswordInput.value.trim();
+
+        if (username === "" || password === "") {
+            loginMessage.innerText = "請輸入名字和密碼！";
+            return;
+        }
+
+        // 鎖定按鈕，顯示連線中
+        btnLogin.disabled = true;
+        btnLogin.innerText = "雲端連線中，請稍候...";
+        loginMessage.style.color = "#333";
+        loginMessage.innerText = "正在向 Google 試算表請求資料...";
+
+        try {
+            // 發送請求到 Google Apps Script
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'login',
+                    username: username,
+                    password: password
+                })
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                // 登入成功，寫入資料
+                currentUser = username;
+                currentTokens = parseInt(result.tokens) || 0;
+                // 解析雲端傳回來的 JSON 字串，如果是空的就給預設值
+                cardCollection = JSON.parse(result.collection || "{}");
+                redeemedCodes = JSON.parse(result.redeemedCodes || "[]");
+
+                // 更新畫面
+                currentUserDisplay.innerText = `玩家: ${username}`;
+                updateTokensUI();
+                displayCollection();
+
+                // 切換畫面
+                loginScreen.style.display = 'none';
+                mainApp.style.display = 'block';
+            } else {
+                // 密碼錯誤
+                loginMessage.style.color = "red";
+                loginMessage.innerText = result.message || "登入失敗！";
+            }
+        } catch (error) {
+            loginMessage.style.color = "red";
+            loginMessage.innerText = "連線失敗，請檢查網路！";
+            console.error(error);
+        } finally {
+            // 恢復按鈕狀態
+            btnLogin.disabled = false;
+            btnLogin.innerText = "進入遊戲";
+        }
+    });
+
+    // --- 【雲端存檔邏輯】 ---
+    async function saveDataToCloud() {
+        if (!currentUser) return;
+        
+        // 顯示「同步中」的提示
+        currentUserDisplay.innerText = `玩家: ${currentUser} (☁️同步中...)`;
+        
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'save',
+                    username: currentUser,
+                    tokens: currentTokens,
+                    collection: JSON.stringify(cardCollection),
+                    redeemedCodes: JSON.stringify(redeemedCodes)
+                })
+            });
+            // 存檔成功，恢復正常名字
+            currentUserDisplay.innerText = `玩家: ${currentUser}`;
+        } catch (e) {
+            console.error("雲端存檔失敗:", e);
+            currentUserDisplay.innerText = `玩家: ${currentUser} (⚠️同步失敗)`;
+        }
+    }
+
+
+    // 僅更新畫面數字，不負責存檔
+    function updateTokensUI() {
+        tokenDisplay.innerText = currentTokens;
+    }
+
+
+    // --- D. 顯示卡片收藏庫 ---
     function displayCollection() {
         let totalOwnedTypes = 0; 
         const rarities = ['SSR', 'SR', 'R', 'N']; 
@@ -187,23 +273,16 @@ document.addEventListener('DOMContentLoaded', () => {
         collectionProgress.innerText = `${totalOwnedTypes} / ${cardMasterList.length}`;
     }
 
-    const savedCollection = localStorage.getItem(COLLECTION_STORAGE_KEY);
-    if (savedCollection) {
-        cardCollection = JSON.parse(savedCollection); 
-    }
-    displayCollection();
-
 
     // --- E. 抽卡邏輯 ---
     const DRAW_COST = 10; 
     function performDraw() {
         const roll = Math.random(); 
         let chosenRarity;
-        // 增加 SSR 機率，讓抽卡更有趣一點
-        if (roll < 0.1) { chosenRarity = 'SSR'; } // 10% SSR (原本 6.25%)
-        else if (roll < 0.35) { chosenRarity = 'SR'; } // 25% SR (原本 18.75%)
-        else if (roll < 0.65) { chosenRarity = 'R'; } // 30% R (原本 31.25%)
-        else { chosenRarity = 'N'; } // 35% N (原本 43.75%)
+        if (roll < 0.1) { chosenRarity = 'SSR'; } 
+        else if (roll < 0.35) { chosenRarity = 'SR'; }
+        else if (roll < 0.65) { chosenRarity = 'R'; } 
+        else { chosenRarity = 'N'; } 
 
         const possibleCards = cardMasterList.filter(card => card.rarity === chosenRarity);
         const drawnCard = possibleCards[Math.floor(Math.random() * possibleCards.length)];
@@ -211,79 +290,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- F. 抽卡按鈕事件 ---
-    
-    // 啟用/禁用按鈕的輔助函式
     function setButtonsDisabled(disabled) {
         drawButton.disabled = disabled;
         draw10xButton.disabled = disabled;
     }
 
-    // 單抽按鈕
     drawButton.addEventListener('click', () => {
         if (currentTokens < DRAW_COST) {
             alert("代幣不足！快去跟老師領取！");
             return;
         }
-        updateTokens(currentTokens - DRAW_COST);
-        setButtonsDisabled(true); // 禁用兩個按鈕
+        
+        // 扣代幣並更新畫面
+        currentTokens -= DRAW_COST;
+        updateTokensUI();
+        
+        setButtonsDisabled(true); 
+        animationWrapper.innerHTML = '<div class="card-back">抽卡中...</div>';
 
-        // 顯示卡片背面動畫
-        animationWrapper.innerHTML = '<div class="card-back">?</div>';
-
-        // 在卡片背面動畫結束後，顯示抽卡結果
         setTimeout(() => {
             const drawnCard = performDraw(); 
-            // 顯示單張大卡片結果
             animationWrapper.innerHTML = `
                 <div class="card reveal-${drawnCard.rarity}">
                     <img src="${drawnCard.image}" alt="${drawnCard.name}">
                 </div>
             `;
             
-            // 更新收藏
+            // 更新卡冊數量
             const currentQuantity = cardCollection[drawnCard.id] || 0;
             cardCollection[drawnCard.id] = currentQuantity + 1;
-            localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
-            displayCollection(); // 更新卡冊顯示
+            displayCollection(); 
             
-            setButtonsDisabled(false); // 恢復按鈕
-        }, 2200); // 這裡的時間要比 CSS 動畫時間 (1.5s) 長，讓動畫播完
+            // 【重要】抽完卡後，觸發雲端存檔
+            saveDataToCloud();
+            
+            setButtonsDisabled(false); 
+        }, 2200); 
     });
 
-    // 十連抽按鈕
     draw10xButton.addEventListener('click', () => {
         const TEN_DRAW_COST = DRAW_COST * 10;
         if (currentTokens < TEN_DRAW_COST) {
             alert(`十連抽需要 ${TEN_DRAW_COST} 枚代幣，您的代幣不足！`);
             return;
         }
-        updateTokens(currentTokens - TEN_DRAW_COST);
-        setButtonsDisabled(true); // 禁用兩個按鈕
+        
+        // 扣代幣並更新畫面
+        currentTokens -= TEN_DRAW_COST;
+        updateTokensUI();
+        
+        setButtonsDisabled(true); 
+        animationWrapper.innerHTML = '<div class="card-back" style="animation-duration: 2s;">連抽中...</div>';
 
-        // 顯示多張卡片背面動畫 (簡化為一個動畫)
-        animationWrapper.innerHTML = '<div class="card-back" style="animation-duration: 2s;">?×10</div>';
-
-
-        // 在卡片背面動畫結束後，顯示十連抽結果
         setTimeout(() => {
-            let drawResults = []; // 儲存十連抽結果
-            // 執行十次抽卡
+            let drawResults = []; 
             for (let i = 0; i < 10; i++) {
                 const drawnCard = performDraw();
-                drawResults.push(drawnCard); // 加入結果列表
+                drawResults.push(drawnCard); 
                 
-                // 更新收藏庫 (立即更新)
+                // 更新卡冊數量
                 const currentQuantity = cardCollection[drawnCard.id] || 0;
                 cardCollection[drawnCard.id] = currentQuantity + 1;
             }
             
-            // 儲存更新後的收藏庫到 localStorage
-            localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
-            
-            // 清空動畫區，準備顯示結果
             animationWrapper.innerHTML = ""; 
-            
-            // 將十張卡片結果顯示出來，並讓它們依序出現
             drawResults.forEach((card, index) => {
                 const cardWrapper = document.createElement('div');
                 cardWrapper.className = `card-small-wrapper reveal-${card.rarity}`; 
@@ -292,37 +362,43 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img src="${card.image}" alt="${card.name}">
                     </div>
                 `;
-                // 為每個卡片設定不同的延遲，實現依序顯示
-                cardWrapper.style.animationDelay = `${(index * 0.1) + 0.5}s`; // 每隔0.1秒出現一張
+                cardWrapper.style.animationDelay = `${(index * 0.1) + 0.5}s`; 
                 animationWrapper.appendChild(cardWrapper);
             });
             
-            displayCollection(); // 更新卡冊顯示
-            setButtonsDisabled(false); // 恢復按鈕
-        }, 3000); // 這裡的時間要比 CSS 動畫時間長，確保動畫播完
+            displayCollection(); 
+            
+            // 【重要】十連抽完畢後，觸發雲端存檔
+            saveDataToCloud();
+            
+            setButtonsDisabled(false); 
+        }, 3000); 
     });
 
 
-    // --- G. 老師控制台（密技）的邏輯 ---
-    // (這部分不變)
+    // --- G. 老師控制台邏輯 ---
     const rewardCodeDatabase = {
-        "KRMNKKCD1230": 1500,
+        "1028DSAPDCIN": 50,
+        "M1104ITXYKCT": 50,
+        "CQ1111CVWO": 50,
+        "ONL1118DJCEN": 50,
+        "LSNL1125YCRW": 50,
+        "NWIGC1202BUI": 50,
+        "JRHJJK1209BW": 50,
+        "JEYCHHO1216T": 50,
+        "666666661223": 100,
     };
-    const REDEEMED_CODES_KEY = 'redeemedRewardCodes_CPBL'; 
-    let redeemedCodes = []; 
-    const savedRedeemedCodes = localStorage.getItem(REDEEMED_CODES_KEY);
-    if (savedRedeemedCodes) {
-        redeemedCodes = JSON.parse(savedRedeemedCodes); 
-    }
-    function saveRedeemedCodes() {
-        localStorage.setItem(REDEEMED_CODES_KEY, JSON.stringify(redeemedCodes));
-    }
+
     adminSubmitButton.addEventListener('click', () => {
         const code = adminCodeInput.value.trim().toUpperCase(); 
         adminMessage.style.color = "red"; 
         if (code === "") { adminMessage.innerText = "請輸入密碼！"; return; }
+        
+        // 特殊管理員指令
         if (code === "RESET_MY_TOKENS") { 
-             updateTokens(0);
+             currentTokens = 0;
+             updateTokensUI();
+             saveDataToCloud(); // 觸發雲端存檔
              adminMessage.innerText = "代幣已重置。";
              adminMessage.style.color = "green";
              adminCodeInput.value = ""; 
@@ -330,30 +406,36 @@ document.addEventListener('DOMContentLoaded', () => {
         } 
         if (code === "CLEAR_MY_COLLECTION") { 
             cardCollection = {}; 
-            localStorage.setItem(COLLECTION_STORAGE_KEY, JSON.stringify(cardCollection));
             displayCollection(); 
+            saveDataToCloud(); // 觸發雲端存檔
             adminMessage.innerText = "卡片收藏已清空！";
             adminMessage.style.color = "green"; 
             adminCodeInput.value = ""; 
              return; 
         }
         if (code === "TEACHER_ADD_100") {
-             updateTokens(currentTokens + 100);
+             currentTokens += 100;
+             updateTokensUI();
+             saveDataToCloud(); // 觸發雲端存檔
              adminMessage.innerText = "成功補充 100 枚代幣！(可重複)";
              adminMessage.style.color = "green";
              adminCodeInput.value = ""; 
              return; 
         }
+
+        // 一般獎勵代碼檢查
         if (rewardCodeDatabase.hasOwnProperty(code)) {
             if (redeemedCodes.includes(code)) {
                 adminMessage.innerText = "此獎勵密碼已經使用過了喔！";
             } else {
                 const amount = rewardCodeDatabase[code]; 
-                updateTokens(currentTokens + amount);
+                currentTokens += amount;
+                updateTokensUI();
+                redeemedCodes.push(code); 
+                saveDataToCloud(); // 觸發雲端存檔
+                
                 adminMessage.innerText = `成功兌換 ${amount} 枚代幣！`;
                 adminMessage.style.color = "green";
-                redeemedCodes.push(code); 
-                saveRedeemedCodes(); 
             }
         } else {
             adminMessage.innerText = "密碼錯誤！";
@@ -375,11 +457,3 @@ document.addEventListener('DOMContentLoaded', () => {
         showCollectionBtn.classList.add('active');
     });
 });
-
-
-
-
-
-
-
-
