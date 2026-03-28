@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'B12', name: '高宇杰', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/12.jpg' },
         { id: 'B13', name: '王凱程', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/13.jpg' },
         { id: 'B14', name: '吳俊偉', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/14.jpg' },
-        { id: 'B15', name: '猛登', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/15.jpg' },
-        { id: 'B16', name: '艾士特', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/16.jpg' },
+        { id: 'B15', name: '林瑞鈞', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/15.jpg' },
+        { id: 'B16', name: '李聖裕', team: 'Brothers', rarity: 'N', image: 'images/CTBC_Brothers/16.jpg' },
 
         // --- 統一 7-ELEVEn 獅 (16) ---
         { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', image: 'images/Uni-President_7-Eleven_Lions/1.jpg' },
