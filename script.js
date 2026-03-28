@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- 台鋼雄鷹 (16) ---
         { id: 'H01', name: '王柏融', team: 'Hawks', rarity: 'SSR', image: 'images/TSG_Hawks/1.jpg' },
         { id: 'H02', name: '曾子祐', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/2.jpg' },
-        { id: 'H03', name: '王溢正', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/3.jpg' },
-        { id: 'H04', name: '笠原祥太郎', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/4.jpg' },
+        { id: 'H03', name: '韋宏亮', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/3.jpg' },
+        { id: 'H04', name: '陳正毅', team: 'Hawks', rarity: 'SR', image: 'images/TSG_Hawks/4.jpg' },
         { id: 'H05', name: '葉保弟', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/5.jpg' },
         { id: 'H06', name: '杜家明', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/6.jpg' },
         { id: 'H07', name: '魔鷹', team: 'Hawks', rarity: 'R', image: 'images/TSG_Hawks/7.jpg' },
@@ -110,10 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'H10', name: '郭永維', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/10.jpg' },
         { id: 'H11', name: '張肇元', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/11.jpg' },
         { id: 'H12', name: '紀慶然', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/12.jpg' },
-        { id: 'H13', name: '洪瑋漢', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/13.jpg' },
+        { id: 'H13', name: '許育銘', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/13.jpg' },
         { id: 'H14', name: '顏清浤', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/14.jpg' },
         { id: 'H15', name: '陳宇宏', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/15.jpg' },
-        { id: 'H16', name: '雷公', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/16.jpg' }
+        { id: 'H16', name: '廖奕安', team: 'Hawks', rarity: 'N', image: 'images/TSG_Hawks/16.jpg' }
     ];
 
     
