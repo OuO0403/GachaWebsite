@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- 中信兄弟 (16) ---
         { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', image: 'images/CTBC_Brothers/1.jpg' },
         { id: 'B02', name: '江坤宇', team: 'Brothers', rarity: 'SR', image: 'images/CTBC_Brothers/2.jpg' },
-        { id: 'B03', name: '陳子豪', team: 'Brothers', rarity: 'SR', image: 'images/CTBC_Brothers/3.jpg' },
+        { id: 'B03', name: '陳琥', team: 'Brothers', rarity: 'SR', image: 'images/CTBC_Brothers/3.jpg' },
         { id: 'B04', name: '德保拉', team: 'Brothers', rarity: 'SR', image: 'images/CTBC_Brothers/4.jpg' },
         { id: 'B05', name: '詹子賢', team: 'Brothers', rarity: 'R', image: 'images/CTBC_Brothers/5.jpg' },
         { id: 'B06', name: '許基宏', team: 'Brothers', rarity: 'R', image: 'images/CTBC_Brothers/6.jpg' },
