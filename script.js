@@ -404,15 +404,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- G. 老師控制台邏輯 ---
     const rewardCodeDatabase = {
-        "1028DSAPDCIN": 50,
-        "M1104ITXYKCT": 50,
-        "CQ1111CVWO": 50,
-        "ONL1118DJCEN": 50,
-        "LSNL1125YCRW": 50,
-        "NWIGC1202BUI": 50,
-        "JRHJJK1209BW": 50,
-        "JEYCHHO1216T": 50,
-        "666666661223": 100,
+        "0331DSAPDCINR": 50,
+        "M0407ITXYKCTE": 50,
+        "CQ0414CVWOD": 50,
+        "ONL0428DJCEGN": 50,
+        "LSNL0505YCGRW": 50,
+        "NWIGC0512BUGI": 50,
+        "JRHJJK0519VBW": 50,
+        "JEYCHHO0526VT": 50,
+        "NOJWELNF0602N": 50,
+        "LURNDHWYI0609": 50,
     };
 
     adminSubmitButton.addEventListener('click', () => {
