@@ -14,7 +14,8 @@
     <div id="login-screen" class="glass-panel login-box">
         <h1 class="glow-text-red">⚾ 數學對戰聯盟</h1>
         <input type="text" id="login-username" placeholder="輸入玩家名稱" class="battle-input text-center">
-        <button id="btn-login" class="battle-btn primary-btn">進入競技場</button>
+        <input type="password" id="login-password" placeholder="輸入密碼 (同步雲端卡冊)" class="battle-input text-center">
+        <button id="btn-login" class="battle-btn primary-btn">同步卡冊並進入大廳</button>
     </div>
 
     <div id="main-battle-app" style="display: none; width: 100%; max-width: 1200px; margin: 0 auto;">
@@ -26,12 +27,12 @@
 
         <div id="lobby-view" class="lobby-layout" style="display: none;">
             <div class="glass-panel lobby-left">
-                <h3 class="glow-text-gold" style="margin-top: 0;">🃏 我的球員圖鑑</h3>
+                <h3 class="glow-text-gold" style="margin-top: 0;">🃏 我的專屬球員圖鑑</h3>
                 <div class="filters-row">
                     <select id="lobby-filter-team" class="battle-select">
                         <option value="all">所有球隊</option>
                         <option value="Brothers">中信兄弟</option>
-                        <option value="Lions">統一7-ELEVEn獅</option>
+                        <option value="Lions">統一獅</option>
                         <option value="Monkeys">樂天桃猿</option>
                         <option value="Guardians">富邦悍將</option>
                         <option value="Dragons">味全龍</option>
@@ -39,8 +40,8 @@
                     </select>
                     <select id="lobby-filter-role" class="battle-select">
                         <option value="all">所有定位</option>
-                        <option value="Batter">打者 (Batter)</option>
-                        <option value="Pitcher">投手 (Pitcher)</option>
+                        <option value="Batter">打者</option>
+                        <option value="Pitcher">投手</option>
                     </select>
                 </div>
                 <div class="card-collection-grid scrollable-grid" id="lobby-card-grid"></div>
@@ -51,21 +52,19 @@
                 <div class="mode-box" style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; color: #ccc;">選擇遊玩方式：</label>
                     <select id="game-mode" class="battle-select">
-                        <option value="basic">基礎對決 (自由攻守)</option>
+                        <option value="basic">基礎對決 (比大小不扣血)</option>
                         <option value="dice">骰子決戰 (20滴血制)</option>
                     </select>
                 </div>
                 <button id="btn-create-room" class="battle-btn create-btn">創建公開房間</button>
                 
                 <div class="divider"><span>線上公開房間列表</span></div>
-                <div id="room-list" class="scrollable-list">
-                    <p style="color: #888; font-style: italic;">目前沒有人在開房...</p>
-                </div>
+                <div id="room-list" class="scrollable-list"><p style="color: #888; font-style: italic;">目前沒有人在開房...</p></div>
 
                 <div class="divider"><span>手動代碼輸入</span></div>
                 <div class="join-room-box">
                     <input type="text" id="join-room-id" placeholder="輸入 4 位數房間碼" class="battle-input text-center" style="margin: 0; margin-bottom: 10px;">
-                    <button id="btn-join-room" class="battle-btn join-btn">加入</button>
+                    <button id="btn-join-room" class="battle-btn join-btn">加入房間</button>
                 </div>
                 <p id="lobby-message" class="error-msg" style="color: #FF4136; font-weight: bold; margin-top: 10px;"></p>
             </div>
@@ -74,7 +73,7 @@
         <div id="deck-building-view" class="glass-panel" style="display: none;">
             <div class="deck-header-row" style="margin-bottom: 15px;">
                 <div>
-                    <span class="room-pill" style="background: #222; padding: 5px 12px; border-radius: 15px; border: 1px solid #555;">房間：<span id="draft-room-id" class="glow-text-gold"></span></span>
+                    <span class="room-pill" style="background: #222; padding: 5px 12px; border-radius: 15px; border: 1px solid #555;">房間碼：<span id="draft-room-id" class="glow-text-gold"></span></span>
                     <span class="room-pill" style="background: #222; padding: 5px 12px; border-radius: 15px; border: 1px solid #555;">模式：<span id="draft-room-mode"></span></span>
                 </div>
             </div>
@@ -86,11 +85,7 @@
                             <option value="all">所有球隊</option>
                             <option value="Brothers">中信兄弟</option>
                             <option value="Lions">統一獅</option>
-                            <option value="Monkeys">樂天桃猿</option>
-                            <option value="Guardians">富邦悍將</option>
-                            <option value="Dragons">味全龍</option>
-                            <option value="Hawks">台鋼雄鷹</option>
-                        </select>
+                            </select>
                         <select id="deck-filter-role" class="battle-select">
                             <option value="all">所有定位</option>
                             <option value="Batter">打者</option>
@@ -113,7 +108,7 @@
                     <div class="sync-status-box" style="margin-top: 20px; text-align: center;">
                         <p id="p1-status-text" style="color: #aaa; margin: 5px 0;">房主：選牌中...</p>
                         <p id="p2-status-text" style="color: #aaa; margin: 5px 0;">對手：等待加入...</p>
-                        <button id="btn-start-game" class="battle-btn primary-btn" style="display: none; margin-top: 15px; box-shadow: 0 0 15px green;">🔥 雙方就緒，開始遊戲！</button>
+                        <button id="btn-start-game" class="battle-btn primary-btn" style="display: none; margin-top: 15px; box-shadow: 0 0 15px green;">🔥 開始遊戲！</button>
                     </div>
                 </div>
             </div>
@@ -126,7 +121,8 @@
                 <h3 style="color: white; display: flex; justify-content: space-between; margin: 0 0 10px 0;">
                     對手：<span id="opponent-name">連線中...</span> 
                     <span style="background: #FF4136; padding: 2px 10px; border-radius: 10px; font-size: 0.8em;">
-                        HP: <span id="opponent-hp" style="color:#FFD700;">20</span> | 局點: <span id="opponent-score">0</span>
+                        <span class="hp-display" style="display:none;">HP: <span id="opponent-hp" style="color:#FFD700;">20</span> | </span>
+                        局點: <span id="opponent-score">0</span>
                     </span>
                 </h3>
                 <div class="battle-hand" id="opponent-hand" style="display: flex; justify-content: center; gap: 15px; min-height: 160px;"></div>
@@ -140,7 +136,8 @@
                 <h3 style="color: white; display: flex; justify-content: space-between; margin: 0 0 10px 0;">
                     我方：<span id="my-name-display"></span> 
                     <span style="background: #FF4136; padding: 2px 10px; border-radius: 10px; font-size: 0.8em;">
-                        HP: <span id="player-hp" style="color:#FFD700;">20</span> | 局點: <span id="player-score">0</span>
+                        <span class="hp-display" style="display:none;">HP: <span id="player-hp" style="color:#FFD700;">20</span> | </span>
+                        局點: <span id="player-score">0</span>
                     </span>
                 </h3>
                 <div class="battle-hand" id="player-hand" style="display: flex; justify-content: center; gap: 15px; min-height: 160px;"></div>
@@ -148,16 +145,12 @@
         </div>
     </div>
 
-<div id="math-modal" class="modal-overlay" style="display: none;">
+    <div id="math-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content math-box" style="width: 90%; max-width: 500px;">
             <h2 class="glow-text-red" style="margin-top: 0;">🔥 戰術選擇題！</h2>
             <p style="color: white;">答對獲得戰力 <b style="color: #FFD700; font-size: 1.2em;">+20</b> Buff！</p>
-            
             <h2 id="math-question" style="margin: 20px 0; color: white; line-height: 1.5;">題目載入中...</h2>
-            
-            <div id="math-options-area" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                </div>
-            
+            <div id="math-options-area" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;"></div>
             <p id="math-feedback" class="math-fb" style="font-weight: bold; font-size: 1.3em; margin-top: 15px;"></p>
         </div>
     </div>
