@@ -11,52 +11,51 @@
 
 /* --- 玻璃擬物風面板 --- */
 .glass-panel {
-    background: rgba(30, 10, 10, 0.6);
+    background: rgba(30, 10, 10, 0.7);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 50, 50, 0.2);
     border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
+    padding: 25px;
 }
 
-/* --- 發光文字 --- */
-.glow-text-red {
-    color: #FF4136;
-    text-shadow: 0 0 10px rgba(255, 65, 54, 0.8);
-}
-.glow-text-gold {
-    color: #FFD700;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+/* --- 登入畫面居中 --- */
+.login-box {
+    max-width: 400px;
+    margin: 15vh auto;
+    text-align: center;
+    border-top: 5px solid #FF4136;
 }
 
-/* --- 酷炫按鈕 --- */
-.battle-btn {
-    width: 100%;
-    padding: 15px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.2em;
-    font-weight: bold;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
+/* --- 大廳排版 --- */
+.lobby-layout {
+    display: flex;
+    gap: 25px;
+    margin-top: 20px;
+}
+.lobby-left { flex: 1.8; }
+.lobby-right { flex: 1.2; }
+
+/* --- 下拉選單與輸入框 --- */
+.filters-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+.battle-select {
+    flex: 1;
+    padding: 10px;
+    background: #111;
     color: white;
+    border: 1px solid #FF4136;
+    border-radius: 6px;
+    font-size: 1em;
 }
-.primary-btn { background: linear-gradient(90deg, #85144b, #FF4136); }
-.primary-btn:hover { box-shadow: 0 0 15px #FF4136; }
-.create-btn { background: linear-gradient(90deg, #d35400, #e74c3c); }
-.join-btn { background: linear-gradient(90deg, #2c3e50, #34495e); border: 1px solid #7f8c8d; }
-.ready-btn { background: linear-gradient(90deg, #27ae60, #2ecc71); }
-.ready-btn:disabled { background: #555; color: #888; cursor: not-allowed; box-shadow: none; }
-.submit-btn { background: #FFD700; color: #000; }
-
-/* --- 輸入框 --- */
 .battle-input {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     border: 2px solid #555;
     color: white;
     border-radius: 8px;
@@ -66,90 +65,90 @@
 .battle-input:focus { border-color: #FF4136; outline: none; }
 .text-center { text-align: center; }
 
-/* --- 大廳分隔線 --- */
-.divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0;
-    color: #888;
+/* --- 滾動網格與列表 --- */
+.scrollable-grid {
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 5px;
 }
-.divider::before, .divider::after {
-    content: ''; flex: 1; border-bottom: 1px solid #555;
+.scrollable-list {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.4);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #444;
 }
-.divider span { padding: 0 10px; }
+/* 自訂美化滾動條 */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+::-webkit-scrollbar-thumb { background: #FF4136; border-radius: 3px; }
 
-/* --- 選牌區狀態 --- */
-.deck-header { text-align: center; margin-bottom: 20px; }
-.status-pill {
-    display: inline-block;
-    padding: 8px 15px;
-    margin: 0 5px;
-    background: #333;
-    border-radius: 20px;
-    font-weight: bold;
+/* --- 公開房間項目按鈕 --- */
+.room-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255,65,54,0.1);
+    border: 1px solid rgba(255,65,54,0.3);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
 }
+.room-item:hover { background: rgba(255,65,54,0.25); border-color: #FF4136; }
+
+/* --- 選牌區排版 --- */
+.deck-main-layout { display: flex; gap: 25px; margin-top: 15px; }
+.deck-left { flex: 2; }
+.deck-right-panel { flex: 1; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; border: 1px dashed #555; }
+.deck-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; padding-bottom: 15px; }
+.room-pill { background: #222; padding: 5px 12px; border-radius: 15px; font-weight: bold; font-size: 0.9em; margin-right: 10px; border: 1px solid #555; }
+
+/* --- 驗證標籤 --- */
+.deck-status-box { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.status-item { font-size: 1.2em; font-weight: bold; }
+.status-pill { padding: 8px 12px; background: #222; border-radius: 6px; font-weight: bold; text-align: center; }
 .req-badge { border: 1px solid #FF4136; color: #FF4136; }
 .req-badge.met { border-color: #2ecc71; color: #2ecc71; background: rgba(46, 204, 113, 0.1); }
 
-/* 選牌時的特效 */
+/* --- 按鈕視覺特效 --- */
+.battle-btn { width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; color: white; }
+.primary-btn { background: linear-gradient(90deg, #85144b, #FF4136); }
+.primary-btn:hover { box-shadow: 0 0 12px #FF4136; }
+.create-btn { background: #d35400; }
+.join-btn { background: #2980b9; }
+.ready-btn { background: #27ae60; }
+.ready-btn:disabled { background: #444; color: #777; cursor: not-allowed; }
+.delete-btn { background: #7f8c8d; }
+.delete-btn:hover { background: #c0392b; }
+
+/* 選牌選中效果 */
 .deck-card-wrapper { cursor: pointer; transition: transform 0.2s; position: relative; }
-.deck-card-wrapper:hover { transform: scale(1.05); }
-.deck-card-wrapper.selected {
-    transform: translateY(-10px);
-}
-/* 選中時的綠色發光外框 (覆蓋原本的稀有度框) */
+.deck-card-wrapper.selected { transform: translateY(-8px); }
 .deck-card-wrapper.selected::after {
-    content: '已選';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(46, 204, 113, 0.9);
-    color: white;
-    padding: 5px 15px;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 1.2em;
-    z-index: 20;
-    pointer-events: none;
+    content: '先發 ✔'; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(46, 204, 113, 0.75); color: white; display: flex; justify-content: center;
+    align-items: center; font-weight: bold; border-radius: 10px; font-size: 1.1em; z-index: 5;
 }
 
-/* --- 戰鬥區 --- */
-.arena-bg { background: linear-gradient(to bottom, #1a1a1a, #2c3e50); border: 2px solid #FFD700; }
-.room-info { text-align: center; font-size: 1.2em; margin-bottom: 10px; }
-.player-title { color: white; border-bottom: 1px solid #555; padding-bottom: 5px; display: flex; justify-content: space-between; }
+/* --- 競技場與對決 --- */
+.arena-bg { background: linear-gradient(to bottom, #111 0%, #1a3625 100%); border: 2px solid #FFD700; }
+.room-info { text-align: center; font-size: 1.2em; }
+.player-title { color: white; border-bottom: 1px solid #444; padding-bottom: 5px; display: flex; justify-content: space-between; margin: 0; }
 .score-badge { background: #FF4136; padding: 2px 10px; border-radius: 10px; font-size: 0.8em; }
-.battle-hand { display: flex; justify-content: center; gap: 15px; min-height: 180px; margin-top: 15px; flex-wrap: wrap; }
-.clash-area {
-    min-height: 150px;
-    display: flex; justify-content: center; align-items: center; flex-direction: column;
-    background: rgba(0,0,0,0.6); border-radius: 10px; margin: 20px 0; padding: 20px;
-    border: 1px solid #555;
-}
-.clash-text { font-size: 1.8em; text-align: center; margin: 0; }
+.battle-hand { display: flex; justify-content: center; gap: 15px; min-height: 160px; margin: 15px 0; }
+.clash-area { min-height: 140px; display: flex; justify-content: center; align-items: center; flex-direction: column; background: rgba(0,0,0,0.7); border-radius: 10px; margin: 15px 0; border: 1px solid #444; }
+.clash-text { font-size: 1.6em; text-align: center; margin: 0; }
+.divider { display: flex; align-items: center; text-align: center; margin: 15px 0; color: #888; font-size: 0.9em; }
+.divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #444; }
+.divider span { padding: 0 10px; }
+.glow-text-red { color: #FF4136; text-shadow: 0 0 8px rgba(255, 65, 54, 0.8); }
+.glow-text-gold { color: #FFD700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.8); }
 
-/* 戰鬥出牌特效 */
-.battle-card { cursor: pointer; transition: all 0.3s; }
-.battle-card:hover { transform: translateY(-15px); }
-
-/* --- 數學彈出視窗 --- */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85); z-index: 2000;
-    display: flex; justify-content: center; align-items: center;
-}
-.math-box {
-    background: linear-gradient(135deg, #2C0B0E, #000);
-    border: 3px solid #FF4136;
-    padding: 40px; border-radius: 15px; text-align: center;
-    box-shadow: 0 0 30px rgba(255, 65, 54, 0.5);
-}
-.math-q { font-size: 3em; margin: 20px 0; color: white; letter-spacing: 2px; }
-.math-fb { font-weight: bold; font-size: 1.5em; margin-top: 15px; }
-
-/* --- 修正登入畫面置中 --- */
-#login-screen {
-    max-width: 400px;
-    margin: 15vh auto; /* 上下留白，左右自動置中 */
-    text-align: center;
-}
+/* --- 數學挑戰彈窗 --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+.math-box { background: linear-gradient(135deg, #2C0B0E, #000); border: 3px solid #FF4136; padding: 35px; border-radius: 15px; text-align: center; box-shadow: 0 0 25px rgba(255, 65, 54, 0.6); }
+.math-q { font-size: 2.8em; margin: 15px 0; color: white; }
+.math-fb { font-weight: bold; font-size: 1.3em; margin-top: 10px; }
