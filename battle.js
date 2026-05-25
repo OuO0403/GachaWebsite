@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const API_URL = "https://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exec";
 
     // 2. 卡牌資料庫 (可自行替換為 96 張完整版)
 const cardMasterList = [
@@ -125,14 +126,7 @@ const cardMasterList = [
 ];
 
     // 3. 【全新】數學題庫 (可以隨時擴充)
-    const questionBank = [
-        { type: "fill", q: "解方程式：3x - 5 = 16，請問 x = ?", a: "7" },
-        { type: "fill", q: "計算：15 ÷ 3 + 4 × 2 = ?", a: "13" },
-        { type: "tf", q: "所有的質數都是奇數，對嗎？", a: "F" },
-        { type: "choice", q: "下列哪一個數字是 12 和 18 的最大公因數？", options: ["2", "4", "6", "9"], a: "6" },
-        { type: "choice", q: "一打蘋果加上半打蘋果，總共有幾顆？", options: ["12", "16", "18", "24"], a: "18" },
-        { type: "fill", q: "若 y = 2x + 1，當 x = 4 時，y 是多少？", a: "9" }
-    ];
+    let questionBank = [];
 
     // 全域變數
     let myName = "";
@@ -152,12 +146,37 @@ const cardMasterList = [
     // ==========================================
     // 登入大廳
     // ==========================================
-    document.getElementById('btn-login').addEventListener('click', () => {
+    document.getElementById('btn-login').addEventListener('click', async () => {
         const name = document.getElementById('login-username').value.trim();
         if(name) {
             myName = name;
             document.getElementById('current-user-display').innerText = myName;
             document.getElementById('my-name-display').innerText = myName;
+            
+            // 把登入按鈕變成讀取中
+            const loginBtn = document.getElementById('btn-login');
+            loginBtn.innerText = "載入雲端題庫中...";
+            loginBtn.disabled = true;
+
+            try {
+                // 向 Google 試算表請求題庫資料
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'get_questions' })
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success' && result.data.length > 0) {
+                    questionBank = result.data;
+                } else {
+                    alert("警告：雲端題庫為空或讀取失敗！將使用預設題目。");
+                    questionBank = [{ q: "1+1=?", options: ["1","2","3","4"], a: "2" }];
+                }
+            } catch (error) {
+                console.error("題庫載入失敗", error);
+                questionBank = [{ q: "1+1=?", options: ["1","2","3","4"], a: "2" }];
+            }
+
             loginScreen.style.display = 'none';
             mainApp.style.display = 'block';
             lobbyView.style.display = 'flex';
@@ -517,22 +536,21 @@ const cardMasterList = [
     // 隨機題庫系統
     // ==========================================
     function triggerMathChallenge() {
-        // 從題庫隨機抽一題
+        // 從下載好的題庫隨機抽一題
         const qData = questionBank[Math.floor(Math.random() * questionBank.length)];
         
         document.getElementById('math-question').innerText = qData.q;
-        
         const optionsArea = document.getElementById('math-options-area');
-        const inputArea = document.getElementById('math-input-area');
         const feedback = document.getElementById('math-feedback');
         
         optionsArea.innerHTML = "";
-        optionsArea.style.display = "none";
-        inputArea.style.display = "none";
         feedback.innerText = "";
 
-        // 綁定送出邏輯
         const handleAnswer = (val) => {
+            // 答題後鎖定所有按鈕防止連點
+            const btns = optionsArea.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+
             if(val === qData.a) {
                 feedback.style.color = "#2ecc71";
                 feedback.innerText = "🎯 戰術成功！加成 +20！";
@@ -548,28 +566,17 @@ const cardMasterList = [
             }, 2000);
         };
 
-        // 根據題型渲染畫面
-        if (qData.type === "choice") {
-            optionsArea.style.display = "flex";
-            qData.options.forEach(opt => {
+        // 動態生成 4 個選項按鈕
+        qData.options.forEach(opt => {
+            if (opt !== "") { // 確保選項不是空的
                 const btn = document.createElement('button');
-                btn.className = "battle-btn";
+                btn.className = "battle-btn create-btn"; // 套用酷炫紅色按鈕樣式
+                btn.style.margin = "0";
                 btn.innerText = opt;
                 btn.onclick = () => handleAnswer(opt);
                 optionsArea.appendChild(btn);
-            });
-        } else if (qData.type === "tf") {
-            optionsArea.style.display = "flex";
-            const btnT = document.createElement('button'); btnT.className = "battle-btn ready-btn"; btnT.innerText = "O (正確)"; btnT.onclick = () => handleAnswer("T");
-            const btnF = document.createElement('button'); btnF.className = "battle-btn create-btn"; btnF.innerText = "X (錯誤)"; btnF.onclick = () => handleAnswer("F");
-            optionsArea.appendChild(btnT); optionsArea.appendChild(btnF);
-        } else if (qData.type === "fill") {
-            inputArea.style.display = "flex";
-            document.getElementById('math-input-box').value = "";
-            document.getElementById('btn-submit-math-fill').onclick = () => {
-                handleAnswer(document.getElementById('math-input-box').value.trim());
-            };
-        }
+            }
+        });
 
         document.getElementById('math-modal').style.display = 'flex';
     }
