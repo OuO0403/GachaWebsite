@@ -1,0 +1,148 @@
+/* --- 全局電競背景 --- */
+.battle-bg {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at center, #2C0B0E 0%, #000000 100%);
+    color: white;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* --- 玻璃擬物風面板 --- */
+.glass-panel {
+    background: rgba(30, 10, 10, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 50, 50, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    padding: 30px;
+}
+
+/* --- 發光文字 --- */
+.glow-text-red {
+    color: #FF4136;
+    text-shadow: 0 0 10px rgba(255, 65, 54, 0.8);
+}
+.glow-text-gold {
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+/* --- 酷炫按鈕 --- */
+.battle-btn {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    color: white;
+}
+.primary-btn { background: linear-gradient(90deg, #85144b, #FF4136); }
+.primary-btn:hover { box-shadow: 0 0 15px #FF4136; }
+.create-btn { background: linear-gradient(90deg, #d35400, #e74c3c); }
+.join-btn { background: linear-gradient(90deg, #2c3e50, #34495e); border: 1px solid #7f8c8d; }
+.ready-btn { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+.ready-btn:disabled { background: #555; color: #888; cursor: not-allowed; box-shadow: none; }
+.submit-btn { background: #FFD700; color: #000; }
+
+/* --- 輸入框 --- */
+.battle-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #555;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.1em;
+    box-sizing: border-box;
+}
+.battle-input:focus { border-color: #FF4136; outline: none; }
+.text-center { text-align: center; }
+
+/* --- 大廳分隔線 --- */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: #888;
+}
+.divider::before, .divider::after {
+    content: ''; flex: 1; border-bottom: 1px solid #555;
+}
+.divider span { padding: 0 10px; }
+
+/* --- 選牌區狀態 --- */
+.deck-header { text-align: center; margin-bottom: 20px; }
+.status-pill {
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0 5px;
+    background: #333;
+    border-radius: 20px;
+    font-weight: bold;
+}
+.req-badge { border: 1px solid #FF4136; color: #FF4136; }
+.req-badge.met { border-color: #2ecc71; color: #2ecc71; background: rgba(46, 204, 113, 0.1); }
+
+/* 選牌時的特效 */
+.deck-card-wrapper { cursor: pointer; transition: transform 0.2s; position: relative; }
+.deck-card-wrapper:hover { transform: scale(1.05); }
+.deck-card-wrapper.selected {
+    transform: translateY(-10px);
+}
+/* 選中時的綠色發光外框 (覆蓋原本的稀有度框) */
+.deck-card-wrapper.selected::after {
+    content: '已選';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(46, 204, 113, 0.9);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* --- 戰鬥區 --- */
+.arena-bg { background: linear-gradient(to bottom, #1a1a1a, #2c3e50); border: 2px solid #FFD700; }
+.room-info { text-align: center; font-size: 1.2em; margin-bottom: 10px; }
+.player-title { color: white; border-bottom: 1px solid #555; padding-bottom: 5px; display: flex; justify-content: space-between; }
+.score-badge { background: #FF4136; padding: 2px 10px; border-radius: 10px; font-size: 0.8em; }
+.battle-hand { display: flex; justify-content: center; gap: 15px; min-height: 180px; margin-top: 15px; flex-wrap: wrap; }
+.clash-area {
+    min-height: 150px;
+    display: flex; justify-content: center; align-items: center; flex-direction: column;
+    background: rgba(0,0,0,0.6); border-radius: 10px; margin: 20px 0; padding: 20px;
+    border: 1px solid #555;
+}
+.clash-text { font-size: 1.8em; text-align: center; margin: 0; }
+
+/* 戰鬥出牌特效 */
+.battle-card { cursor: pointer; transition: all 0.3s; }
+.battle-card:hover { transform: translateY(-15px); }
+
+/* --- 數學彈出視窗 --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 2000;
+    display: flex; justify-content: center; align-items: center;
+}
+.math-box {
+    background: linear-gradient(135deg, #2C0B0E, #000);
+    border: 3px solid #FF4136;
+    padding: 40px; border-radius: 15px; text-align: center;
+    box-shadow: 0 0 30px rgba(255, 65, 54, 0.5);
+}
+.math-q { font-size: 3em; margin: 20px 0; color: white; letter-spacing: 2px; }
+.math-fb { font-weight: bold; font-size: 1.5em; margin-top: 15px; }
