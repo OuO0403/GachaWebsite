@@ -13,7 +13,7 @@
 
     <div id="login-screen" class="glass-panel login-box">
         <h1 class="glow-text-red">⚾ 數學對戰聯盟</h1>
-        <input type="text" id="login-username" placeholder="輸入玩家名稱" class="battle-input">
+        <input type="text" id="login-username" placeholder="輸入玩家名稱" class="battle-input text-center">
         <button id="btn-login" class="battle-btn primary-btn">進入競技場</button>
     </div>
 
@@ -23,47 +23,112 @@
             <h2>CPBL 競技場 <span id="current-user-display" class="user-badge"></span></h2>
         </header>
 
-        <div id="lobby-view" class="glass-panel" style="max-width: 500px; margin: 50px auto; text-align: center;">
-            <h3 style="color: white;">尋找對手</h3>
-            <button id="btn-create-room" class="battle-btn create-btn">建立新房間</button>
-            <div class="divider"><span>或</span></div>
-            <div class="join-room-box">
-                <input type="text" id="join-room-id" placeholder="輸入 4 位數房間號碼" class="battle-input text-center">
-                <button id="btn-join-room" class="battle-btn join-btn">加入房間</button>
+        <div id="lobby-view" class="lobby-layout" style="display: none;">
+            <div class="glass-panel lobby-left">
+                <h3 class="glow-text-gold">🃏 我的球員圖鑑</h3>
+                <div class="filters-row">
+                    <select id="lobby-filter-team" class="battle-select">
+                        <option value="all">所有球隊</option>
+                        <option value="Brothers">中信兄弟</option>
+                        <option value="Lions">統一7-ELEVEn獅</option>
+                        <option value="Monkeys">樂天桃猿</option>
+                        <option value="Guardians">富邦悍將</option>
+                        <option value="Dragons">味全龍</option>
+                        <option value="Hawks">台鋼雄鷹</option>
+                    </select>
+                    <select id="lobby-filter-role" class="battle-select">
+                        <option value="all">所有定位</option>
+                        <option value="Batter">打者 (Batter)</option>
+                        <option value="Pitcher">投手 (Pitcher)</option>
+                    </select>
+                </div>
+                <div class="card-collection-grid scrollable-grid" id="lobby-card-grid"></div>
             </div>
-            <p id="lobby-message" class="error-msg"></p>
+
+            <div class="glass-panel lobby-right">
+                <h3 class="glow-text-red">🏟️ 賽事管理中心</h3>
+                <div class="mode-box">
+                    <label>選擇遊玩方式：</label>
+                    <select id="game-mode" class="battle-select">
+                        <option value="basic">基礎對決 (數值比大小)</option>
+                        <option value="dice">骰子決戰 (數值 ÷ 骰子)</option>
+                    </select>
+                </div>
+                <button id="btn-create-room" class="battle-btn create-btn">創建公開房間</button>
+                
+                <div class="divider"><span>線上公開房間列表 (點選進入)</span></div>
+                <div id="room-list" class="scrollable-list">
+                    <p style="color: #888; font-style: italic;">目前沒有人在開房...</p>
+                </div>
+
+                <div class="divider"><span>手動代碼輸入</span></div>
+                <div class="join-room-box">
+                    <input type="text" id="join-room-id" placeholder="輸入 4 位數房間號碼" class="battle-input text-center" style="margin: 0;">
+                    <button id="btn-join-room" class="battle-btn join-btn">加入</button>
+                </div>
+                <p id="lobby-message" class="error-msg"></p>
+            </div>
         </div>
 
-<div id="deck-building-view" class="glass-panel" style="display: none; margin-top: 20px;">
-            
-            <h3 style="text-align: center; color: white;">房間號碼：<span id="draft-room-id" class="glow-text-gold" style="font-size: 1.5em;"></span></h3>
-            
-            <div class="deck-header">
-                <h2 class="glow-text-gold">挑選 5 名先發球員！</h2>
-                <div class="deck-status">
-                    <span class="status-pill">已選：<span id="deck-count">0</span> / 5</span>
-                    <span class="status-pill req-badge" id="req-pitcher">投手 (0/2)</span>
-                    <span class="status-pill req-badge" id="req-batter">打者 (0/2)</span>
+        <div id="deck-building-view" class="glass-panel" style="display: none; margin-top: 20px;">
+            <div class="deck-header-row">
+                <div>
+                    <span class="room-pill">房間：<span id="draft-room-id" class="glow-text-gold"></span></span>
+                    <span class="room-pill">模式：<span id="draft-room-mode"></span></span>
                 </div>
-                <button id="btn-ready" class="battle-btn ready-btn" disabled>準備完成 (等待選牌)</button>
-                <p id="waiting-msg" style="color: #FFD700; display: none; margin-top: 10px;">已準備！等待對手...</p>
+                <button id="btn-close-room" class="battle-btn delete-btn" style="width: auto; margin: 0; padding: 8px 15px; font-size: 0.9em; display: none;">解散房間</button>
             </div>
-            
-            <div class="card-collection-grid" id="deck-selection-grid" style="max-height: 500px; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.5); border-radius: 10px;">
+
+            <div class="deck-main-layout">
+                <div class="deck-left">
+                    <div class="filters-row" style="margin-bottom: 15px;">
+                        <select id="deck-filter-team" class="battle-select">
+                            <option value="all">所有球隊</option>
+                            <option value="Brothers">中信兄弟</option>
+                            <option value="Lions">統一獅</option>
+                            <option value="Monkeys">樂天桃猿</option>
+                            <option value="Guardians">富邦悍將</option>
+                            <option value="Dragons">味全龍</option>
+                            <option value="Hawks">台鋼雄鷹</option>
+                        </select>
+                        <select id="deck-filter-role" class="battle-select">
+                            <option value="all">所有定位</option>
+                            <option value="Batter">打者</option>
+                            <option value="Pitcher">投手</option>
+                        </select>
+                    </div>
+                    <div class="card-collection-grid scrollable-grid" id="deck-selection-grid" style="max-height: 450px;"></div>
                 </div>
+
+                <div class="deck-right-panel">
+                    <h3 class="glow-text-gold" style="margin-top: 0; text-align: center;">先發名單驗證</h3>
+                    <div class="deck-status-box">
+                        <div class="status-item">已選卡牌：<span id="deck-count" style="color:#FFD700;">0</span> / 5</div>
+                        <div class="status-pill req-badge" id="req-pitcher">投手 (0/2)</div>
+                        <div class="status-pill req-badge" id="req-batter">打者 (0/2)</div>
+                    </div>
+                    
+                    <button id="btn-ready" class="battle-btn ready-btn" disabled>確認先發陣容</button>
+                    
+                    <div class="sync-status-box" style="margin-top: 20px; text-align: center;">
+                        <p id="p1-status-text" style="color: #aaa; margin: 5px 0;">房主：選牌中...</p>
+                        <p id="p2-status-text" style="color: #aaa; margin: 5px 0;">對手：選牌中...</p>
+                        <button id="btn-start-game" class="battle-btn primary-btn" style="display: none; margin-top: 15px; box-shadow: 0 0 15px green;">🔥 雙方就緒，開始遊戲！</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="battlefield-view" class="glass-panel arena-bg" style="display: none; margin-top: 20px;">
-            
             <div class="room-info">房間號碼：<span id="display-room-id" class="glow-text-gold"></span></div>
 
             <div class="opponent-area">
-                <h3 class="player-title">對手：<span id="opponent-name">等待中...</span> <span class="score-badge">得分: <span id="opponent-score">0</span></span></h3>
+                <h3 class="player-title">對手：<span id="opponent-name">連線中...</span> <span class="score-badge">得分: <span id="opponent-score">0</span></span></h3>
                 <div class="battle-hand" id="opponent-hand"></div>
             </div>
 
             <div class="clash-area">
-                <h2 id="battle-status" class="glow-text-gold clash-text">等待雙方準備...</h2>
+                <h2 id="battle-status" class="glow-text-gold clash-text">等待雙方出牌...</h2>
             </div>
 
             <div class="player-area">
