@@ -53,7 +53,7 @@
                     <label style="display: block; margin-bottom: 5px; color: #ccc;">選擇遊玩方式：</label>
                     <select id="game-mode" class="battle-select">
                         <option value="basic">基礎對決 (比大小不扣血)</option>
-                        <option value="dice">骰子決戰 (20滴血制)</option>
+                        <option value="dice">骰子決戰 (100滴血制)</option>
                     </select>
                 </div>
                 <button id="btn-create-room" class="battle-btn create-btn">創建公開房間</button>
@@ -81,16 +81,8 @@
             <div class="deck-main-layout" style="display: flex; gap: 25px;">
                 <div class="deck-left" style="flex: 2;">
                     <div class="filters-row" style="margin-bottom: 15px; display: flex; gap: 15px;">
-                        <select id="deck-filter-team" class="battle-select">
-                            <option value="all">所有球隊</option>
-                            <option value="Brothers">中信兄弟</option>
-                            <option value="Lions">統一獅</option>
-                            </select>
-                        <select id="deck-filter-role" class="battle-select">
-                            <option value="all">所有定位</option>
-                            <option value="Batter">打者</option>
-                            <option value="Pitcher">投手</option>
-                        </select>
+                        <select id="deck-filter-team" class="battle-select"><option value="all">所有球隊</option><option value="Brothers">中信兄弟</option><option value="Lions">統一獅</option><option value="Monkeys">樂天桃猿</option><option value="Guardians">富邦悍將</option><option value="Dragons">味全龍</option><option value="Hawks">台鋼雄鷹</option></select>
+                        <select id="deck-filter-role" class="battle-select"><option value="all">所有定位</option><option value="Batter">打者</option><option value="Pitcher">投手</option></select>
                     </div>
                     <div class="card-collection-grid scrollable-grid" id="deck-selection-grid" style="max-height: 450px;"></div>
                 </div>
@@ -121,14 +113,13 @@
                 <h3 style="color: white; display: flex; justify-content: space-between; margin: 0 0 10px 0;">
                     對手：<span id="opponent-name">連線中...</span> 
                     <span style="background: #FF4136; padding: 2px 10px; border-radius: 10px; font-size: 0.8em;">
-                        <span class="hp-display" style="display:none;">HP: <span id="opponent-hp" style="color:#FFD700;">20</span> | </span>
-                        局點: <span id="opponent-score">0</span>
+                        <span class="hp-display" style="display:none;">HP: <span id="opponent-hp" style="color:#FFD700;">100</span> | </span>局點: <span id="opponent-score">0</span>
                     </span>
                 </h3>
                 <div class="battle-hand" id="opponent-hand" style="display: flex; justify-content: center; gap: 15px; min-height: 160px;"></div>
             </div>
 
-            <div class="clash-area" style="min-height: 140px; display: flex; justify-content: center; align-items: center; flex-direction: column; background: rgba(0,0,0,0.7); border-radius: 10px; margin: 20px 0; border: 1px solid #444;">
+            <div class="clash-area" style="min-height: 180px; display: flex; justify-content: center; align-items: center; flex-direction: column; background: rgba(0,0,0,0.7); border-radius: 10px; margin: 20px 0; border: 1px solid #444; overflow: hidden; position: relative;">
                 <h2 id="battle-status" class="glow-text-gold" style="font-size: 1.6em; margin: 0; text-align: center;">等待雙方出牌...</h2>
             </div>
 
@@ -136,8 +127,7 @@
                 <h3 style="color: white; display: flex; justify-content: space-between; margin: 0 0 10px 0;">
                     我方：<span id="my-name-display"></span> 
                     <span style="background: #FF4136; padding: 2px 10px; border-radius: 10px; font-size: 0.8em;">
-                        <span class="hp-display" style="display:none;">HP: <span id="player-hp" style="color:#FFD700;">20</span> | </span>
-                        局點: <span id="player-score">0</span>
+                        <span class="hp-display" style="display:none;">HP: <span id="player-hp" style="color:#FFD700;">100</span> | </span>局點: <span id="player-score">0</span>
                     </span>
                 </h3>
                 <div class="battle-hand" id="player-hand" style="display: flex; justify-content: center; gap: 15px; min-height: 160px;"></div>
