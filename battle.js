@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 2. 完整的卡片資料庫 (包含 role 和 power)
+    // 2. 企劃書中完整 96 張卡牌戰力資料庫
 const cardMasterList = [
     // 【中信兄弟】
     { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', role: 'Batter', power: 98, image: 'images/CTBC_Brothers/1.jpg' },
@@ -126,13 +126,12 @@ const cardMasterList = [
 
     // 全域變數
     let myName = "";
-    let myPlayerId = ""; 
+    let myPlayerId = ""; // "p1" 或 "p2"
     let currentRoomId = "";
-    
-    let myDraftDeck = []; // 玩家選出的 5 張牌
+    let myDraftDeck = []; 
     let myMathBuff = 0;
+    let currentMode = "basic";
 
-    // 畫面元素
     const loginScreen = document.getElementById('login-screen');
     const mainApp = document.getElementById('main-battle-app');
     const lobbyView = document.getElementById('lobby-view');
@@ -140,7 +139,7 @@ const cardMasterList = [
     const battlefieldView = document.getElementById('battlefield-view');
 
     // ==========================================
-    // 登入
+    // 登入大廳
     // ==========================================
     document.getElementById('btn-login').addEventListener('click', () => {
         const name = document.getElementById('login-username').value.trim();
@@ -150,20 +149,93 @@ const cardMasterList = [
             document.getElementById('my-name-display').innerText = myName;
             loginScreen.style.display = 'none';
             mainApp.style.display = 'block';
+            lobbyView.style.display = 'flex';
+            
+            // 載入大廳圖鑑與房間列表監聽
+            renderLobbyCardGrid();
+            startLobbyRoomListener();
         }
     });
 
     // ==========================================
-    // 大廳：建立與加入房間
+    // 大廳卡牌分類篩選
+    // ==========================================
+    document.getElementById('lobby-filter-team').addEventListener('change', renderLobbyCardGrid);
+    document.getElementById('lobby-filter-role').addEventListener('change', renderLobbyCardGrid);
+
+    function renderLobbyCardGrid() {
+        const teamFilter = document.getElementById('lobby-filter-team').value;
+        const roleFilter = document.getElementById('lobby-filter-role').value;
+        const grid = document.getElementById('lobby-card-grid');
+        grid.innerHTML = "";
+
+        cardMasterList.forEach(card => {
+            if(teamFilter !== 'all' && card.team !== teamFilter) return;
+            if(roleFilter !== 'all' && card.role !== roleFilter) return;
+
+            const cardEl = document.createElement('div');
+            cardEl.className = `card-small-wrapper reveal-${card.rarity}`;
+            cardEl.innerHTML = `
+                <div class="card-small-inner"><img src="${card.image}"></div>
+                <div style="color:white; text-align:center; font-size:0.85em; margin-top:3px; background:rgba(0,0,0,0.6); border-radius:4px;">
+                    ${card.role === 'Batter' ? '🏏打' : '⚾投'}:${card.power}
+                </div>
+            `;
+            grid.appendChild(cardEl);
+        });
+    }
+
+    // ==========================================
+    // 即時公開房間列表動態同步
+    // ==========================================
+    function startLobbyRoomListener() {
+        db.ref('rooms').on('value', (snapshot) => {
+            const listDiv = document.getElementById('room-list');
+            listDiv.innerHTML = "";
+            const rooms = snapshot.val();
+            
+            if(!rooms) {
+                listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`;
+                return;
+            }
+
+            let hasRooms = false;
+            for(let id in rooms) {
+                // 只顯示等待加入且還沒有滿人的公開房間
+                if(rooms[id].state === "waiting") {
+                    hasRooms = true;
+                    const item = document.createElement('div');
+                    item.className = "room-item";
+                    item.innerHTML = `
+                        <span>🏠 房間碼：<b>${id}</b> (${rooms[id].gameMode === 'basic'?'基礎':'骰子'})</span>
+                        <span style="color:#2ecc71;">房主: ${rooms[id].p1.name} 點擊加入 ➡️</span>
+                    `;
+                    item.onclick = () => { joinRoomById(id); };
+                    listDiv.appendChild(item);
+                }
+            }
+            if(!hasRooms) {
+                listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`;
+            }
+        });
+    }
+
+    // ==========================================
+    // 創建與加入房間核心邏輯 (修復 null 遺失 Bug)
     // ==========================================
     document.getElementById('btn-create-room').addEventListener('click', () => {
         currentRoomId = Math.floor(1000 + Math.random() * 9000).toString();
         myPlayerId = "p1";
+        currentMode = document.getElementById('game-mode').value;
         
+        // 顯示解散按鈕
+        document.getElementById('btn-close-room').style.display = 'block';
+
         db.ref('rooms/' + currentRoomId).set({
-            p1: { name: myName, ready: false, score: 0, deck: [], selectedCard: null, mathBuff: 0, mathDone: false },
-            p2: null,
-            state: "drafting" // drafting -> picking -> math -> reveal
+            roomId: currentRoomId,
+            gameMode: currentMode,
+            state: "waiting", 
+            p1: { name: myName, ready: false, score: 0, deck: "", selectedCard: "", mathBuff: 0, mathDone: false }
         });
 
         enterDeckBuilding();
@@ -171,51 +243,87 @@ const cardMasterList = [
     });
 
     document.getElementById('btn-join-room').addEventListener('click', () => {
-        const joinId = document.getElementById('join-room-id').value.trim();
-        if(!joinId) return;
+        const id = document.getElementById('join-room-id').value.trim();
+        if(id) joinRoomById(id);
+    });
 
-        db.ref('rooms/' + joinId).once('value', (snapshot) => {
-            if(snapshot.exists() && snapshot.val().p2 === null) {
-                currentRoomId = joinId;
+    function joinRoomById(id) {
+        db.ref('rooms/' + id).once('value', (snapshot) => {
+            const room = snapshot.val();
+            if(snapshot.exists() && (!room.p2 || room.state === "waiting")) {
+                currentRoomId = id;
                 myPlayerId = "p2";
+                currentMode = room.gameMode;
                 
+                // 隱藏解散按鈕 (對手不可解散)
+                document.getElementById('btn-close-room').style.display = 'none';
+
                 db.ref('rooms/' + currentRoomId + '/p2').set({
-                    name: myName, ready: false, score: 0, deck: [], selectedCard: null, mathBuff: 0, mathDone: false
+                    name: myName, ready: false, score: 0, deck: "", selectedCard: "", mathBuff: 0, mathDone: false
                 });
+                db.ref('rooms/' + currentRoomId + '/state').set("drafting");
 
                 enterDeckBuilding();
                 listenToRoom();
             } else {
-                document.getElementById('lobby-message').innerText = "找不到房間或房間已滿！";
+                document.getElementById('lobby-message').innerText = "房間不存在、已被解散或已滿員！";
             }
         });
-    });
+    }
 
     // ==========================================
-    // 選牌階段 (Drafting)
+    // 房主解散房間功能
+    // ==========================================
+    document.getElementById('btn-close-room').addEventListener('click', () => {
+        if (currentRoomId && myPlayerId === "p1") {
+            db.ref('rooms/' + currentRoomId).remove(); // 徹底從雲端拔除
+            returnToLobby();
+        }
+    });
+
+    function returnToLobby() {
+        // 關閉資料庫監聽，返回大廳
+        if (currentRoomId) db.ref('rooms/' + currentRoomId).off();
+        currentRoomId = "";
+        myPlayerId = "";
+        myDraftDeck = [];
+        
+        deckBuildingView.style.display = 'none';
+        battlefieldView.style.display = 'none';
+        lobbyView.style.display = 'flex';
+        document.getElementById('lobby-message').innerText = "房間已解除。";
+    }
+
+    // ==========================================
+    // 選牌階段 (與分類篩選)
     // ==========================================
     function enterDeckBuilding() {
         lobbyView.style.display = 'none';
         deckBuildingView.style.display = 'block';
-        document.getElementById('display-room-id').innerText = currentRoomId;
         document.getElementById('draft-room-id').innerText = currentRoomId;
+        document.getElementById('draft-room-mode').innerText = currentMode === "basic" ? "基礎比大小" : "骰子除法制";
+        
+        document.getElementById('deck-filter-team').addEventListener('change', renderDeckSelectionGrid);
+        document.getElementById('deck-filter-role').addEventListener('change', renderDeckSelectionGrid);
+        
         renderDeckSelectionGrid();
     }
 
     function renderDeckSelectionGrid() {
+        const teamFilter = document.getElementById('deck-filter-team').value;
+        const roleFilter = document.getElementById('deck-filter-role').value;
         const grid = document.getElementById('deck-selection-grid');
         grid.innerHTML = "";
-        myDraftDeck = [];
-        updateDeckStatus();
 
-        // 顯示所有卡片供選擇 (這裡假設全部擁有，若要連動試算表卡冊可在此過濾)
         cardMasterList.forEach(card => {
+            if(teamFilter !== 'all' && card.team !== teamFilter) return;
+            if(roleFilter !== 'all' && card.role !== roleFilter) return;
+
             const cardEl = document.createElement('div');
-            cardEl.className = `card-small-wrapper reveal-${card.rarity} deck-card-wrapper`;
+            const isSelected = myDraftDeck.some(c => c.id === card.id);
+            cardEl.className = `card-small-wrapper reveal-${card.rarity} deck-card-wrapper ${isSelected ? 'selected' : ''}`;
             cardEl.innerHTML = `
-                <div class="card-small-inner">
-                    <img src="${card.image}" alt="${card.name}">
-                </div>
+                <div class="card-small-inner"><img src="${card.image}"></div>
                 <div style="color:white; text-align:center; font-size:0.9em; margin-top:5px; background:rgba(0,0,0,0.7); border-radius:5px;">
                     ${card.role === 'Batter' ? '打' : '投'} : ${card.power}
                 </div>
@@ -224,16 +332,14 @@ const cardMasterList = [
             cardEl.onclick = () => {
                 const index = myDraftDeck.findIndex(c => c.id === card.id);
                 if (index > -1) {
-                    // 取消選取
                     myDraftDeck.splice(index, 1);
                     cardEl.classList.remove('selected');
                 } else {
-                    // 新增選取
                     if(myDraftDeck.length < 5) {
                         myDraftDeck.push(card);
                         cardEl.classList.add('selected');
                     } else {
-                        alert("只能選 5 張牌喔！");
+                        alert("每隊最多挑選 5 名球員！");
                     }
                 }
                 updateDeckStatus();
@@ -259,110 +365,119 @@ const cardMasterList = [
         const readyBtn = document.getElementById('btn-ready');
         if (myDraftDeck.length === 5 && pCount >= 2 && bCount >= 2) {
             readyBtn.disabled = false;
-            readyBtn.innerText = "出戰陣容確認！";
         } else {
             readyBtn.disabled = true;
-            readyBtn.innerText = "等待規則符合...";
         }
     }
 
-    // 按下準備按鈕
     document.getElementById('btn-ready').addEventListener('click', () => {
-        document.getElementById('btn-ready').style.display = 'none';
-        document.getElementById('waiting-msg').style.display = 'block';
-        
-        // 將選好的牌和準備狀態寫入 Firebase
+        document.getElementById('btn-ready').disabled = true;
+        document.getElementById('btn-ready').innerText = "陣容已鎖定！";
         db.ref(`rooms/${currentRoomId}/${myPlayerId}`).update({
             deck: myDraftDeck,
             ready: true
         });
     });
 
-
     // ==========================================
-    // 遊戲核心狀態監聽 (即時同步)
+    // 遊戲核心狀態同步監聽器
     // ==========================================
     function listenToRoom() {
         db.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
             const roomData = snapshot.val();
-            if(!roomData) return;
+            
+            // 重要：如果房主刪除解散了房間，roomData 會變成空，通知另一方回大廳
+            if(!roomData) {
+                alert("房間已被房主關閉或解除！");
+                returnToLobby();
+                return;
+            }
 
             const opponentId = myPlayerId === "p1" ? "p2" : "p1";
             const me = roomData[myPlayerId];
             const opponent = roomData[opponentId];
 
+            // 更新選牌就緒狀態同步文字
+            if(roomData.state === "drafting") {
+                document.getElementById('p1-status-text').innerText = `房主 (${roomData.p1.name})：${roomData.p1.ready ? '✅ 陣容確認' : '⏳ 挑選球員中...'}`;
+                if(opponent) {
+                    document.getElementById('p2-status-text').innerText = `對手 (${opponent.name})：${opponent.ready ? '✅ 陣容確認' : '⏳ 挑選球員中...'}`;
+                }
+                
+                // 房主專用按鈕控制：雙方都確認好牌組後，房主才可以手動按「開始遊戲」進場！
+                if(myPlayerId === "p1" && roomData.p1.ready && opponent && opponent.ready) {
+                    document.getElementById('btn-start-game').style.display = 'block';
+                }
+            }
+
+            // 同步對手名字與比數
             if(opponent) {
                 document.getElementById('opponent-name').innerText = opponent.name;
                 document.getElementById('opponent-score').innerText = opponent.score;
             }
             document.getElementById('player-score').innerText = me.score;
 
-            // --- 狀態機切換 ---
-            
-            // 1. 雙方都選好牌了 -> 切換到戰鬥畫面 (picking)
-            if (roomData.state === "drafting" && me.ready && opponent && opponent.ready) {
-                if (myPlayerId === "p1") db.ref('rooms/' + currentRoomId + '/state').set("picking");
-                
+            // 進入正式對決畫面流程
+            if(roomData.state === "picking") {
                 deckBuildingView.style.display = 'none';
                 battlefieldView.style.display = 'block';
-                renderBattleHand(me.deck); // 畫出手牌
-            }
-
-            // 2. 出牌階段
-            if (roomData.state === "picking") {
-                document.getElementById('battle-status').innerText = "⚔️ 請選擇一張卡牌出戰！";
-                renderOpponentHand(opponent);
+                document.getElementById('display-room-id').innerText = currentRoomId;
                 
-                // 若雙方都出牌，進入數學階段
-                if (me.selectedCard && opponent && opponent.selectedCard) {
-                    if (myPlayerId === "p1") db.ref('rooms/' + currentRoomId + '/state').set("math");
+                document.getElementById('battle-status').innerText = "⚔️ 請點選下方的一張先發球員卡出戰！";
+                renderMyBattleHand(me.deck, me.selectedCard);
+                renderOpponentHand(opponent);
+
+                // 雙方都丟出卡片後，自動前進到數學題
+                if(me.selectedCard && opponent && opponent.selectedCard) {
+                    if(myPlayerId === "p1") db.ref('rooms/' + currentRoomId + '/state').set("math");
                 }
             }
 
-            // 3. 數學戰術階段
-            if (roomData.state === "math") {
-                document.getElementById('battle-status').innerText = "📝 戰鬥暫停！戰術計算中...";
-                if (document.getElementById('math-modal').style.display === 'none' && !me.mathDone) {
+            if(roomData.state === "math") {
+                document.getElementById('battle-status').innerText = "📝 戰術計算中，答題解鎖 Buff...";
+                if(document.getElementById('math-modal').style.display === 'none' && !me.mathDone) {
                     triggerMathChallenge();
                 }
-
-                // 若雙方都算完，進入開牌
-                if (me.mathDone && opponent && opponent.mathDone) {
-                    if (myPlayerId === "p1") db.ref('rooms/' + currentRoomId + '/state').set("reveal");
+                if(me.mathDone && opponent && opponent.mathDone) {
+                    if(myPlayerId === "p1") db.ref('rooms/' + currentRoomId + '/state').set("reveal");
                 }
             }
 
-            // 4. 開牌結算階段
-            if (roomData.state === "reveal") {
-                document.getElementById('battle-status').innerText = "🔥 戰鬥結算！";
+            if(roomData.state === "reveal") {
                 showRevealAnimation(me, opponent);
             }
         });
     }
 
+    // 房主手動啟動遊戲
+    document.getElementById('btn-start-game').addEventListener('click', () => {
+        db.ref('rooms/' + currentRoomId + '/state').set("picking");
+        document.getElementById('btn-start-game').style.display = 'none';
+    });
+
     // ==========================================
-    // 戰鬥區畫面渲染
+    // 戰鬥介面操控
     // ==========================================
-    function renderBattleHand(deck) {
+    function renderMyBattleHand(deck, hasSelected) {
         const handDiv = document.getElementById('player-hand');
         handDiv.innerHTML = "";
         
-        // 只顯示還沒被用掉的牌 (如果未來要實作消耗機制)
-        deck.forEach((card, index) => {
+        if(hasSelected) {
+            handDiv.innerHTML = `<h3 class="glow-text-gold">已將球員送上本壘板，等待對手中...</h3>`;
+            return;
+        }
+
+        deck.forEach((card) => {
             const cardEl = document.createElement('div');
             cardEl.className = `card-small-wrapper reveal-${card.rarity} battle-card`;
             cardEl.innerHTML = `
-                <div class="card-small-inner">
-                    <img src="${card.image}">
-                </div>
+                <div class="card-small-inner"><img src="${card.image}"></div>
                 <div style="color:white; text-align:center; font-size:0.9em; margin-top:5px; background:rgba(0,0,0,0.7); border-radius:5px;">
-                    ${card.role === 'Batter' ? '打' : '投'}:${card.power}
+                    ${card.role === 'Batter' ? '打者' : '投手'}:${card.power}
                 </div>
             `;
-            
             cardEl.onclick = () => {
                 db.ref(`rooms/${currentRoomId}/${myPlayerId}/selectedCard`).set(card);
-                handDiv.innerHTML = "<h3 class='glow-text-gold'>已出牌，等待對手...</h3>";
             };
             handDiv.appendChild(cardEl);
         });
@@ -373,108 +488,107 @@ const cardMasterList = [
         if(!opponent) return;
         
         if(opponent.selectedCard) {
-            handDiv.innerHTML = `<div class="card-back" style="width:100px; height:150px; border:2px solid #2ecc71;">準備就緒</div>`;
+            handDiv.innerHTML = `<div class="card-back" style="width:105px; height:155px; border:2px solid #2ecc71; box-shadow:0 0 10px #2ecc71;">蓋牌就緒</div>`;
         } else {
-            handDiv.innerHTML = `<div class="card-back" style="width:100px; height:150px; opacity:0.5;">思考中...</div>`;
+            handDiv.innerHTML = `<div class="card-back" style="width:105px; height:155px; opacity:0.4;">配置防守中...</div>`;
         }
     }
 
     // ==========================================
-    // 數學戰術系統
+    // 數學挑戰 QTE 計分引擎
     // ==========================================
-    const mathModal = document.getElementById('math-modal');
-    let currentCorrectAnswer = 0;
-
     function triggerMathChallenge() {
-        const a = Math.floor(Math.random() * 5) + 1; 
-        const x = Math.floor(Math.random() * 10) + 1; 
-        const b = Math.floor(Math.random() * 20) + 1; 
+        const a = Math.floor(Math.random() * 5) + 2; 
+        const x = Math.floor(Math.random() * 8) + 2; 
+        const b = Math.floor(Math.random() * 15) + 1; 
         const c = (a * x) + b;
 
         document.getElementById('math-question').innerText = `${a}x + ${b} = ${c}`;
-        currentCorrectAnswer = x;
         
-        document.getElementById('math-answer').value = "";
-        document.getElementById('math-feedback').innerText = "";
-        mathModal.style.display = 'flex';
+        const answerInput = document.getElementById('math-answer');
+        const feedback = document.getElementById('math-feedback');
+        const submitBtn = document.getElementById('btn-submit-math');
+        
+        answerInput.value = "";
+        feedback.innerText = "";
+        document.getElementById('math-modal').style.display = 'flex';
+
+        submitBtn.onclick = () => {
+            const val = parseInt(answerInput.value);
+            if(val === x) {
+                feedback.style.color = "#2ecc71";
+                feedback.innerText = "🎯 戰術大成功！戰力爆擊 +20！";
+                myMathBuff = 20;
+            } else {
+                feedback.style.color = "#FF4136";
+                feedback.innerText = `❌ 判斷失誤！正確答案是 x = ${x}`;
+                myMathBuff = 0;
+            }
+
+            setTimeout(() => {
+                document.getElementById('math-modal').style.display = 'none';
+                db.ref(`rooms/${currentRoomId}/${myPlayerId}`).update({
+                    mathBuff: myMathBuff,
+                    mathDone: true
+                });
+            }, 2000);
+        };
     }
 
-    document.getElementById('btn-submit-math').addEventListener('click', () => {
-        const userAnswer = parseInt(document.getElementById('math-answer').value);
-        const feedback = document.getElementById('math-feedback');
-        
-        if (userAnswer === currentCorrectAnswer) {
-            feedback.style.color = "#2ecc71";
-            feedback.innerText = "正確！戰力 +20！";
-            myMathBuff = 20;
-        } else {
-            feedback.style.color = "#FF4136";
-            feedback.innerText = `錯誤！答案是 ${currentCorrectAnswer}。`;
-            myMathBuff = 0;
-        }
-
-        setTimeout(() => {
-            mathModal.style.display = 'none';
-            db.ref(`rooms/${currentRoomId}/${myPlayerId}`).update({
-                mathBuff: myMathBuff,
-                mathDone: true
-            });
-        }, 1500);
-    });
-
     // ==========================================
-    // 結算畫面
+    // 比大小開牌與結果結算
     // ==========================================
     function showRevealAnimation(me, opponent) {
-        const myFinalPower = me.selectedCard.power + me.mathBuff;
-        const opFinalPower = opponent.selectedCard.power + opponent.mathBuff;
+        // 取得兩種模式下各自的戰力
+        let p1Base = me.selectedCard.power;
+        let p2Base = opponent.selectedCard.power;
+        
+        let p1Final = p1Base + me.mathBuff;
+        let p2Final = p2Base + opponent.mathBuff;
 
         const clashArea = document.querySelector('.clash-area');
         clashArea.innerHTML = `
             <div style="display:flex; justify-content:center; align-items:center; gap:40px; color:white;">
                 <div style="text-align:center;">
-                    <h4 class="glow-text-gold">我方</h4>
+                    <h4 class="glow-text-gold">我方 (${me.name})</h4>
                     <div class="card-small-wrapper reveal-${me.selectedCard.rarity}"><img src="${me.selectedCard.image}" style="width:100%;height:100%;"></div>
-                    <p style="margin:5px 0;">基礎 ${me.selectedCard.power} + 戰術 ${me.mathBuff}</p>
-                    <h2 class="glow-text-red">總計: ${myFinalPower}</h2>
+                    <p style="margin:5px 0; font-size:0.9em;">基礎 ${p1Base} + 數學 ${me.mathBuff}</p>
+                    <h2 class="glow-text-red">總戰力: ${p1Final}</h2>
                 </div>
-                <div><h1 style="color:red; text-shadow:0 0 10px red; font-size:3em; font-style:italic;">VS</h1></div>
+                <div><h1 style="color:red; text-shadow:0 0 10px red; font-size:3em; font-style:italic; margin:0;">VS</h1></div>
                 <div style="text-align:center;">
-                    <h4 class="glow-text-gold">對手</h4>
+                    <h4 class="glow-text-gold">對手 (${opponent.name})</h4>
                     <div class="card-small-wrapper reveal-${opponent.selectedCard.rarity}"><img src="${opponent.selectedCard.image}" style="width:100%;height:100%;"></div>
-                    <p style="margin:5px 0;">基礎 ${opponent.selectedCard.power} + 戰術 ${opponent.mathBuff}</p>
-                    <h2 class="glow-text-red">總計: ${opFinalPower}</h2>
+                    <p style="margin:5px 0; font-size:0.9em;">基礎 ${p2Base} + 數學 ${opponent.mathBuff}</p>
+                    <h2 class="glow-text-red">總戰力: ${p2Final}</h2>
                 </div>
             </div>
-            <h1 id="round-result" style="color:white; margin-top:20px; font-size:2.5em; text-shadow:0 0 10px white;"></h1>
-            <button id="btn-next-round" class="battle-btn create-btn" style="width:250px; display:none;">下一回合</button>
+            <h1 id="round-result" style="color:white; margin-top:20px; font-size:2em; text-shadow:0 0 10px white;"></h1>
+            <button id="btn-next-round" class="battle-btn create-btn" style="width:200px; display:none; margin:0;">下一局對決</button>
         `;
 
         const resultEl = document.getElementById('round-result');
         const nextBtn = document.getElementById('btn-next-round');
 
-        if(myFinalPower > opFinalPower) {
-            resultEl.innerText = "🏆 你贏了本回合！";
+        if(p1Final > p2Final) {
+            resultEl.innerText = "🏆 本局由我方拿下分數！";
             if(myPlayerId === "p1") db.ref(`rooms/${currentRoomId}/p1/score`).set(me.score + 1);
-        } else if (myFinalPower < opFinalPower) {
-            resultEl.innerText = "💀 對手拿下本回合！";
+        } else if (p1Final < p2Final) {
+            resultEl.innerText = "💀 這一局被對手攻破了！";
             if(myPlayerId === "p1") db.ref(`rooms/${currentRoomId}/p2/score`).set(opponent.score + 1);
         } else {
-            resultEl.innerText = "🤝 勢均力敵！平手！";
+            resultEl.innerText = "🤝 雙方戰力平手！不計分！";
         }
 
-        setTimeout(() => { nextBtn.style.display = 'inline-block'; }, 2000);
+        setTimeout(() => { nextBtn.style.display = 'inline-block'; }, 1500);
 
         nextBtn.onclick = () => {
+            // 清理上一局出牌，重置狀態繼續
             db.ref(`rooms/${currentRoomId}/${myPlayerId}`).update({
-                selectedCard: null, mathBuff: 0, mathDone: false
+                selectedCard: "", mathBuff: 0, mathDone: false
             });
-            if(myPlayerId === "p1") db.ref(`rooms/${currentRoomId}/state`).set("picking");
-            
-            // 如果要實作消耗卡牌，可以在這裡把出過的牌從 me.deck 移出並重新 renderBattleHand
-            // 這裡 MVP 先保留卡牌可重複出
-            renderBattleHand(me.deck); 
-            clashArea.innerHTML = `<h2 id="battle-status" class="glow-text-gold clash-text">準備下一回合...</h2>`;
+            if(myPlayerId === "p1") db.ref('rooms/' + currentRoomId + '/state').set("picking");
+            clashArea.innerHTML = `<h2 class="glow-text-gold clash-text">配置下一局戰術...</h2>`;
         };
     }
 });
