@@ -196,22 +196,6 @@
     100% { text-shadow: 0 0 30px red, 0 0 10px yellow; }
 }
 
-/* --- 修正戰鬥區與開牌區的卡片大小 (防止巨大化) --- */
-.battle-card, .battle-display-card {
-    width: 105px !important;
-    height: 155px !important;
-    margin: 0 auto;
-    position: relative;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-}
-.battle-card img, .battle-display-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
 /* --- 結果慢慢浮現的電影級動畫 --- */
 .fade-in-slow {
     opacity: 0;
