@@ -38,12 +38,12 @@ const cardMasterList = [
     // 【統一7-ELEVEn獅】
     { id: 'L01', name: '陳傑憲', team: 'Lions', rarity: 'SSR', role: 'Batter', power: 99, image: 'images/Uni-President_7-Eleven_Lions/1.jpg' },
     { id: 'L02', name: '蘇智傑', team: 'Lions', rarity: 'SR', role: 'Batter', power: 87, image: 'images/Uni-President_7-Eleven_Lions/2.jpg' },
-    { id: 'L03', name: '布雷克', team: 'Lions', rarity: 'SR', role: 'Batter', power: 86, image: 'images/Uni-President_7-Eleven_Lions/3.jpg' },
+    { id: 'L03', name: '布雷克', team: 'Lions', rarity: 'SR', role: 'Pitcher', power: 86, image: 'images/Uni-President_7-Eleven_Lions/3.jpg' },
     { id: 'L04', name: '高塩將樹', team: 'Lions', rarity: 'SR', role: 'Pitcher', power: 89, image: 'images/Uni-President_7-Eleven_Lions/4.jpg' },
     { id: 'L05', name: '陳鏞基', team: 'Lions', rarity: 'R', role: 'Batter', power: 78, image: 'images/Uni-President_7-Eleven_Lions/5.jpg' },
     { id: 'L06', name: '邱智呈', team: 'Lions', rarity: 'R', role: 'Batter', power: 75, image: 'images/Uni-President_7-Eleven_Lions/6.jpg' },
     { id: 'L07', name: '林靖凱', team: 'Lions', rarity: 'R', role: 'Batter', power: 73, image: 'images/Uni-President_7-Eleven_Lions/7.jpg' },
-    { id: 'L08', name: '潘傑楷', team: 'Lions', rarity: 'R', role: 'Pitcher', power: 77, image: 'images/Uni-President_7-Eleven_Lions/8.jpg' },
+    { id: 'L08', name: '潘傑楷', team: 'Lions', rarity: 'R', role: 'Batter', power: 77, image: 'images/Uni-President_7-Eleven_Lions/8.jpg' },
     { id: 'L09', name: '陳韻文', team: 'Lions', rarity: 'R', role: 'Pitcher', power: 74, image: 'images/Uni-President_7-Eleven_Lions/9.jpg' },
     { id: 'L10', name: '獅帝芬', team: 'Lions', rarity: 'N', role: 'Pitcher', power: 68, image: 'images/Uni-President_7-Eleven_Lions/10.jpg' },
     { id: 'L11', name: '黃竣彥', team: 'Lions', rarity: 'N', role: 'Pitcher', power: 60, image: 'images/Uni-President_7-Eleven_Lions/11.jpg' },
@@ -56,7 +56,7 @@ const cardMasterList = [
     // 【樂天桃猿】
     { id: 'M01', name: '林立', team: 'Monkeys', rarity: 'SSR', role: 'Batter', power: 97, image: 'images/Rakuten_Monkeys/1.jpg' },
     { id: 'M02', name: '廖健富', team: 'Monkeys', rarity: 'SR', role: 'Batter', power: 89, image: 'images/Rakuten_Monkeys/2.jpg' },
-    { id: 'M03', name: '毛英傑', team: 'Monkeys', rarity: 'SR', role: 'Batter', power: 85, image: 'images/Rakuten_Monkeys/3.jpg' },
+    { id: 'M03', name: '毛英傑', team: 'Monkeys', rarity: 'SR', role: 'Pitcher', power: 85, image: 'images/Rakuten_Monkeys/3.jpg' },
     { id: 'M04', name: '陳晨威', team: 'Monkeys', rarity: 'SR', role: 'Batter', power: 82, image: 'images/Rakuten_Monkeys/4.jpg' },
     { id: 'M05', name: '林泓育', team: 'Monkeys', rarity: 'R', role: 'Batter', power: 76, image: 'images/Rakuten_Monkeys/5.jpg' },
     { id: 'M06', name: '梁家榮', team: 'Monkeys', rarity: 'R', role: 'Batter', power: 74, image: 'images/Rakuten_Monkeys/6.jpg' },
