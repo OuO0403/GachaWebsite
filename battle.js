@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const db = firebase.database();
     
     // 【修改這裡】請務必確認你的 Apps Script 有部署為「新版本」
-    const API_URL = "https://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exechttps://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exec";
 
     // 卡牌資料庫
 const cardMasterList = [
