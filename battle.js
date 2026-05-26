@@ -20,7 +20,7 @@ const cardMasterList = [
     // 【中信兄弟】
     { id: 'B01', name: '王威晨', team: 'Brothers', rarity: 'SSR', role: 'Batter', power: 98, image: 'images/CTBC_Brothers/1.jpg' },
     { id: 'B02', name: '江坤宇', team: 'Brothers', rarity: 'SR', role: 'Batter', power: 88, image: 'images/CTBC_Brothers/2.jpg' },
-    { id: 'B03', name: '陳琥', team: 'Brothers', rarity: 'SR', role: 'Batter', power: 86, image: 'images/CTBC_Brothers/3.jpg' },
+    { id: 'B03', name: '陳琥', team: 'Brothers', rarity: 'SR', role: 'Pitcher', power: 86, image: 'images/CTBC_Brothers/3.jpg' },
     { id: 'B04', name: '德保拉', team: 'Brothers', rarity: 'SR', role: 'Pitcher', power: 90, image: 'images/CTBC_Brothers/4.jpg' },
     { id: 'B05', name: '詹子賢', team: 'Brothers', rarity: 'R', role: 'Batter', power: 78, image: 'images/CTBC_Brothers/5.jpg' },
     { id: 'B06', name: '許基宏', team: 'Brothers', rarity: 'R', role: 'Batter', power: 76, image: 'images/CTBC_Brothers/6.jpg' },
