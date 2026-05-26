@@ -145,6 +145,18 @@
         </div>
     </div>
 
+    <div id="victory-modal" class="modal-overlay" style="display: none; z-index: 3000;">
+        <div class="modal-content math-box victory-pop" style="width: 90%; max-width: 500px; border-color: #FFD700; background: linear-gradient(135deg, #222, #551111);">
+            <h1 id="victory-icon" style="font-size: 5em; margin: 0;">🏆</h1>
+            <h1 id="victory-title" class="glow-text-gold" style="font-size: 3em; margin: 10px 0;">勝利！</h1>
+            <h3 id="victory-subtitle" style="color: white; margin-top: 0; font-size: 1.2em;"></h3>
+            <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid #555;">
+                <p id="victory-stats" style="color: #FFD700; font-size: 1.5em; margin: 0; font-weight: bold; line-height: 1.6;"></p>
+            </div>
+            <button id="btn-return-lobby-from-victory" class="battle-btn ready-btn" style="font-size: 1.3em; padding: 15px;">返回大廳</button>
+        </div>
+    </div>
+
     <script src="battle.js"></script>
 </body>
 </html>
