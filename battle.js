@@ -215,11 +215,9 @@ const cardMasterList = [
         const roleFilter = document.getElementById('lobby-filter-role').value;
         const grid = document.getElementById('lobby-card-grid');
         grid.innerHTML = "";
-
         myOwnedCards.forEach(card => {
             if(teamFilter !== 'all' && card.team !== teamFilter) return;
             if(roleFilter !== 'all' && card.role !== roleFilter) return;
-
             const cardEl = document.createElement('div');
             cardEl.className = `card-small-wrapper reveal-${card.rarity}`;
             cardEl.innerHTML = `<div class="card-small-inner"><img src="${card.image}"></div><div style="color:white; text-align:center; font-size:0.85em; margin-top:3px; background:rgba(0,0,0,0.6); border-radius:4px;">${card.role === 'Batter' ? '🏏打' : '⚾投'}:${card.power}</div>`;
@@ -234,8 +232,7 @@ const cardMasterList = [
             const rooms = snapshot.val();
             
             if(!rooms) {
-                listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`;
-                return;
+                listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`; return;
             }
 
             let hasRooms = false;
@@ -245,12 +242,10 @@ const cardMasterList = [
                     hasRooms = true;
                     const item = document.createElement('div');
                     item.className = "room-item";
-                    item.innerHTML = `<span>🏠 房間碼：<b>${id}</b> (${room.gameMode === 'basic'?'基礎':'🎲骰子'})</span><span style="color:#2ecc71;">房主: ${room.p1.name} ➡️</span>`;
+                    item.innerHTML = `<span>🏠 房間碼：<b>${id}</b> (${room.gameMode === 'basic'?'基礎 三戰兩勝':'🎲骰子 100血'})</span><span style="color:#2ecc71;">房主: ${room.p1.name} ➡️</span>`;
                     item.onclick = () => { joinRoomById(id); };
                     listDiv.appendChild(item);
-                } else if (!room.p1) {
-                    db.ref('rooms/' + id).remove();
-                }
+                } else if (!room.p1) db.ref('rooms/' + id).remove();
             }
             if(!hasRooms) listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`;
         });
@@ -269,11 +264,8 @@ const cardMasterList = [
             roomId: currentRoomId, gameMode: currentMode, state: "waiting", round: 1, 
             p1: { name: myName, ready: false, score: 0, hp: 100, deck: "", selectedCard: "", mathBuff: 0, mathDone: false }
         });
-        
         roomRef.onDisconnect().remove();
-
-        enterDeckBuilding();
-        listenToRoom();
+        enterDeckBuilding(); listenToRoom();
     });
 
     document.getElementById('btn-join-room').addEventListener('click', () => {
@@ -285,22 +277,15 @@ const cardMasterList = [
         db.ref('rooms/' + id).once('value', (snapshot) => {
             const room = snapshot.val();
             if(snapshot.exists() && room.p1 && (!room.p2 || room.state === "waiting")) {
-                currentRoomId = id;
-                myPlayerId = "p2";
-                currentMode = room.gameMode;
-                
+                currentRoomId = id; myPlayerId = "p2"; currentMode = room.gameMode;
                 const p2Ref = db.ref('rooms/' + currentRoomId + '/p2');
                 p2Ref.set({ name: myName, ready: false, score: 0, hp: 100, deck: "", selectedCard: "", mathBuff: 0, mathDone: false });
                 db.ref('rooms/' + currentRoomId + '/state').set("drafting");
                 
                 p2Ref.onDisconnect().remove();
                 db.ref('rooms/' + currentRoomId + '/state').onDisconnect().set("waiting");
-
-                enterDeckBuilding();
-                listenToRoom();
-            } else {
-                alert("房間不存在或已滿員！");
-            }
+                enterDeckBuilding(); listenToRoom();
+            } else alert("房間不存在或已滿員！");
         });
     }
 
@@ -308,7 +293,6 @@ const cardMasterList = [
         if (!currentRoomId) return;
         if (confirm("確定要退出並返回大廳嗎？")) {
             db.ref('rooms/' + currentRoomId).onDisconnect().cancel();
-            
             if (myPlayerId === "p1") db.ref('rooms/' + currentRoomId).remove();
             else if (myPlayerId === "p2") {
                 db.ref('rooms/' + currentRoomId + '/p2').remove();
@@ -321,10 +305,10 @@ const cardMasterList = [
     function returnToLobby() {
         if (currentRoomId) db.ref('rooms/' + currentRoomId).off(); 
         currentRoomId = ""; myPlayerId = ""; myDraftDeck = [];
-        
         btnLeaveRoom.style.display = 'none';
         deckBuildingView.style.display = 'none';
         battlefieldView.style.display = 'none';
+        document.getElementById('victory-modal').style.display = 'none';
         lobbyView.style.display = 'flex';
         document.getElementById('btn-start-game').style.display = 'none';
         document.getElementById('btn-ready').disabled = true;
@@ -338,10 +322,8 @@ const cardMasterList = [
         lobbyView.style.display = 'none';
         deckBuildingView.style.display = 'block';
         btnLeaveRoom.style.display = 'block'; 
-        
         document.getElementById('draft-room-id').innerText = currentRoomId;
-        document.getElementById('draft-room-mode').innerText = currentMode === "basic" ? "基礎對決" : "🎲骰子100血制";
-        
+        document.getElementById('draft-room-mode').innerText = currentMode === "basic" ? "基礎 三戰兩勝" : "🎲骰子 100血";
         document.getElementById('deck-filter-team').addEventListener('change', renderDeckSelectionGrid);
         document.getElementById('deck-filter-role').addEventListener('change', renderDeckSelectionGrid);
         renderDeckSelectionGrid();
@@ -365,7 +347,6 @@ const cardMasterList = [
                 cardEl.style.transform = "translateY(-8px)";
                 cardEl.style.border = "3px solid #2ecc71";
             }
-            
             cardEl.innerHTML = `<div class="card-small-inner"><img src="${card.image}"></div><div style="color:white; text-align:center; font-size:0.9em; margin-top:5px; background:rgba(0,0,0,0.7); border-radius:5px;">${card.role === 'Batter' ? '打' : '投'} : ${card.power}</div>`;
             cardEl.onclick = () => {
                 const index = myDraftDeck.findIndex(c => c.id === card.id);
@@ -374,8 +355,7 @@ const cardMasterList = [
                     if(myDraftDeck.length < 5) myDraftDeck.push(card);
                     else alert("每隊最多挑選 5 名球員！");
                 }
-                renderDeckSelectionGrid(); 
-                updateDeckStatus();
+                renderDeckSelectionGrid(); updateDeckStatus();
             };
             grid.appendChild(cardEl);
         });
@@ -384,13 +364,11 @@ const cardMasterList = [
     function updateDeckStatus() {
         const pCount = myDraftDeck.filter(c => c.role === 'Pitcher').length;
         const bCount = myDraftDeck.filter(c => c.role === 'Batter').length;
-        
         document.getElementById('deck-count').innerText = myDraftDeck.length;
         document.getElementById('req-pitcher').innerText = `投手 (${pCount}/2)`;
         document.getElementById('req-pitcher').style.color = pCount >= 2 ? "#2ecc71" : "#FF4136";
         document.getElementById('req-batter').innerText = `打者 (${bCount}/2)`;
         document.getElementById('req-batter').style.color = bCount >= 2 ? "#2ecc71" : "#FF4136";
-
         document.getElementById('btn-ready').disabled = !(myDraftDeck.length === 5 && pCount >= 2 && bCount >= 2);
     }
 
@@ -401,15 +379,17 @@ const cardMasterList = [
     });
 
     // ==========================================
-    // 遊戲核心同步監聽器
+    // 遊戲核心監聽
     // ==========================================
     function listenToRoom() {
         db.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
             const roomData = snapshot.val();
             
             if(!roomData) {
-                if (myPlayerId === "p2") alert("房間已解散！");
-                returnToLobby(); return;
+                if (document.getElementById('victory-modal').style.display === 'none' && myPlayerId === "p2") {
+                    alert("房間已關閉！"); returnToLobby();
+                }
+                return;
             }
             if(myPlayerId === "p1" && !roomData.p2 && roomData.state !== "waiting") {
                 alert("對手已離開房間！回到等待狀態。");
@@ -425,7 +405,6 @@ const cardMasterList = [
             if(roomData.state === "drafting") {
                 document.getElementById('p1-status-text').innerText = `房主 (${roomData.p1.name})：${roomData.p1.ready ? '✅ 確認' : '⏳ 選牌中'}`;
                 if(opponent) document.getElementById('p2-status-text').innerText = `對手 (${opponent.name})：${opponent.ready ? '✅ 確認' : '⏳ 選牌中'}`;
-                
                 if(myPlayerId === "p1" && roomData.p1.ready && opponent && opponent.ready) {
                     document.getElementById('btn-start-game').style.display = 'block';
                 }
@@ -434,19 +413,17 @@ const cardMasterList = [
             if(opponent) {
                 document.getElementById('opponent-name').innerText = opponent.name;
                 document.getElementById('opponent-score').innerText = opponent.score;
-                document.getElementById('opponent-hp').innerText = opponent.hp;
+                document.getElementById('opponent-hp').innerText = Math.max(0, opponent.hp).toFixed(1);
             }
             document.getElementById('player-score').innerText = me.score;
-            document.getElementById('player-hp').innerText = me.hp;
+            document.getElementById('player-hp').innerText = Math.max(0, me.hp).toFixed(1);
 
             if(roomData.state === "picking") {
                 deckBuildingView.style.display = 'none';
                 battlefieldView.style.display = 'block';
                 document.getElementById('display-room-id').innerText = currentRoomId;
                 
-                document.querySelectorAll('.hp-display').forEach(el => {
-                    el.style.display = (roomData.gameMode === "dice") ? 'inline' : 'none';
-                });
+                document.querySelectorAll('.hp-display').forEach(el => { el.style.display = (roomData.gameMode === "dice") ? 'inline' : 'none'; });
 
                 let isP1Attacking = (roomData.round % 2 !== 0);
                 let amIAttacking = (myPlayerId === "p1") ? isP1Attacking : !isP1Attacking;
@@ -454,8 +431,6 @@ const cardMasterList = [
                 let attackerHasPlayed = !!roomData[attackerId].selectedCard;
 
                 let myRoleText = amIAttacking ? "進攻方 (先手)" : "防守方 (後手)";
-                
-                // 【修復】重新把標題建回來，防止當機！
                 const clashArea = document.querySelector('.clash-area');
                 clashArea.innerHTML = `<h2 id="battle-status" class="glow-text-gold" style="font-size: 1.6em; margin: 0; text-align: center;">第 ${roomData.round} 局 | 你是 <b style="color:#FFD700;">${myRoleText}</b><br><br><span style="font-size:0.7em; color:white;">等待雙方出牌...</span></h2>`;
                 
@@ -499,14 +474,11 @@ const cardMasterList = [
         document.getElementById('btn-start-game').style.display = 'none';
     });
 
+    // 渲染手牌
     function renderMyBattleHand(roomData, me, amIAttacking, attackerHasPlayed, attackerCard) {
         const handDiv = document.getElementById('player-hand');
         handDiv.innerHTML = "";
-        
-        if(me.selectedCard) {
-            handDiv.innerHTML = `<h3 class="glow-text-gold">已出牌，等待對手...</h3>`;
-            return;
-        }
+        if(me.selectedCard) { handDiv.innerHTML = `<h3 class="glow-text-gold">已出牌，等待對手...</h3>`; return; }
 
         me.deck.forEach((card) => {
             let canPlay = false;
@@ -525,13 +497,9 @@ const cardMasterList = [
             }
 
             const cardEl = document.createElement('div');
-            // 【修復】加上 battle-card 類別，限制大小
             cardEl.className = `card-small-wrapper reveal-${card.rarity} battle-card`;
             cardEl.style.cursor = canPlay ? "pointer" : "not-allowed";
-            if (!canPlay) {
-                cardEl.style.opacity = "0.4";
-                cardEl.style.filter = "grayscale(100%)";
-            }
+            if (!canPlay) { cardEl.style.opacity = "0.4"; cardEl.style.filter = "grayscale(100%)"; }
 
             cardEl.innerHTML = `<div class="card-small-inner"><img src="${card.image}"></div><div style="color:white; text-align:center; font-size:0.9em; margin-top:5px; background:rgba(0,0,0,0.7); border-radius:5px;">${card.role === 'Batter' ? '打' : '投'}:${card.power}</div>`;
             cardEl.onclick = () => {
@@ -559,13 +527,11 @@ const cardMasterList = [
         const optionsArea = document.getElementById('math-options-area');
         const feedback = document.getElementById('math-feedback');
         
-        optionsArea.innerHTML = "";
-        feedback.innerText = "";
+        optionsArea.innerHTML = ""; feedback.innerText = "";
 
         const handleAnswer = (val) => {
             const btns = optionsArea.querySelectorAll('button');
             btns.forEach(b => b.disabled = true);
-
             if(String(val).trim() === String(qData.a).trim()) {
                 feedback.style.color = "#2ecc71";
                 feedback.innerText = "🎯 戰術成功！加成 +20！";
@@ -584,8 +550,7 @@ const cardMasterList = [
         qData.options.forEach(opt => {
             if (opt !== "") {
                 const btn = document.createElement('button');
-                btn.className = "battle-btn create-btn"; 
-                btn.style.margin = "5px 0";
+                btn.className = "battle-btn create-btn"; btn.style.margin = "5px 0";
                 btn.innerText = opt;
                 btn.onclick = () => handleAnswer(opt);
                 optionsArea.appendChild(btn);
@@ -594,12 +559,14 @@ const cardMasterList = [
         document.getElementById('math-modal').style.display = 'flex';
     }
 
+    // ==========================================
+    // 結算與勝利判定
+    // ==========================================
     function playRevealAnimationSequence(roomData, me, opponent) {
         const clashArea = document.querySelector('.clash-area');
         let isP1Attacking = (roomData.round % 2 !== 0);
         let amIAttacking = (myPlayerId === "p1") ? isP1Attacking : !isP1Attacking;
 
-        // 【修復】加上 battle-display-card 限制開牌大小
         clashArea.innerHTML = `
             <div style="display:flex; justify-content:center; align-items:center; gap:20px; color:white; width: 100%;">
                 <div class="crash-left" style="text-align:center; flex: 1;">
@@ -626,24 +593,16 @@ const cardMasterList = [
                     document.getElementById('anim-my-dice').innerText = `🎲 ${Math.floor(Math.random() * 6) + 1}`;
                     document.getElementById('anim-op-dice').innerText = `🎲 ${Math.floor(Math.random() * 6) + 1}`;
                 }, 100);
-
-                setTimeout(() => {
-                    clearInterval(rollInterval);
-                    renderFinalResult(roomData, me, opponent, amIAttacking);
-                }, 2000);
+                setTimeout(() => { clearInterval(rollInterval); renderFinalResult(roomData, me, opponent, amIAttacking); }, 2000);
             }, 500); 
         } else {
-            setTimeout(() => {
-                renderFinalResult(roomData, me, opponent, amIAttacking);
-            }, 800);
+            setTimeout(() => { renderFinalResult(roomData, me, opponent, amIAttacking); }, 800);
         }
     }
 
     function renderFinalResult(roomData, me, opponent, amIAttacking) {
-        let p1Base = me.selectedCard.power;
-        let p2Base = opponent.selectedCard.power;
-        let p1Final, p2Final;
-        let myDiceText = "", opDiceText = "";
+        let p1Base = me.selectedCard.power; let p2Base = opponent.selectedCard.power;
+        let p1Final, p2Final; let myDiceText = "", opDiceText = "";
 
         if (roomData.gameMode === "dice") {
             let myDice = (myPlayerId === "p1") ? roomData.p1Dice : roomData.p2Dice;
@@ -653,8 +612,7 @@ const cardMasterList = [
             p1Final = Math.round((p1Base / myDice) * 10) / 10 + me.mathBuff;
             p2Final = Math.round((p2Base / opDice) * 10) / 10 + opponent.mathBuff;
         } else {
-            p1Final = p1Base + me.mathBuff;
-            p2Final = p2Base + opponent.mathBuff;
+            p1Final = p1Base + me.mathBuff; p2Final = p2Base + opponent.mathBuff;
         }
 
         const clashArea = document.querySelector('.clash-area');
@@ -682,43 +640,39 @@ const cardMasterList = [
 
         const resultEl = document.getElementById('round-result');
         const nextContainer = document.getElementById('next-btn-container');
-        let newMeHp = me.hp;
-        let newOpHp = opponent.hp;
+        let newMeHp = me.hp; let newOpHp = opponent.hp;
+        let newMeScore = me.score; let newOpScore = opponent.score;
 
         if (roomData.gameMode === "dice") {
-            let atkPower = amIAttacking ? p1Final : p2Final;
-            let defPower = amIAttacking ? p2Final : p1Final;
-            let diff = Math.max(0, atkPower - defPower);
-
+            let diff = Math.max(0, (amIAttacking ? p1Final : p2Final) - (amIAttacking ? p2Final : p1Final));
             if (diff > 0) {
-                if (amIAttacking) {
-                    resultEl.innerHTML = `💥 突破防線！對手扣 <b style="color:red;">${diff.toFixed(1)}</b> 血！`;
-                    newOpHp = Math.max(0, opponent.hp - diff);
-                } else {
-                    resultEl.innerHTML = `🚨 防線被破！你被扣 <b style="color:red;">${diff.toFixed(1)}</b> 血！`;
-                    newMeHp = Math.max(0, me.hp - diff);
-                }
-            } else {
-                resultEl.innerText = "🛡️ 防守成功！無人扣血！";
-            }
+                if (amIAttacking) { resultEl.innerHTML = `💥 對手扣 <b style="color:red;">${diff.toFixed(1)}</b> 血！`; newOpHp = Math.max(0, opponent.hp - diff); }
+                else { resultEl.innerHTML = `🚨 你被扣 <b style="color:red;">${diff.toFixed(1)}</b> 血！`; newMeHp = Math.max(0, me.hp - diff); }
+            } else { resultEl.innerText = "🛡️ 防守成功！無人扣血！"; }
         } else {
-            if(p1Final > p2Final) {
-                resultEl.innerText = "🏆 我方拿下本局！";
-                if(myPlayerId === "p1") db.ref(`rooms/${currentRoomId}/p1/score`).set(me.score + 1);
-            } else if (p1Final < p2Final) {
-                resultEl.innerText = "💀 對手拿下本局！";
-                if(myPlayerId === "p1") db.ref(`rooms/${currentRoomId}/p2/score`).set(opponent.score + 1);
-            } else resultEl.innerText = "🤝 平手！";
+            if(p1Final > p2Final) { resultEl.innerText = "🏆 我方拿下本局！"; newMeScore++; }
+            else if (p1Final < p2Final) { resultEl.innerText = "💀 對手拿下本局！"; newOpScore++; }
+            else { resultEl.innerText = "🤝 平手！"; }
         }
 
-        if (myPlayerId === "p1" && roomData.gameMode === "dice") {
-            db.ref(`rooms/${currentRoomId}/p1/hp`).set(myPlayerId === "p1" ? newMeHp : newOpHp);
-            db.ref(`rooms/${currentRoomId}/p2/hp`).set(myPlayerId === "p2" ? newMeHp : newOpHp);
+        if (myPlayerId === "p1") {
+            if (roomData.gameMode === "dice") {
+                db.ref(`rooms/${currentRoomId}/p1/hp`).set(newMeHp); db.ref(`rooms/${currentRoomId}/p2/hp`).set(newOpHp);
+            } else {
+                db.ref(`rooms/${currentRoomId}/p1/score`).set(newMeScore); db.ref(`rooms/${currentRoomId}/p2/score`).set(newOpScore);
+            }
         }
 
-        if (roomData.gameMode === "dice" && (newMeHp <= 0 || newOpHp <= 0)) {
-            resultEl.innerHTML += "<br><br><span class='flash-text' style='color:#FFD700; font-size:1.5em;'>🎉 遊戲結束！分出勝負！</span>";
-            return; // 遊戲結束，不顯示下一局按鈕
+        // 【全新：三戰兩勝 遊戲結束判定】
+        let isGameOver = false;
+        if (roomData.gameMode === "dice" && (newMeHp <= 0 || newOpHp <= 0)) isGameOver = true;
+        // BO3 規則：先拿到 2 勝者贏，或者打滿 5 局強制結算
+        if (roomData.gameMode === "basic" && (newMeScore >= 2 || newOpScore >= 2 || roomData.round >= 5)) isGameOver = true;
+
+        if (isGameOver) {
+            resultEl.innerHTML += "<br><br><span class='flash-text' style='color:#FFD700; font-size:1.5em;'>🎉 比賽結束！即將結算...</span>";
+            setTimeout(() => { showVictoryScreen(roomData.gameMode, me.name, opponent.name, newMeScore, newOpScore, newMeHp, newOpHp); }, 2500);
+            return;
         }
 
         if (myPlayerId === "p1") {
@@ -731,5 +685,58 @@ const cardMasterList = [
         } else {
             nextContainer.innerHTML = `<p style="color: #aaa; text-align:center; margin-top: 15px;">⏳ 等待房主開啟下一局...</p>`;
         }
+    }
+
+    // ==========================================
+    // 勝利結算畫面 (支援三戰兩勝制)
+    // ==========================================
+    function showVictoryScreen(mode, meName, opName, meScore, opScore, meHp, opHp) {
+        document.getElementById('math-modal').style.display = 'none'; 
+        const vModal = document.getElementById('victory-modal');
+        const vIcon = document.getElementById('victory-icon');
+        const vTitle = document.getElementById('victory-title');
+        const vSub = document.getElementById('victory-subtitle');
+        const vStats = document.getElementById('victory-stats');
+
+        let isWin = false;
+        let isTie = false;
+
+        if (mode === "basic") {
+            if (meScore > opScore) isWin = true;
+            else if (meScore === opScore) isTie = true;
+            vStats.innerHTML = `${meName}: ${meScore} 勝 <br><br> ${opName}: ${opScore} 勝`;
+        } else {
+            if (meHp > 0 && opHp <= 0) isWin = true;
+            else if (meHp <= 0 && opHp <= 0) isTie = true;
+            vStats.innerHTML = `${meName} 剩餘 ${Math.max(0, meHp).toFixed(1)} 血 <br><br> ${opName} 剩餘 ${Math.max(0, opHp).toFixed(1)} 血`;
+        }
+
+        if (isWin) {
+            vIcon.innerText = "🏆";
+            vTitle.innerText = "VICTORY";
+            vTitle.className = "glow-text-gold";
+            vSub.innerText = "太神啦！你贏得了這場比賽！";
+        } else if (isTie) {
+            vIcon.innerText = "🤝";
+            vTitle.innerText = "DRAW";
+            vTitle.className = "glow-text-gold";
+            vSub.innerText = "勢均力敵的精彩對決！";
+        } else {
+            vIcon.innerText = "💀";
+            vTitle.innerText = "DEFEAT";
+            vTitle.className = "glow-text-red";
+            vSub.innerText = "可惜了，下次再討回來！";
+        }
+
+        vModal.style.display = 'flex';
+
+        document.getElementById('btn-return-lobby-from-victory').onclick = () => {
+            if (currentRoomId) db.ref('rooms/' + currentRoomId).onDisconnect().cancel();
+            if (myPlayerId === "p1") db.ref('rooms/' + currentRoomId).remove();
+            else if (myPlayerId === "p2") db.ref('rooms/' + currentRoomId + '/p2').remove();
+            
+            vModal.style.display = 'none';
+            returnToLobby();
+        };
     }
 });
