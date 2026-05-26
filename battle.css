@@ -196,20 +196,97 @@
     100% { text-shadow: 0 0 30px red, 0 0 10px yellow; }
 }
 
-/* --- 修正戰鬥區與開牌區的卡片大小 (防止巨大化) --- */
-.battle-card, .battle-display-card {
-    width: 105px !important;
-    height: 155px !important;
-    margin: 0 auto;
-    position: relative;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+/* --- 戰鬥區版面高度優化 (一屏顯示) --- */
+#battlefield-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 85vh; /* 限制整體高度，讓它盡量符合螢幕 */
+    padding: 15px;
 }
-.battle-card img, .battle-display-card img {
+
+/* --- 對手區域：極簡化 --- */
+.opponent-area {
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+    flex-shrink: 0;
+}
+
+/* --- 中間對決區：控制開牌大小 --- */
+.clash-area {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: rgba(0,0,0,0.7);
+    border-radius: 10px;
+    margin: 10px 0;
+    border: 1px solid #444;
+    overflow: hidden;
+}
+.battle-display-card {
+    max-width: 140px; /* 開牌時限制最大寬度，避免擋住骰子和分數 */
+    margin: 0 auto;
+}
+
+/* --- 玩家手牌區：原尺寸 + 橫向滑動 --- */
+.player-area {
+    flex-shrink: 0;
+}
+.battle-hand {
+    display: flex;
+    justify-content: flex-start; /* 靠左對齊，方便滑動 */
+    gap: 15px;
+    overflow-x: auto; /* 超出寬度時可以左右滑動 */
+    overflow-y: hidden;
+    padding: 15px 5px;
+    min-height: 180px; 
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
+    white-space: nowrap;
+}
+/* 美化橫向卷軸 */
+.battle-hand::-webkit-scrollbar { height: 10px; }
+.battle-hand::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 5px; }
+.battle-hand::-webkit-scrollbar-thumb { background: #FF4136; border-radius: 5px; border: 2px solid #222; }
+
+/* --- 撞擊與骰子動畫維持原樣 --- */
+.crash-left { animation: slideCrashLeft 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+.crash-right { animation: slideCrashRight 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+@keyframes slideCrashLeft {
+    0% { transform: translateX(-150px) rotate(-15deg); opacity: 0; }
+    50% { transform: translateX(20px) rotate(5deg); opacity: 1; }
+    70% { transform: translateX(-10px) rotate(-2deg); }
+    100% { transform: translateX(0) rotate(0); opacity: 1; }
+}
+@keyframes slideCrashRight {
+    0% { transform: translateX(150px) rotate(15deg); opacity: 0; }
+    50% { transform: translateX(-20px) rotate(-5deg); opacity: 1; }
+    70% { transform: translateX(10px) rotate(2deg); }
+    100% { transform: translateX(0) rotate(0); opacity: 1; }
+}
+.dice-rolling { display: inline-block; font-size: 1.5em; color: #2ecc71; animation: diceShake 0.2s infinite; }
+@keyframes diceShake {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(20deg) scale(1.2); }
+    50% { transform: rotate(0deg) scale(1); }
+    75% { transform: rotate(-20deg) scale(1.2); }
+    100% { transform: rotate(0deg) scale(1); }
+}
+.flash-text { animation: flash 1s infinite alternate; }
+@keyframes flash {
+    0% { text-shadow: 0 0 10px red; }
+    100% { text-shadow: 0 0 30px red, 0 0 10px yellow; }
+}
+.fade-in-slow { opacity: 0; animation: fadeInSlow 2.5s ease forwards; }
+@keyframes fadeInSlow {
+    0% { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.victory-pop { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 /* --- 結果慢慢浮現的電影級動畫 --- */
