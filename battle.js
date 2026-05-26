@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const db = firebase.database();
     
     // 【修改這裡】請務必確認你的 Apps Script 有部署為「新版本」
-    const API_URL = "https://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exechttps://script.google.com/macros/s/AKfycbzpNZ04iycuMbVzaV0yRxa43qy-RSXWGEaPGfhM7funb0vuj2P-pi1sGQ5Vxv5mXbmy/exec";
 
     // 卡牌資料庫
 const cardMasterList = [
@@ -179,20 +179,14 @@ const cardMasterList = [
                 return;
             }
 
-            // 下載題庫，並加上防呆提示
             try {
                 const resQ = await fetch(API_URL, {
                     method: 'POST', body: JSON.stringify({ action: 'get_questions' })
                 });
                 const dataQ = await resQ.json();
-                if (dataQ.status === 'success' && dataQ.data.length > 0) {
-                    questionBank = dataQ.data;
-                } else {
-                    alert("⚠️ 無法讀取試算表題庫！請確認有「題庫」分頁，且 Apps Script 有發布為「新版本」！(目前將使用預設題目)");
-                    questionBank = [{ q: "1+1=?", options: ["1","2","3","4"], a: "2" }];
-                }
+                if (dataQ.status === 'success' && dataQ.data.length > 0) questionBank = dataQ.data;
+                else questionBank = [{ q: "1+1=?", options: ["1","2","3","4"], a: "2" }];
             } catch (e) {
-                alert("⚠️ 讀取題庫發生錯誤！請確認 Apps Script 部署設定。(目前使用預設題目)");
                 questionBank = [{ q: "1+1=?", options: ["1","2","3","4"], a: "2" }];
             }
 
@@ -213,7 +207,6 @@ const cardMasterList = [
         }
     });
 
-    // 渲染大廳卡牌
     document.getElementById('lobby-filter-team').addEventListener('change', renderLobbyCardGrid);
     document.getElementById('lobby-filter-role').addEventListener('change', renderLobbyCardGrid);
 
@@ -264,7 +257,7 @@ const cardMasterList = [
     }
 
     // ==========================================
-    // 創建與加入房間 (HP 提升為 100)
+    // 創建與加入房間
     // ==========================================
     document.getElementById('btn-create-room').addEventListener('click', () => {
         currentRoomId = Math.floor(1000 + Math.random() * 9000).toString();
@@ -306,7 +299,7 @@ const cardMasterList = [
                 enterDeckBuilding();
                 listenToRoom();
             } else {
-                document.getElementById('lobby-message').innerText = "房間不存在或已滿員！";
+                alert("房間不存在或已滿員！");
             }
         });
     }
@@ -336,7 +329,6 @@ const cardMasterList = [
         document.getElementById('btn-start-game').style.display = 'none';
         document.getElementById('btn-ready').disabled = true;
         document.getElementById('btn-ready').innerText = "確認先發陣容";
-        document.getElementById('lobby-message').innerText = "已返回大廳。";
     }
 
     // ==========================================
@@ -462,7 +454,10 @@ const cardMasterList = [
                 let attackerHasPlayed = !!roomData[attackerId].selectedCard;
 
                 let myRoleText = amIAttacking ? "進攻方 (先手)" : "防守方 (後手)";
-                document.getElementById('battle-status').innerHTML = `第 ${roomData.round} 局 | 你是 <b style="color:#FFD700;">${myRoleText}</b>`;
+                
+                // 【修復】重新把標題建回來，防止當機！
+                const clashArea = document.querySelector('.clash-area');
+                clashArea.innerHTML = `<h2 id="battle-status" class="glow-text-gold" style="font-size: 1.6em; margin: 0; text-align: center;">第 ${roomData.round} 局 | 你是 <b style="color:#FFD700;">${myRoleText}</b><br><br><span style="font-size:0.7em; color:white;">等待雙方出牌...</span></h2>`;
                 
                 renderMyBattleHand(roomData, me, amIAttacking, attackerHasPlayed, roomData[attackerId].selectedCard);
                 renderOpponentHand(opponent);
@@ -473,7 +468,8 @@ const cardMasterList = [
             }
 
             if(roomData.state === "math") {
-                document.getElementById('battle-status').innerText = "📝 戰術計算中...";
+                const bStatus = document.getElementById('battle-status');
+                if (bStatus) bStatus.innerText = "📝 戰術計算中...";
                 if(document.getElementById('math-modal').style.display === 'none' && !me.mathDone) {
                     triggerMathChallenge();
                 }
@@ -490,7 +486,6 @@ const cardMasterList = [
             }
 
             if(roomData.state === "reveal") {
-                // 利用全域變數確保動畫每局只跑一次
                 if (window.lastRevealedRound !== roomData.round) {
                     window.lastRevealedRound = roomData.round;
                     playRevealAnimationSequence(roomData, me, opponent);
@@ -504,7 +499,6 @@ const cardMasterList = [
         document.getElementById('btn-start-game').style.display = 'none';
     });
 
-    // 出牌渲染 (含變灰處理)
     function renderMyBattleHand(roomData, me, amIAttacking, attackerHasPlayed, attackerCard) {
         const handDiv = document.getElementById('player-hand');
         handDiv.innerHTML = "";
@@ -531,6 +525,7 @@ const cardMasterList = [
             }
 
             const cardEl = document.createElement('div');
+            // 【修復】加上 battle-card 類別，限制大小
             cardEl.className = `card-small-wrapper reveal-${card.rarity} battle-card`;
             cardEl.style.cursor = canPlay ? "pointer" : "not-allowed";
             if (!canPlay) {
@@ -554,11 +549,10 @@ const cardMasterList = [
     function renderOpponentHand(opponent) {
         const handDiv = document.getElementById('opponent-hand');
         if(!opponent) return;
-        if(opponent.selectedCard) handDiv.innerHTML = `<div class="card-back" style="width:105px; height:155px; border:2px solid #2ecc71; color:white; display:flex; justify-content:center; align-items:center;">出牌就緒</div>`;
-        else handDiv.innerHTML = `<div class="card-back" style="width:105px; height:155px; opacity:0.4; color:white; display:flex; justify-content:center; align-items:center;">思考中...</div>`;
+        if(opponent.selectedCard) handDiv.innerHTML = `<div class="card-back" style="width:105px; height:155px; border:2px solid #2ecc71; color:white; display:flex; justify-content:center; align-items:center; border-radius:8px;">出牌就緒</div>`;
+        else handDiv.innerHTML = `<div class="card-back" style="width:105px; height:155px; opacity:0.4; color:white; display:flex; justify-content:center; align-items:center; border-radius:8px;">思考中...</div>`;
     }
 
-    // 隨機題庫
     function triggerMathChallenge() {
         const qData = questionBank[Math.floor(Math.random() * questionBank.length)];
         document.getElementById('math-question').innerText = qData.q;
@@ -600,26 +594,22 @@ const cardMasterList = [
         document.getElementById('math-modal').style.display = 'flex';
     }
 
-    // ==========================================
-    // 動畫與結算序列
-    // ==========================================
     function playRevealAnimationSequence(roomData, me, opponent) {
         const clashArea = document.querySelector('.clash-area');
-        
         let isP1Attacking = (roomData.round % 2 !== 0);
         let amIAttacking = (myPlayerId === "p1") ? isP1Attacking : !isP1Attacking;
 
-        // 【階段一】：卡片衝撞動畫
+        // 【修復】加上 battle-display-card 限制開牌大小
         clashArea.innerHTML = `
             <div style="display:flex; justify-content:center; align-items:center; gap:20px; color:white; width: 100%;">
                 <div class="crash-left" style="text-align:center; flex: 1;">
                     <h4 class="glow-text-gold">我方 (${amIAttacking?'攻':'守'})</h4>
-                    <div class="card-small-wrapper reveal-${me.selectedCard.rarity}"><img src="${me.selectedCard.image}" style="width:100%;height:100%;"></div>
+                    <div class="card-small-wrapper reveal-${me.selectedCard.rarity} battle-display-card"><img src="${me.selectedCard.image}"></div>
                 </div>
                 <div><h1 style="color:red; font-size:3em; font-style:italic;" class="flash-text">VS</h1></div>
                 <div class="crash-right" style="text-align:center; flex: 1;">
                     <h4 class="glow-text-gold">對手 (${!amIAttacking?'攻':'守'})</h4>
-                    <div class="card-small-wrapper reveal-${opponent.selectedCard.rarity}"><img src="${opponent.selectedCard.image}" style="width:100%;height:100%;"></div>
+                    <div class="card-small-wrapper reveal-${opponent.selectedCard.rarity} battle-display-card"><img src="${opponent.selectedCard.image}"></div>
                 </div>
             </div>
             <div id="dice-anim-container" style="display:none; margin-top:20px; text-align:center;">
@@ -629,7 +619,6 @@ const cardMasterList = [
             </div>
         `;
 
-        // 【階段二】：骰子滾動動畫 (如果是骰子模式)
         if (roomData.gameMode === "dice") {
             setTimeout(() => {
                 document.getElementById('dice-anim-container').style.display = 'block';
@@ -638,21 +627,18 @@ const cardMasterList = [
                     document.getElementById('anim-op-dice').innerText = `🎲 ${Math.floor(Math.random() * 6) + 1}`;
                 }, 100);
 
-                // 2秒後停止骰子並顯示最終結果
                 setTimeout(() => {
                     clearInterval(rollInterval);
                     renderFinalResult(roomData, me, opponent, amIAttacking);
                 }, 2000);
-            }, 500); // 留給衝撞動畫 0.5 秒的時間
+            }, 500); 
         } else {
-            // 基礎對決，衝撞完直接出結果
             setTimeout(() => {
                 renderFinalResult(roomData, me, opponent, amIAttacking);
             }, 800);
         }
     }
 
-    // 最終畫面與扣血邏輯
     function renderFinalResult(roomData, me, opponent, amIAttacking) {
         let p1Base = me.selectedCard.power;
         let p2Base = opponent.selectedCard.power;
@@ -676,22 +662,26 @@ const cardMasterList = [
             <div style="display:flex; justify-content:center; align-items:center; gap:30px; color:white; width: 100%;">
                 <div style="text-align:center; flex: 1;">
                     <h4 class="glow-text-gold">我方 (${amIAttacking?'攻':'守'})</h4>
-                    <div class="card-small-wrapper reveal-${me.selectedCard.rarity}"><img src="${me.selectedCard.image}" style="width:100%;height:100%;"></div>
+                    <div class="card-small-wrapper reveal-${me.selectedCard.rarity} battle-display-card"><img src="${me.selectedCard.image}"></div>
                     ${myDiceText} <p style="margin:5px 0;">+ 術 ${me.mathBuff}</p>
                     <h2 class="glow-text-red">戰力: ${p1Final}</h2>
                 </div>
                 <div><h1 style="color:red; font-size:2em; font-style:italic; margin:0;">VS</h1></div>
                 <div style="text-align:center; flex: 1;">
                     <h4 class="glow-text-gold">對手 (${!amIAttacking?'攻':'守'})</h4>
-                    <div class="card-small-wrapper reveal-${opponent.selectedCard.rarity}"><img src="${opponent.selectedCard.image}" style="width:100%;height:100%;"></div>
+                    <div class="card-small-wrapper reveal-${opponent.selectedCard.rarity} battle-display-card"><img src="${opponent.selectedCard.image}"></div>
                     ${opDiceText} <p style="margin:5px 0;">+ 術 ${opponent.mathBuff}</p>
                     <h2 class="glow-text-red">戰力: ${p2Final}</h2>
                 </div>
             </div>
-            <h2 id="round-result" style="color:white; margin-top:15px; font-size:1.5em; text-align:center;"></h2>
+            <div class="fade-in-slow" style="text-align: center; width: 100%;">
+                <h2 id="round-result" style="color:white; margin-top:15px; font-size:1.8em;"></h2>
+                <div id="next-btn-container"></div>
+            </div>
         `;
 
         const resultEl = document.getElementById('round-result');
+        const nextContainer = document.getElementById('next-btn-container');
         let newMeHp = me.hp;
         let newOpHp = opponent.hp;
 
@@ -721,7 +711,6 @@ const cardMasterList = [
             } else resultEl.innerText = "🤝 平手！";
         }
 
-        // 房主負責更新血量
         if (myPlayerId === "p1" && roomData.gameMode === "dice") {
             db.ref(`rooms/${currentRoomId}/p1/hp`).set(myPlayerId === "p1" ? newMeHp : newOpHp);
             db.ref(`rooms/${currentRoomId}/p2/hp`).set(myPlayerId === "p2" ? newMeHp : newOpHp);
@@ -729,18 +718,18 @@ const cardMasterList = [
 
         if (roomData.gameMode === "dice" && (newMeHp <= 0 || newOpHp <= 0)) {
             resultEl.innerHTML += "<br><br><span class='flash-text' style='color:#FFD700; font-size:1.5em;'>🎉 遊戲結束！分出勝負！</span>";
-            return;
+            return; // 遊戲結束，不顯示下一局按鈕
         }
 
         if (myPlayerId === "p1") {
-            clashArea.innerHTML += `<button id="btn-next-round" class="battle-btn create-btn" style="width:200px; margin:15px auto;">房主開啟下一局</button>`;
+            nextContainer.innerHTML = `<button id="btn-next-round" class="battle-btn create-btn" style="width:200px; margin:15px auto;">房主開啟下一局</button>`;
             document.getElementById('btn-next-round').onclick = () => {
                 db.ref(`rooms/${currentRoomId}/p1`).update({ selectedCard: "", mathBuff: 0, mathDone: false });
                 db.ref(`rooms/${currentRoomId}/p2`).update({ selectedCard: "", mathBuff: 0, mathDone: false });
                 db.ref(`rooms/${currentRoomId}`).update({ state: "picking", round: roomData.round + 1 });
             };
         } else {
-            clashArea.innerHTML += `<p style="color: #aaa; text-align:center; margin-top: 15px;">⏳ 等待房主開啟下一局...</p>`;
+            nextContainer.innerHTML = `<p style="color: #aaa; text-align:center; margin-top: 15px;">⏳ 等待房主開啟下一局...</p>`;
         }
     }
 });
