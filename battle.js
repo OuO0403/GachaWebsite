@@ -225,31 +225,47 @@ const cardMasterList = [
         });
     }
 
-    function startLobbyRoomListener() {
-        db.ref('rooms').on('value', (snapshot) => {
-            const listDiv = document.getElementById('room-list');
-            listDiv.innerHTML = "";
-            const rooms = snapshot.val();
+// ==========================================
+// 【終極清潔工】自動大掃除幽靈房間
+// ==========================================
+function startLobbyRoomListener() {
+    db.ref('rooms').on('value', (snapshot) => {
+        const listDiv = document.getElementById('room-list');
+        listDiv.innerHTML = "";
+        const rooms = snapshot.val();
+        
+        if(!rooms) { 
+            listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`; 
+            return; 
+        }
+
+        let hasRooms = false;
+        
+        // 遍歷所有房間，揪出幽靈
+        for(let id in rooms) {
+            const room = rooms[id];
             
-            if(!rooms) {
-                listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`; return;
+            // 判斷邏輯：如果房間沒有房主 (p1)，這就是一個絕對的幽靈房間！
+            if (!room.p1) {
+                console.log("發現幽靈房間，正在執行清除：", id);
+                db.ref('rooms/' + id).remove(); // 直接在前端發送刪除指令
+                continue; // 跳過此房間，不顯示在列表中
             }
 
-            let hasRooms = false;
-            for(let id in rooms) {
-                const room = rooms[id];
-                if(room.state === "waiting" && room.p1) {
-                    hasRooms = true;
-                    const item = document.createElement('div');
-                    item.className = "room-item";
-                    item.innerHTML = `<span>🏠 房間碼：<b>${id}</b> (${room.gameMode === 'basic'?'基礎 三戰兩勝':'🎲骰子 100血'})</span><span style="color:#2ecc71;">房主: ${room.p1.name} ➡️</span>`;
-                    item.onclick = () => { joinRoomById(id); };
-                    listDiv.appendChild(item);
-                } else if (!room.p1) db.ref('rooms/' + id).remove();
+            // 正常的房間顯示在列表中
+            if(room.state === "waiting") {
+                hasRooms = true;
+                const item = document.createElement('div');
+                item.className = "room-item";
+                item.innerHTML = `<span>🏠 房間碼：<b>${id}</b> (${room.gameMode === 'basic'?'基礎 三戰兩勝':'🎲骰子 消耗戰'})</span><span style="color:#2ecc71;">房主: ${room.p1.name} ➡️</span>`;
+                item.onclick = () => { joinRoomById(id); };
+                listDiv.appendChild(item);
             }
-            if(!hasRooms) listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`;
-        });
-    }
+        }
+        
+        if(!hasRooms) listDiv.innerHTML = `<p style="color: #888; font-style: italic; text-align:center;">目前沒有人在開房...</p>`;
+    });
+}
 
     // ==========================================
     // 創建與加入房間
