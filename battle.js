@@ -305,18 +305,22 @@ function startLobbyRoomListener() {
         });
     }
 
-    btnLeaveRoom.addEventListener('click', () => {
-        if (!currentRoomId) return;
-        if (confirm("確定要退出並返回大廳嗎？")) {
-            db.ref('rooms/' + currentRoomId).onDisconnect().cancel();
-            if (myPlayerId === "p1") db.ref('rooms/' + currentRoomId).remove();
-            else if (myPlayerId === "p2") {
-                db.ref('rooms/' + currentRoomId + '/p2').remove();
-                db.ref('rooms/' + currentRoomId + '/state').set("waiting");
-            }
-            returnToLobby();
-        }
-    });
+// --- 這是最簡潔、強制清除幽靈房間的邏輯 ---
+btnLeaveRoom.addEventListener('click', () => {
+    if (!currentRoomId) return;
+    
+    // 不管你是房主還是房客，離開時都先執行「強制刪除」指令
+    // 如果是房主，直接刪掉整個房間；如果是房客，把自己從房間刪掉
+    if (myPlayerId === "p1") {
+        db.ref('rooms/' + currentRoomId).remove();
+    } else {
+        db.ref('rooms/' + currentRoomId + '/p2').remove();
+    }
+    
+    // 斷開連接並重置網頁狀態
+    db.ref('rooms/' + currentRoomId).off();
+    returnToLobby();
+});
 
     function returnToLobby() {
         if (currentRoomId) db.ref('rooms/' + currentRoomId).off(); 
